@@ -4,17 +4,92 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lesson Platform</title>
-<link rel="stylesheet" href="css/style.css">
+<style>
+  :root {
+    --yellow: #FFD400;
+    --yellow-dark: #E6BF00;
+    --black: #111111;
+    --black-soft: #1a1a1a;
+    --gray-border: #333333;
+    --gray-text: #999999;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--black);
+    color: #eee;
+    min-height: 100vh;
+  }
+  a { text-decoration: none; color: inherit; }
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+  .title {
+    color: var(--yellow);
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+  }
+  .subtitle {
+    color: var(--gray-text);
+    font-size: 14px;
+    margin: 6px 0 28px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .tile.full {
+    grid-column: 1 / -1;
+  }
+  .tile {
+    background: var(--black-soft);
+    border: 2px solid var(--yellow);
+    border-radius: 8px;
+    padding: 26px 18px;
+    font-weight: bold;
+    font-size: 17px;
+    color: var(--yellow);
+    text-align: center;
+    transition: background 0.15s, color 0.15s;
+    cursor: pointer;
+    display: block;
+  }
+  .tile:hover {
+    background: var(--yellow);
+    color: var(--black);
+  }
+  .tile.disabled {
+    opacity: 0.35;
+    pointer-events: none;
+    border-color: var(--gray-border);
+    color: var(--gray-text);
+  }
+  .tile-label { display: block; }
+  .tile-sub {
+    display: block;
+    font-weight: normal;
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.8;
+  }
+  .footer-note {
+    margin-top: 40px;
+    text-align: center;
+    color: var(--gray-border);
+    font-size: 12px;
+  }
+</style>
 </head>
 <body>
 <div class="page">
 
-  <div class="topbar">
-    <div>
-      <h1 class="title">Choose a level</h1>
-      <p class="subtitle">Lesson planner and classroom presenter</p>
-    </div>
-  </div>
+  <h1 class="title">Choose a level</h1>
+  <p class="subtitle">Lesson planner and classroom presenter</p>
 
   <div class="grid">
     <a class="tile" href="beginner/index.html">
@@ -25,12 +100,16 @@
       <span class="tile-label">Elementary</span>
       <span class="tile-sub">coming soon</span>
     </a>
+    <a class="tile disabled" href="pre-intermediate/index.html">
+      <span class="tile-label">Pre-Intermediate</span>
+      <span class="tile-sub">coming soon</span>
+    </a>
     <a class="tile disabled" href="intermediate/index.html">
       <span class="tile-label">Intermediate</span>
       <span class="tile-sub">coming soon</span>
     </a>
-    <a class="tile disabled" href="ielts/index.html">
-      <span class="tile-label">IELTS</span>
+    <a class="tile disabled full" href="upper-intermediate/index.html">
+      <span class="tile-label">Upper-Intermediate</span>
       <span class="tile-sub">coming soon</span>
     </a>
   </div>

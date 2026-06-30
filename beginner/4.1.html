@@ -21,10 +21,14 @@
     background: var(--black);
     color: #eee;
     min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   a { text-decoration: none; color: inherit; }
   .page {
-    max-width: 480px;
+    width: 100%;
+    max-width: 560px;
     margin: 0 auto;
     padding: 28px 20px 50px;
   }
@@ -255,8 +259,8 @@
 const steps = [
   // --- 1. Lead-in (3 steps) ---
   { section: 'Lead-in', type: 'text', text: 'Books closed' },
-  { section: 'Lead-in', type: 'image', img: '' },
-  { section: 'Lead-in', type: 'image-question', img: '', question: 'Are they brother and sister, or husband and wife?' },
+  { section: 'Lead-in', type: 'image', img: 'https://drive.google.com/uc?export=view&id=1NAyjGDVj8Aw4tpH3pSRfgjCI9WFcWVc1' },
+  { section: 'Lead-in', type: 'image-question', img: 'https://drive.google.com/uc?export=view&id=1NAyjGDVj8Aw4tpH3pSRfgjCI9WFcWVc1', question: 'Are they brother and sister, or husband and wife?' },
 
   // --- 2. Pre-teach vocabulary (7 steps) ---
   { section: 'Pre-teach vocabulary', type: 'vocab', word: 'charity', img: '' },

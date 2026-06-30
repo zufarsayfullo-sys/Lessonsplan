@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upper-Intermediate - Lesson Platform</title>
+<style>
+  :root {
+    --yellow: #FFD400;
+    --yellow-dark: #E6BF00;
+    --black: #111111;
+    --black-soft: #1a1a1a;
+    --gray-border: #333333;
+    --gray-text: #999999;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--black);
+    color: #eee;
+    min-height: 100vh;
+  }
+  a { text-decoration: none; color: inherit; }
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .back-link {
+    color: var(--yellow);
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .back-link:hover { opacity: 0.8; }
+  .title {
+    color: var(--yellow);
+    font-size: 26px;
+    font-weight: bold;
+    margin: 0;
+  }
+  .subtitle {
+    color: var(--gray-text);
+    font-size: 14px;
+    margin: 6px 0 28px;
+  }
+  .unit-block {
+    margin-bottom: 22px;
+  }
+  .unit-heading {
+    color: var(--yellow);
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 10px;
+  }
+  .lesson-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .lesson-tile {
+    background: var(--black-soft);
+    border: 2px solid var(--yellow);
+    border-radius: 8px;
+    padding: 14px 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    color: var(--yellow);
+    transition: background 0.15s, color 0.15s;
+    display: block;
+  }
+  .lesson-tile:hover {
+    background: var(--yellow);
+    color: var(--black);
+  }
+</style>
+</head>
+<body>
+<div class="page">
 
+  <div class="topbar">
+    <a class="back-link" href="../index.html">&#8592;</a>
+  </div>
+  <h1 class="title">Upper-Intermediate</h1>
+  <p class="subtitle">12 units &middot; 3 lessons each</p>
+
+  <div id="units"></div>
+
+</div>
+
+<script>
+  const container = document.getElementById('units');
+  for (let unit = 1; unit <= 12; unit++) {
+    const block = document.createElement('div');
+    block.className = 'unit-block';
+
+    const heading = document.createElement('h2');
+    heading.className = 'unit-heading';
+    heading.textContent = 'Unit ' + unit;
+    block.appendChild(heading);
+
+    const row = document.createElement('div');
+    row.className = 'lesson-row';
+    for (let lesson = 1; lesson <= 3; lesson++) {
+      const id = unit + '.' + lesson;
+      const a = document.createElement('a');
+      a.className = 'lesson-tile';
+      a.href = id + '.html';
+      a.textContent = id;
+      row.appendChild(a);
+    }
+    block.appendChild(row);
+    container.appendChild(block);
+  }
+</script>
+
+</body>
+</html>

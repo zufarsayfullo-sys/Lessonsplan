@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.1</title>
+<style>
+  :root {
+    --yellow: #FFD400;
+    --yellow-dark: #E6BF00;
+    --black: #111111;
+    --black-soft: #1a1a1a;
+    --gray-border: #333333;
+    --gray-text: #999999;
+    --gray-text-light: #cccccc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--black);
+    color: #eee;
+    min-height: 100vh;
+  }
+  a { text-decoration: none; color: inherit; }
+  .page {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 28px 20px 50px;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .back-link {
+    color: var(--yellow);
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .back-link:hover { opacity: 0.8; }
+  .title {
+    color: var(--yellow);
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+  }
+  .subtitle {
+    color: var(--gray-text);
+    font-size: 13px;
+    margin: 4px 0 0;
+  }
+
+  /* outline */
+  .outline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 20px 0 24px;
+  }
+  .outline-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--black-soft);
+    border-radius: 6px;
+    padding: 12px 16px;
+    color: #eee;
+    font-size: 15px;
+  }
+  .outline-item .num {
+    background: #333;
+    color: var(--yellow);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .outline-item .steps-count {
+    margin-left: auto;
+    color: var(--gray-text);
+    font-size: 12px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--yellow);
+    color: var(--black);
+    border: none;
+    border-radius: 6px;
+    padding: 12px 22px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--yellow-dark); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-row { display: flex; justify-content: flex-end; margin-top: 6px; }
+
+  /* presentation */
+  .present-wrap {
+    background: var(--black-soft);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .present-header {
+    background: var(--yellow);
+    color: var(--black);
+    padding: 10px 18px;
+    font-weight: bold;
+    font-size: 13px;
+  }
+  .present-body {
+    padding: 24px;
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .present-footer {
+    background: var(--black);
+    border-top: 1px solid var(--gray-border);
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .nav-btn {
+    color: var(--gray-text);
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+  .nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+  .nav-btn.primary {
+    background: var(--yellow);
+    color: var(--black);
+    border-radius: 6px;
+    padding: 8px 18px;
+  }
+  .step-counter {
+    color: #666;
+    font-size: 12px;
+  }
+
+  /* content blocks */
+  .big-text {
+    font-size: 30px;
+    color: var(--yellow);
+    font-weight: bold;
+  }
+  .image-box {
+    width: 100%;
+    height: 200px;
+    background: #000;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    font-size: 13px;
+    border: 1px solid #333;
+    overflow: hidden;
+  }
+  .image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .question-box {
+    background: var(--black);
+    border-left: 4px solid var(--yellow);
+    padding: 12px 16px;
+    color: var(--gray-text-light);
+    font-size: 15px;
+    width: 100%;
+    margin-top: 16px;
+    text-align: left;
+  }
+  .vocab-word {
+    font-size: 28px;
+    color: var(--yellow);
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  .instruction-text {
+    font-size: 21px;
+    color: var(--yellow);
+    font-weight: bold;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <a class="back-link" href="index.html">&#8592;</a>
+  </div>
+
+  <!-- ===================== OUTLINE SCREEN ===================== -->
+  <div id="outlineScreen">
+    <h1 class="title">Lesson 4.1</h1>
+    <p class="subtitle">Unit 4</p>
+
+    <div class="outline-list">
+      <div class="outline-item"><span class="num">1</span> Lead-in <span class="steps-count">3 steps</span></div>
+      <div class="outline-item"><span class="num">2</span> Pre-teach vocabulary <span class="steps-count">7 steps</span></div>
+      <div class="outline-item"><span class="num">3</span> Reading <span class="steps-count">instruction</span></div>
+      <div class="outline-item"><span class="num">4</span> Vocabulary exercises <span class="steps-count">instruction</span></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="startBtn">Start lesson &#8594;</button>
+    </div>
+  </div>
+
+  <!-- ===================== PRESENTATION SCREEN ===================== -->
+  <div id="presentScreen" style="display:none;">
+    <div class="present-wrap">
+      <div class="present-header" id="sectionLabel"></div>
+      <div class="present-body" id="stepBody"></div>
+      <div class="present-footer">
+        <button class="nav-btn" id="prevBtn">&#8592; prev</button>
+        <span class="step-counter" id="stepCounter"></span>
+        <button class="nav-btn primary" id="nextBtn">next &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   STEP DATA
+   To add a real picture: replace the relevant img src "" below
+   with your Google Drive direct-view link, e.g.
+   https://drive.google.com/uc?export=view&id=FILE_ID
+   ============================================================ */
+
+const steps = [
+  // --- 1. Lead-in (3 steps) ---
+  { section: 'Lead-in', type: 'text', text: 'Books closed' },
+  { section: 'Lead-in', type: 'image', img: '' },
+  { section: 'Lead-in', type: 'image-question', img: '', question: 'Are they brother and sister, or husband and wife?' },
+
+  // --- 2. Pre-teach vocabulary (7 steps) ---
+  { section: 'Pre-teach vocabulary', type: 'vocab', word: 'charity', img: '' },
+  { section: 'Pre-teach vocabulary', type: 'vocab', word: 'different', img: '' },
+  { section: 'Pre-teach vocabulary', type: 'vocab', word: 'the same', img: '' },
+  { section: 'Pre-teach vocabulary', type: 'vocab', word: 'go abroad', img: '' },
+  { section: 'Pre-teach vocabulary', type: 'vocab', word: 'favorite', img: '' },
+  { section: 'Pre-teach vocabulary', type: 'vocab', word: 'help', img: '' },
+  { section: 'Pre-teach vocabulary', type: 'vocab', word: 'similar', img: '' },
+
+  // --- 3. Reading (instruction only) ---
+  { section: 'Reading', type: 'instruction', text: 'Read and complete the exercises in your book.' },
+
+  // --- 4. Vocabulary exercises (instruction only) ---
+  { section: 'Vocabulary exercises', type: 'instruction', text: 'Complete the vocabulary exercises in your book.' }
+];
+
+let current = 0;
+
+function imageBoxHtml(src) {
+  if (src) {
+    return '<div class="image-box"><img src="' + src + '" alt=""></div>';
+  }
+  return '<div class="image-box">[ picture ]</div>';
+}
+
+function renderStep() {
+  const s = steps[current];
+  document.getElementById('sectionLabel').textContent = 'Lesson 4.1 \u00b7 ' + s.section;
+
+  let html = '';
+  if (s.type === 'text') {
+    html = '<div class="big-text">' + s.text + '</div>';
+  } else if (s.type === 'image') {
+    html = imageBoxHtml(s.img);
+  } else if (s.type === 'image-question') {
+    html = imageBoxHtml(s.img) + '<div class="question-box">' + s.question + '</div>';
+  } else if (s.type === 'vocab') {
+    html = '<div class="vocab-word">' + s.word + '</div>' + imageBoxHtml(s.img);
+  } else if (s.type === 'instruction') {
+    html = '<div class="instruction-text">' + s.text + '</div>';
+  }
+  document.getElementById('stepBody').innerHTML = html;
+
+  document.getElementById('stepCounter').textContent = (current + 1) + ' / ' + steps.length;
+  document.getElementById('prevBtn').disabled = current === 0;
+  document.getElementById('nextBtn').textContent = current === steps.length - 1 ? 'done' : 'next \u2192';
+}
+
+document.getElementById('startBtn').onclick = function () {
+  document.getElementById('outlineScreen').style.display = 'none';
+  document.getElementById('presentScreen').style.display = 'block';
+  current = 0;
+  renderStep();
+};
+
+document.getElementById('nextBtn').onclick = function () {
+  if (current < steps.length - 1) {
+    current++;
+    renderStep();
+  }
+};
+
+document.getElementById('prevBtn').onclick = function () {
+  if (current > 0) {
+    current--;
+    renderStep();
+  }
+};
+</script>
+
+</body>
+</html>

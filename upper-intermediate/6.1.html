@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 6.1</title>
+<style>
+  :root{--y:#FFD400;--yd:#E6BF00;--b:#111111;--bs:#1a1a1a;--gb:#333333;--gt:#999999;--gl:#cccccc;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif;background:var(--b);color:#eee;min-height:100vh;display:flex;flex-direction:column;}
+  a{text-decoration:none;color:inherit;}
+  .page{flex:1;display:flex;flex-direction:column;padding:20px 32px 24px;max-width:1000px;width:100%;margin:0 auto;}
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .back-link{color:var(--y);font-size:20px;font-weight:bold;}
+  .back-link:hover{opacity:.8;}
+
+  /* outline */
+  #outlineScreen{flex:1;display:flex;flex-direction:column;}
+  .lesson-title{color:var(--y);font-size:26px;font-weight:bold;margin-bottom:4px;}
+  .lesson-sub{color:var(--gt);font-size:14px;margin-bottom:22px;}
+  .outline-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+  .outline-item{display:flex;align-items:center;gap:12px;background:var(--bs);border-radius:6px;padding:13px 16px;font-size:15px;color:#eee;}
+  .outline-item .num{background:#333;color:var(--y);border-radius:50%;width:26px;height:26px;min-width:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;}
+  .outline-item .tag{margin-left:auto;color:var(--gt);font-size:12px;}
+  .btn-row{display:flex;justify-content:flex-end;}
+  .btn{background:var(--y);color:var(--b);border:none;border-radius:6px;padding:12px 24px;font-weight:bold;font-size:15px;cursor:pointer;font-family:inherit;}
+  .btn:hover{background:var(--yd);}
+
+  /* present */
+  #presentScreen{flex:1;display:none;flex-direction:column;}
+  .present-wrap{flex:1;display:flex;flex-direction:column;background:var(--bs);border-radius:10px;overflow:hidden;}
+  .present-header{background:var(--y);color:var(--b);padding:12px 24px;font-weight:bold;font-size:15px;display:flex;justify-content:space-between;align-items:center;}
+  .print-btn{background:var(--b);color:var(--y);border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;display:none;}
+  .present-body{flex:1;padding:32px 40px;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow-y:auto;}
+  .present-footer{background:var(--b);border-top:1px solid var(--gb);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;}
+  .nav-btn{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:var(--gt);}
+  .nav-btn:disabled{opacity:.2;cursor:not-allowed;}
+  .nav-btn.primary{background:var(--y);color:var(--b);border-radius:6px;padding:9px 20px;}
+  .step-counter{color:#555;font-size:13px;}
+
+  /* lead-in */
+  .img-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:800px;}
+  .img-box{background:#000;border-radius:8px;overflow:hidden;border:1px solid #333;display:flex;align-items:center;justify-content:center;color:#555;font-size:13px;}
+  .img-box img{width:100%;height:100%;object-fit:cover;display:block;}
+  .img-box.large{height:min(48vh,400px);}
+  .img-box.small{height:min(28vh,220px);}
+  .discuss-wrap{width:100%;max-width:800px;margin-top:18px;}
+  .discuss-q{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;}
+  .discuss-num{color:var(--y);font-weight:bold;min-width:22px;font-size:16px;}
+  .discuss-text{color:#eee;font-size:16px;line-height:1.6;}
+
+  /* reading tabs */
+  .reading-wrap{width:100%;max-width:860px;text-align:left;}
+  .tab-bar{display:flex;border-bottom:1px solid var(--gb);}
+  .tab{flex:1;padding:10px 6px;text-align:center;font-size:13px;font-weight:bold;cursor:pointer;color:var(--gt);background:var(--b);border-bottom:2px solid transparent;}
+  .tab.active{color:var(--y);border-bottom:2px solid var(--y);background:var(--bs);}
+  .tab-pane{display:none;padding:18px 4px;max-height:58vh;overflow-y:auto;}
+  .tab-pane.active{display:block;}
+
+  /* article */
+  .article-title{color:var(--y);font-size:18px;font-weight:bold;margin-bottom:14px;}
+  .article-text{color:#eee;font-size:14px;line-height:1.95;}
+  .article-text p{margin-bottom:12px;}
+  .hl{background:var(--y);color:var(--b);padding:1px 4px;border-radius:2px;font-weight:bold;}
+
+  /* exercises */
+  .ex-instruction{color:var(--gt);font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;}
+  .ex-list{display:flex;flex-direction:column;gap:12px;}
+  .ex-item{display:flex;gap:10px;align-items:flex-start;}
+  .ex-num{color:var(--y);font-weight:bold;min-width:20px;font-size:14px;}
+  .ex-text{color:#eee;font-size:14px;line-height:1.6;flex:1;}
+  .ex-text em{color:var(--y);font-style:italic;}
+  .answer-line{border-bottom:1px solid #555;min-width:110px;display:inline-block;margin-left:8px;}
+  .word-pair{color:var(--y);font-size:15px;font-weight:bold;}
+
+  /* print */
+  @media print{
+    body{background:#fff!important;color:#000!important;}
+    .page,#presentScreen,.present-wrap{display:block!important;background:none!important;}
+    #outlineScreen,.present-header,.present-footer,.topbar,.tab-bar,.print-btn{display:none!important;}
+    .tab-pane{display:block!important;max-height:none!important;overflow:visible!important;page-break-inside:avoid;}
+    .reading-wrap{max-width:100%!important;}
+    .article-title,.ex-num,.discuss-num,.word-pair{color:#000!important;}
+    .article-text,.ex-text,.discuss-text{color:#000!important;}
+    .hl{background:#ffff00!important;color:#000!important;}
+    .ex-text em{color:#000!important;font-style:italic;}
+    *{border-color:#000!important;}
+    .img-box{border:1px solid #ccc!important;}
+    .tab-pane+.tab-pane{margin-top:24px;border-top:1px solid #ccc;padding-top:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar"><a class="back-link" href="index.html">&#8592;</a></div>
+
+  <!-- OUTLINE -->
+  <div id="outlineScreen">
+    <div class="lesson-title">Lesson 6.1</div>
+    <div class="lesson-sub">Unit 6 &middot; A home away from home</div>
+    <div class="outline-list">
+      <div class="outline-item"><span class="num">1</span>Lead-in<span class="tag">2 steps</span></div>
+      <div class="outline-item"><span class="num">2</span>Article &amp; exercises<span class="tag">article · ex 1 · ex 2 · ex 3</span></div>
+    </div>
+    <div class="btn-row"><button class="btn" id="startBtn">Start lesson &#8594;</button></div>
+  </div>
+
+  <!-- PRESENTATION -->
+  <div id="presentScreen">
+    <div class="present-wrap">
+      <div class="present-header">
+        <span id="sectionLabel">Lesson 6.1</span>
+        <button class="print-btn" id="printBtn" onclick="window.print()">&#128438; Print / Download</button>
+      </div>
+      <div class="present-body" id="stepBody"></div>
+      <div class="present-footer">
+        <button class="nav-btn" id="prevBtn">&#8592; prev</button>
+        <span class="step-counter" id="stepCounter"></span>
+        <button class="nav-btn primary" id="nextBtn">next &#8594;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const IMG1 = 'image_2026-07-03_13-13-50.png';
+const IMG2 = 'image_2026-07-03_13-14-09.png';
+
+function imgBox(src, cls){
+  const d = document.createElement('div');
+  d.className = 'img-box ' + cls;
+  if(src){
+    const i = document.createElement('img');
+    i.src = src; i.alt = '';
+    i.onerror = () => { d.textContent = '[ ' + src + ' ]'; };
+    d.appendChild(i);
+  }
+  return d;
+}
+
+/* ── STEPS ── */
+const steps = [
+  { section:'Lead-in', type:'leadin-pics'  },
+  { section:'Lead-in', type:'leadin-discuss'},
+  { section:'Article & exercises', type:'reading' }
+];
+
+let current = 0;
+
+function switchTab(n){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active', i===n-1);
+  });
+  document.querySelectorAll('.tab-pane').forEach((p,i)=>{
+    p.classList.toggle('active', i===n-1);
+  });
+}
+
+function renderReading(){
+  const wrap = document.createElement('div');
+  wrap.className = 'reading-wrap';
+  wrap.innerHTML = `
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab(1)">Article</div>
+      <div class="tab" onclick="switchTab(2)">Exercise 1</div>
+      <div class="tab" onclick="switchTab(3)">Exercise 2</div>
+      <div class="tab" onclick="switchTab(4)">Exercise 3</div>
+    </div>
+
+    <!-- ARTICLE -->
+    <div class="tab-pane active">
+      <div class="article-title">A home away from home</div>
+      <div class="article-text">
+        <p>As you pass through a nine-metre-tall red <em>torii</em> gate into the Liberdade <span class="hl">neighbourhood</span> and see the Japanese street lamps and signs, you might assume you were in Tokyo. But you'd be wrong. Liberdade is actually the centre of the biggest Japanese <span class="hl">community</span> in the world (outside Japan) and it's in São Paulo, Brazil. More than 1.5 million people with Japanese <span class="hl">ancestors</span> live in Brazil, 60,000 of them in Liberdade.</p>
+        <p>The first settlers arrived over a hundred years ago to work in the coffee plantations, but soon started to move to the cities, particularly São Paulo. <span class="hl">Immigrants</span> need to <span class="hl">adjust</span> to new things, but it was difficult for the Japanese settlers at first, as they encountered such a different language, food and climate. However, the community is now very well <span class="hl">established</span>, and Liberdade, including the Museum of Japanese Immigration, is one of São Paulo's main attractions. Every weekend, the area is full of people buying flowers, clothes and Japanese-style food. Many popular Japanese <span class="hl">festivals</span> also take place in the area. For example, <em>Hanamatsuri</em>, a <span class="hl">ceremony</span> where sweet tea is poured onto the feet of a statue. The ceremony is then followed by a <span class="hl">parade</span> through the streets with flowers and a large model white elephant. Or the festival of stars, <em>Tanabata Matsuri</em>, where people wear typical Japanese <span class="hl">costumes</span> and <span class="hl">decorate</span> the streets.</p>
+        <p>Another fascinating example is the Welsh community in the Chubut Valley, Patagonia, Argentina. Welsh <span class="hl">immigrants</span> first arrived in the area over 150 years ago, but although they now consider themselves to be very firmly Argentinian <span class="hl">citizens</span>, many of their 50,000 <span class="hl">descendants</span> still speak Welsh and maintain traditions and <span class="hl">customs</span>, such as serving Welsh teas and writing poetry.</p>
+      </div>
+    </div>
+
+    <!-- EXERCISE 1 -->
+    <div class="tab-pane">
+      <div class="ex-instruction">Match the definitions with the highlighted words in the article</div>
+      <div class="ex-list">
+        <div class="ex-item"><span class="ex-num">1</span><span class="ex-text">People who belong to the same family as someone who lived a long time ago.<span class="answer-line">&nbsp;</span></span></div>
+        <div class="ex-item"><span class="ex-num">2</span><span class="ex-text">People who have come into a foreign country to live there permanently.<span class="answer-line">&nbsp;</span></span></div>
+        <div class="ex-item"><span class="ex-num">3</span><span class="ex-text">People who are legally accepted as members of a particular country.<span class="answer-line">&nbsp;</span></span></div>
+        <div class="ex-item"><span class="ex-num">4</span><span class="ex-text">People related to you who lived a long time ago.<span class="answer-line">&nbsp;</span></span></div>
+      </div>
+    </div>
+
+    <!-- EXERCISE 2 -->
+    <div class="tab-pane">
+      <div class="ex-instruction">Work with a partner. Explain the difference between each pair or group of words highlighted in the article</div>
+      <div class="ex-list">
+        <div class="ex-item"><span class="ex-num">1</span><span class="ex-text"><span class="word-pair">custom / costume</span></span></div>
+        <div class="ex-item"><span class="ex-num">2</span><span class="ex-text"><span class="word-pair">festival / ceremony / parade</span></span></div>
+        <div class="ex-item"><span class="ex-num">3</span><span class="ex-text"><span class="word-pair">neighbourhood / community</span></span></div>
+        <div class="ex-item"><span class="ex-num">4</span><span class="ex-text"><span class="word-pair">adjust / establish</span></span></div>
+      </div>
+    </div>
+
+    <!-- EXERCISE 3 -->
+    <div class="tab-pane">
+      <div class="ex-instruction">Choose the correct option to complete the questions, then answer them</div>
+      <div class="ex-list">
+        <div class="ex-item"><span class="ex-num">1</span><span class="ex-text">What aspects of the Liberdade <em>neighbourhood / community</em> make it seem like Tokyo?</span></div>
+        <div class="ex-item"><span class="ex-num">2</span><span class="ex-text">Why did the first Japanese <em>immigrants / descendants</em> first come to Brazil?</span></div>
+        <div class="ex-item"><span class="ex-num">3</span><span class="ex-text">Why was it difficult for them to <em>establish / adjust</em> at first?</span></div>
+        <div class="ex-item"><span class="ex-num">4</span><span class="ex-text">According to the article, which event includes a <em>parade / ceremony</em> through the streets?</span></div>
+        <div class="ex-item"><span class="ex-num">5</span><span class="ex-text">Give an example of another Japanese <em>festival / costume</em> mentioned in the article.</span></div>
+        <div class="ex-item"><span class="ex-num">6</span><span class="ex-text">Give an example of a Welsh <em>costume / custom</em> mentioned in the article.</span></div>
+      </div>
+    </div>
+  `;
+  return wrap;
+}
+
+function renderStep(){
+  const s = steps[current];
+  const body = document.getElementById('stepBody');
+  body.innerHTML = '';
+  body.style.textAlign = 'center';
+  document.getElementById('sectionLabel').textContent = 'Lesson 6.1 \u00b7 ' + s.section;
+  document.getElementById('printBtn').style.display = s.type === 'reading' ? 'inline-block' : 'none';
+
+  let el;
+
+  if(s.type === 'leadin-pics'){
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'width:100%;max-width:800px;';
+    const grid = document.createElement('div');
+    grid.className = 'img-grid';
+    grid.appendChild(imgBox(IMG1,'large'));
+    grid.appendChild(imgBox(IMG2,'large'));
+    wrap.appendChild(grid);
+    el = wrap;
+  }
+  else if(s.type === 'leadin-discuss'){
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'width:100%;max-width:800px;';
+    const grid = document.createElement('div');
+    grid.className = 'img-grid';
+    grid.appendChild(imgBox(IMG1,'small'));
+    grid.appendChild(imgBox(IMG2,'small'));
+    wrap.appendChild(grid);
+    const dw = document.createElement('div');
+    dw.className = 'discuss-wrap';
+    dw.innerHTML = `
+      <div class="discuss-q"><span class="discuss-num">1</span><span class="discuss-text">Where are the people in the pictures?</span></div>
+      <div class="discuss-q"><span class="discuss-num">2</span><span class="discuss-text">What are they doing?</span></div>
+      <div class="discuss-q"><span class="discuss-num">3</span><span class="discuss-text">How do they feel? Why?</span></div>
+      <div class="discuss-q"><span class="discuss-num">4</span><span class="discuss-text">Would you like to be in their situation? Why / Why not?</span></div>
+    `;
+    wrap.appendChild(dw);
+    el = wrap;
+  }
+  else if(s.type === 'reading'){
+    body.style.textAlign = 'left';
+    el = renderReading();
+  }
+
+  body.appendChild(el);
+  document.getElementById('stepCounter').textContent = (current+1) + ' / ' + steps.length;
+  document.getElementById('prevBtn').disabled = current === 0;
+  document.getElementById('nextBtn').textContent = current === steps.length-1 ? 'Done' : 'next \u2192';
+}
+
+document.getElementById('startBtn').onclick = () => {
+  document.getElementById('outlineScreen').style.display = 'none';
+  document.getElementById('presentScreen').style.display = 'flex';
+  current = 0; renderStep();
+};
+document.getElementById('nextBtn').onclick = () => { if(current < steps.length-1){ current++; renderStep(); } };
+document.getElementById('prevBtn').onclick = () => { if(current > 0){ current--; renderStep(); } };
+</script>
+</body>
+</html>

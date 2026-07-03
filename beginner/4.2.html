@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.2</title>
+<style>
+  :root{--y:#FFD400;--yd:#E6BF00;--b:#111111;--bs:#1a1a1a;--gb:#333333;--gt:#999999;--gl:#cccccc;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif;background:var(--b);color:#eee;min-height:100vh;display:flex;flex-direction:column;}
+  a{text-decoration:none;color:inherit;}
+  .page{flex:1;display:flex;flex-direction:column;padding:20px 32px 24px;max-width:960px;width:100%;margin:0 auto;}
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .back-link{color:var(--y);font-size:20px;font-weight:bold;}
+  .back-link:hover{opacity:.8;}
+
+  /* outline */
+  #outlineScreen{flex:1;display:flex;flex-direction:column;}
+  .lesson-title{color:var(--y);font-size:26px;font-weight:bold;margin-bottom:4px;}
+  .lesson-sub{color:var(--gt);font-size:14px;margin-bottom:22px;}
+  .outline-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+  .outline-item{display:flex;align-items:center;gap:12px;background:var(--bs);border-radius:6px;padding:13px 16px;font-size:15px;color:#eee;}
+  .outline-item .num{background:#333;color:var(--y);border-radius:50%;width:26px;height:26px;min-width:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;}
+  .outline-item .tag{margin-left:auto;color:var(--gt);font-size:12px;}
+  .btn-row{display:flex;justify-content:flex-end;}
+  .btn{background:var(--y);color:var(--b);border:none;border-radius:6px;padding:12px 24px;font-weight:bold;font-size:15px;cursor:pointer;font-family:inherit;}
+  .btn:hover{background:var(--yd);}
+
+  /* present */
+  #presentScreen{flex:1;display:none;flex-direction:column;}
+  .present-wrap{flex:1;display:flex;flex-direction:column;background:var(--bs);border-radius:10px;overflow:hidden;}
+  .present-header{background:var(--y);color:var(--b);padding:12px 24px;font-weight:bold;font-size:15px;}
+  .present-body{flex:1;padding:32px 40px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;overflow-y:auto;}
+  .present-footer{background:var(--b);border-top:1px solid var(--gb);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;}
+  .nav-btn{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:var(--gt);}
+  .nav-btn:disabled{opacity:.2;cursor:not-allowed;}
+  .nav-btn.primary{background:var(--y);color:var(--b);border-radius:6px;padding:9px 20px;}
+  .step-counter{color:#555;font-size:13px;}
+
+  /* content */
+  .big-qmark{font-size:180px;color:var(--y);line-height:1;}
+  .image-box{width:100%;max-width:700px;height:min(55vh,460px);background:#000;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#555;font-size:13px;border:1px solid #333;overflow:hidden;}
+  .image-box img{width:100%;height:100%;object-fit:contain;}
+
+  /* vocab card */
+  .vocab-wrap{display:flex;flex-direction:column;align-items:center;width:100%;max-width:640px;}
+  .vocab-word{font-size:36px;color:var(--y);font-weight:bold;margin-bottom:4px;}
+  .vocab-pos{font-size:13px;color:var(--gt);margin-bottom:16px;}
+  .vocab-svg{margin-bottom:16px;}
+  .vocab-example{background:var(--b);border-left:4px solid var(--y);padding:12px 16px;color:var(--gl);font-size:15px;text-align:left;border-radius:4px;width:100%;max-width:500px;}
+  .show-ex-btn{margin-top:14px;background:none;border:2px solid var(--y);color:var(--y);border-radius:6px;padding:8px 18px;font-size:13px;cursor:pointer;font-family:inherit;}
+
+  /* discussion */
+  .discuss-wrap{width:100%;max-width:640px;text-align:left;}
+  .discuss-intro{color:var(--gt);font-size:13px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.05em;}
+  .discuss-q{display:flex;gap:10px;margin-bottom:12px;}
+  .discuss-num{color:var(--y);font-weight:bold;min-width:20px;font-size:15px;}
+  .discuss-text{color:#eee;font-size:16px;line-height:1.6;}
+
+  /* places */
+  .places-wrap{width:100%;max-width:500px;text-align:left;}
+  .places-intro{color:var(--gt);font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;text-align:center;}
+  .place-item{background:var(--b);border-left:4px solid var(--y);padding:11px 16px;color:var(--y);font-size:17px;font-weight:bold;border-radius:4px;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+  .place-country{color:#555;font-size:12px;font-weight:normal;}
+
+  /* listening instruction */
+  .instruction-text{font-size:26px;color:var(--y);font-weight:bold;line-height:1.6;}
+
+  /* game */
+  .game-wrap{width:100%;max-width:800px;}
+  .scoreboard{display:flex;margin-bottom:14px;border-radius:8px;overflow:hidden;border:1px solid var(--gb);}
+  .score-col{flex:1;padding:12px;text-align:center;background:var(--b);}
+  .score-label{font-weight:bold;font-size:13px;margin-bottom:4px;}
+  .score-val{font-size:30px;font-weight:bold;}
+  .game-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+  .game-cell{background:var(--b);border:2px solid var(--gb);border-radius:8px;padding:14px 8px;text-align:center;cursor:pointer;font-size:18px;color:var(--y);font-weight:bold;min-height:64px;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+  .game-cell:hover:not(.claimed){background:#1a1a00;border-color:var(--y);}
+  .game-panel{display:none;background:var(--b);border-radius:8px;padding:18px;margin-bottom:12px;border:1px solid var(--gb);}
+  .game-task{color:var(--y);font-size:18px;font-weight:bold;line-height:1.6;margin-bottom:14px;text-align:center;min-height:60px;}
+  .game-answer{color:#4caf50;font-size:16px;font-weight:bold;text-align:center;padding-top:12px;border-top:1px solid var(--gb);display:none;}
+  .game-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+  .gbtn{border:none;border-radius:6px;padding:8px 16px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  .reset-btn{background:#222;color:var(--y);border:none;border-radius:6px;padding:9px 16px;font-size:13px;cursor:pointer;font-family:inherit;width:100%;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar"><a class="back-link" href="index.html">&#8592;</a></div>
+
+  <!-- OUTLINE -->
+  <div id="outlineScreen">
+    <div class="lesson-title">Lesson 4.2</div>
+    <div class="lesson-sub">Unit 4 &middot; Transport</div>
+    <div class="outline-list">
+      <div class="outline-item"><span class="num">1</span>Lead-in<span class="tag">2 steps</span></div>
+      <div class="outline-item"><span class="num">2</span>Vocabulary — transport words<span class="tag">6 words</span></div>
+      <div class="outline-item"><span class="num">3</span>Discussion — have got<span class="tag">4 questions</span></div>
+      <div class="outline-item"><span class="num">4</span>Before you listen<span class="tag">3 words + places</span></div>
+      <div class="outline-item"><span class="num">5</span>Listening<span class="tag">instruction</span></div>
+      <div class="outline-item"><span class="num">6</span>Grammar game<span class="tag">present simple negative</span></div>
+    </div>
+    <div class="btn-row"><button class="btn" id="startBtn">Start lesson &#8594;</button></div>
+  </div>
+
+  <!-- PRESENTATION -->
+  <div id="presentScreen">
+    <div class="present-wrap">
+      <div class="present-header" id="sectionLabel">Lesson 4.2</div>
+      <div class="present-body" id="stepBody"></div>
+      <div class="present-footer">
+        <button class="nav-btn" id="prevBtn">&#8592; prev</button>
+        <span class="step-counter" id="stepCounter"></span>
+        <button class="nav-btn primary" id="nextBtn">next &#8594;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── SVGs ── */
+const SVG = {
+  bus:`<svg viewBox="0 0 240 130" width="260" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="18" width="220" height="78" rx="14" fill="#FFD400"/>
+    <rect x="22" y="30" width="40" height="30" rx="4" fill="#111"/>
+    <rect x="72" y="30" width="40" height="30" rx="4" fill="#111"/>
+    <rect x="122" y="30" width="40" height="30" rx="4" fill="#111"/>
+    <rect x="172" y="30" width="46" height="30" rx="4" fill="#111"/>
+    <rect x="10" y="82" width="220" height="10" rx="2" fill="#E6BF00"/>
+    <circle cx="52" cy="110" r="16" fill="#333"/><circle cx="52" cy="110" r="8" fill="#888"/>
+    <circle cx="180" cy="110" r="16" fill="#333"/><circle cx="180" cy="110" r="8" fill="#888"/>
+    <rect x="10" y="90" width="220" height="14" fill="#FFD400"/>
+  </svg>`,
+  ferry:`<svg viewBox="0 0 240 140" width="260" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="55" width="200" height="48" rx="6" fill="#FFD400"/>
+    <rect x="60" y="22" width="120" height="36" rx="4" fill="#FFD400"/>
+    <rect x="75" y="28" width="28" height="22" rx="3" fill="#111"/>
+    <rect x="118" y="28" width="28" height="22" rx="3" fill="#111"/>
+    <polygon points="10,103 230,103 210,122 30,122" fill="#E6BF00"/>
+    <path d="M0,122 Q60,110 120,122 Q180,134 240,122" stroke="#4a9eda" stroke-width="9" fill="none"/>
+    <rect x="108" y="8" width="7" height="18" fill="#333"/>
+    <rect x="98" y="8" width="28" height="6" fill="#e24b4a"/>
+  </svg>`,
+  motorbike:`<svg viewBox="0 0 240 130" width="260" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="58" cy="98" r="28" fill="none" stroke="#FFD400" stroke-width="10"/>
+    <circle cx="182" cy="98" r="28" fill="none" stroke="#FFD400" stroke-width="10"/>
+    <circle cx="58" cy="98" r="7" fill="#FFD400"/>
+    <circle cx="182" cy="98" r="7" fill="#FFD400"/>
+    <path d="M58,98 L105,60 L155,55 L182,98" stroke="#FFD400" stroke-width="9" fill="none" stroke-linejoin="round"/>
+    <path d="M105,60 L112,40 L148,40 L155,55" stroke="#FFD400" stroke-width="7" fill="none"/>
+    <ellipse cx="135" cy="42" rx="20" ry="9" fill="#E6BF00"/>
+    <path d="M68,72 L100,62" stroke="#E6BF00" stroke-width="6" stroke-linecap="round"/>
+    <rect x="150" y="56" width="22" height="12" rx="3" fill="#333"/>
+  </svg>`,
+  train:`<svg viewBox="0 0 260 130" width="280" xmlns="http://www.w3.org/2000/svg">
+    <rect x="15" y="18" width="230" height="70" rx="12" fill="#FFD400"/>
+    <rect x="28" y="30" width="38" height="26" rx="4" fill="#111"/>
+    <rect x="78" y="30" width="38" height="26" rx="4" fill="#111"/>
+    <rect x="128" y="30" width="38" height="26" rx="4" fill="#111"/>
+    <rect x="178" y="30" width="50" height="26" rx="4" fill="#111"/>
+    <rect x="15" y="74" width="230" height="10" fill="#E6BF00"/>
+    <circle cx="52" cy="108" r="14" fill="#333"/><circle cx="52" cy="108" r="6" fill="#888"/>
+    <circle cx="128" cy="108" r="14" fill="#333"/><circle cx="128" cy="108" r="6" fill="#888"/>
+    <circle cx="204" cy="108" r="14" fill="#333"/><circle cx="204" cy="108" r="6" fill="#888"/>
+    <line x1="0" y1="118" x2="260" y2="118" stroke="#555" stroke-width="4"/>
+  </svg>`,
+  cycle:`<svg viewBox="0 0 220 130" width="240" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="55" cy="95" r="28" fill="none" stroke="#FFD400" stroke-width="9"/>
+    <circle cx="165" cy="95" r="28" fill="none" stroke="#FFD400" stroke-width="9"/>
+    <circle cx="55" cy="95" r="6" fill="#FFD400"/>
+    <circle cx="165" cy="95" r="6" fill="#FFD400"/>
+    <path d="M55,95 L100,58 L165,95" stroke="#FFD400" stroke-width="7" fill="none" stroke-linejoin="round"/>
+    <path d="M100,58 L105,38" stroke="#FFD400" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="105" cy="30" r="13" fill="none" stroke="#FFD400" stroke-width="5"/>
+    <line x1="92" y1="58" x2="118" y2="58" stroke="#E6BF00" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="105" cy="22" rx="9" ry="6" fill="#FFD400"/>
+  </svg>`,
+  walk:`<svg viewBox="0 0 200 150" width="220" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="105" cy="22" r="17" fill="#FFD400"/>
+    <line x1="105" y1="39" x2="105" y2="88" stroke="#FFD400" stroke-width="10" stroke-linecap="round"/>
+    <line x1="105" y1="58" x2="75" y2="80" stroke="#FFD400" stroke-width="8" stroke-linecap="round"/>
+    <line x1="105" y1="58" x2="135" y2="76" stroke="#FFD400" stroke-width="8" stroke-linecap="round"/>
+    <line x1="105" y1="88" x2="80" y2="120" stroke="#FFD400" stroke-width="9" stroke-linecap="round"/>
+    <line x1="105" y1="88" x2="128" y2="116" stroke="#FFD400" stroke-width="9" stroke-linecap="round"/>
+    <line x1="80" y1="120" x2="65" y2="138" stroke="#FFD400" stroke-width="8" stroke-linecap="round"/>
+    <line x1="128" y1="116" x2="145" y2="132" stroke="#FFD400" stroke-width="8" stroke-linecap="round"/>
+  </svg>`,
+  cheap:`<svg viewBox="0 0 200 130" width="220" xmlns="http://www.w3.org/2000/svg">
+    <rect x="45" y="18" width="120" height="70" rx="10" fill="#FFD400"/>
+    <circle cx="72" cy="36" r="9" fill="#111"/>
+    <text x="105" y="72" text-anchor="middle" font-size="34" font-weight="bold" fill="#111" font-family="Arial">$1</text>
+    <circle cx="100" cy="112" r="14" fill="none" stroke="#FFD400" stroke-width="3.5"/>
+    <path d="M92,116 Q100,124 108,116" stroke="#FFD400" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="96" cy="109" r="2" fill="#FFD400"/>
+    <circle cx="104" cy="109" r="2" fill="#FFD400"/>
+  </svg>`,
+  kilometre:`<svg viewBox="0 0 240 120" width="260" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="65" width="240" height="20" fill="#444"/>
+    <line x1="0" y1="75" x2="240" y2="75" stroke="#FFD400" stroke-width="2.5" stroke-dasharray="14,9"/>
+    <rect x="8" y="32" width="36" height="34" fill="#FFD400"/>
+    <polygon points="8,32 26,12 44,32" fill="#E6BF00"/>
+    <rect x="18" y="46" width="12" height="20" fill="#111"/>
+    <rect x="194" y="28" width="42" height="38" fill="#FFD400"/>
+    <polygon points="194,28 215,8 236,28" fill="#E6BF00"/>
+    <rect x="209" y="42" width="12" height="24" fill="#111"/>
+    <line x1="46" y1="46" x2="192" y2="46" stroke="#FFD400" stroke-width="2.5" stroke-dasharray="7,5"/>
+    <polygon points="192,41 202,46 192,51" fill="#FFD400"/>
+    <polygon points="46,41 36,46 46,51" fill="#FFD400"/>
+    <text x="119" y="41" text-anchor="middle" font-size="13" fill="#FFD400" font-family="Arial" font-weight="bold">2 km</text>
+  </svg>`,
+  toomany:`<svg viewBox="0 0 220 120" width="240" xmlns="http://www.w3.org/2000/svg">
+    <rect x="8" y="14" width="200" height="70" rx="12" fill="#333" stroke="#FFD400" stroke-width="2"/>
+    <circle cx="35" cy="40" r="9" fill="#FFD400"/>
+    <circle cx="58" cy="40" r="9" fill="#FFD400"/>
+    <circle cx="81" cy="40" r="9" fill="#FFD400"/>
+    <circle cx="104" cy="40" r="9" fill="#FFD400"/>
+    <circle cx="127" cy="40" r="9" fill="#FFD400"/>
+    <circle cx="150" cy="40" r="9" fill="#FFD400"/>
+    <circle cx="173" cy="40" r="9" fill="#FFD400"/>
+    <circle cx="46" cy="62" r="9" fill="#E6BF00"/>
+    <circle cx="69" cy="62" r="9" fill="#E6BF00"/>
+    <circle cx="92" cy="62" r="9" fill="#E6BF00"/>
+    <circle cx="115" cy="62" r="9" fill="#E6BF00"/>
+    <circle cx="138" cy="62" r="9" fill="#E6BF00"/>
+    <circle cx="161" cy="62" r="9" fill="#E6BF00"/>
+    <circle cx="42" cy="96" r="11" fill="#555" stroke="#FFD400" stroke-width="2"/>
+    <circle cx="176" cy="96" r="11" fill="#555" stroke="#FFD400" stroke-width="2"/>
+    <text x="205" y="30" font-size="26" fill="#e24b4a" font-family="Arial" font-weight="bold">!</text>
+  </svg>`
+};
+
+/* ── VOCAB DATA ── */
+const transportVocab = [
+  { w:'bus',       pos:'noun',  svg:'bus',       ex:'"I go to school by bus every day."' },
+  { w:'ferry',     pos:'noun',  svg:'ferry',     ex:'"We take the ferry to cross the river."' },
+  { w:'motorbike', pos:'noun',  svg:'motorbike', ex:'"My uncle rides a motorbike to work."' },
+  { w:'train',     pos:'noun',  svg:'train',     ex:'"The train from London is very fast."' },
+  { w:'cycle',     pos:'verb',  svg:'cycle',     ex:'"She cycles to school every morning."' },
+  { w:'walk',      pos:'verb',  svg:'walk',      ex:'"I walk to the park on Sundays."' },
+];
+
+const listenVocab = [
+  { w:'cheap',         pos:'adjective', svg:'cheap',     ex:'"This bus ticket is very cheap — only 50 cents!"' },
+  { w:'kilometre',     pos:'noun',      svg:'kilometre', ex:'"My school is two kilometres from my house."' },
+  { w:'too many',      pos:'phrase',    svg:'toomany',   ex:'"I don\'t like this bus. There are too many people!"' },
+];
+
+/* ── GAME SENTENCES ── */
+const gameSentences = [
+  { pos:'Christina drives to work.',          ans:"Christina doesn't drive to work.",       words:["Christina","doesn't","drive","to","work","."] },
+  { pos:'Pedro walks to work.',               ans:"Pedro doesn't walk to work.",             words:["Pedro","doesn't","walk","to","work","."] },
+  { pos:'Tai goes to university by bus.',     ans:"Tai doesn't go to university by bus.",   words:["Tai","doesn't","go","to","university","by","bus","."] },
+  { pos:'Candice drives to work.',            ans:"Candice doesn't drive to work.",          words:["Candice","doesn't","drive","to","work","."] },
+  { pos:'James walks to Pretoria.',           ans:"James doesn't walk to Pretoria.",         words:["James","doesn't","walk","to","Pretoria","."] },
+  { pos:'I cycle to school.',                 ans:"I don't cycle to school.",                words:["I","don't","cycle","to","school","."] },
+  { pos:'She goes by ferry.',                 ans:"She doesn't go by ferry.",                words:["She","doesn't","go","by","ferry","."] },
+  { pos:'He takes the train.',               ans:"He doesn't take the train.",              words:["He","doesn't","take","the","train","."] },
+  { pos:'They ride a motorbike.',             ans:"They don't ride a motorbike.",            words:["They","don't","ride","a","motorbike","."] },
+  { pos:'We go to school by bus.',            ans:"We don't go to school by bus.",           words:["We","don't","go","to","school","by","bus","."] },
+  { pos:'She walks to the ferry.',            ans:"She doesn't walk to the ferry.",          words:["She","doesn't","walk","to","the","ferry","."] },
+  { pos:'He cycles fifteen kilometres.',      ans:"He doesn't cycle fifteen kilometres.",    words:["He","doesn't","cycle","fifteen","kilometres","."] },
+];
+
+/* ── STEPS ── */
+function makeSteps(){
+  const s = [];
+  s.push({ section:'Lead-in',                type:'qmark'       });
+  s.push({ section:'Lead-in',                type:'leadin-img'  });
+  transportVocab.forEach((v,i)=> s.push({ section:'Vocabulary', type:'vocab-transport', idx:i }));
+  s.push({ section:'Discussion — have got',  type:'discussion'  });
+  listenVocab.forEach((v,i)=> s.push({ section:'Before you listen', type:'vocab-listen', idx:i }));
+  s.push({ section:'Before you listen',      type:'places'      });
+  s.push({ section:'Listening',              type:'instruction' });
+  s.push({ section:'Grammar game',           type:'game'        });
+  return s;
+}
+const steps = makeSteps();
+let current = 0;
+
+/* ── HELPERS ── */
+function shuffle(a){ const r=[...a]; for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];} return r; }
+
+function vocabCard(v, showExBtn){
+  const w = document.createElement('div');
+  w.className = 'vocab-wrap';
+  const exId = 'ex_' + Math.random().toString(36).slice(2);
+  const btnId = 'btn_' + Math.random().toString(36).slice(2);
+  w.innerHTML = `
+    <div class="vocab-word">${v.w}</div>
+    <div class="vocab-pos">${v.pos}</div>
+    <div class="vocab-svg">${SVG[v.svg]}</div>
+    <div class="vocab-example" id="${exId}" style="display:none;">${v.ex}</div>
+    <button class="show-ex-btn" id="${btnId}">Show example ▾</button>
+  `;
+  w.querySelector(`#${btnId}`).onclick = function(){
+    document.getElementById(exId).style.display='block';
+    this.style.display='none';
+  };
+  return w;
+}
+
+/* ── GAME STATE ── */
+let gClaimed=[], gScores={A:0,B:0}, gActive=null, gShuffled=[];
+function buildGame(){
+  gClaimed=Array(12).fill(null); gScores={A:0,B:0}; gActive=null;
+  gShuffled=shuffle([...Array(12).keys()]);
+  const wrap = document.createElement('div');
+  wrap.className='game-wrap';
+  wrap.innerHTML=`
+    <div class="scoreboard">
+      <div class="score-col"><div class="score-label" style="color:var(--y);">⭕ Team A</div><div class="score-val" id="gScoreA" style="color:var(--y);">0</div></div>
+      <div style="width:1px;background:var(--gb);"></div>
+      <div class="score-col"><div class="score-label" style="color:#fff;">✖ Team B</div><div class="score-val" id="gScoreB" style="color:#fff;">0</div></div>
+    </div>
+    <div class="game-grid" id="gGrid"></div>
+    <div class="game-panel" id="gPanel">
+      <div class="game-task" id="gTask"></div>
+      <div class="game-answer" id="gAnswer"></div>
+      <div class="game-btns">
+        <button class="gbtn" style="background:#333;color:var(--y);" onclick="gReveal()">Reveal ✓</button>
+        <button class="gbtn" style="background:var(--y);color:#111;" onclick="gPoint('A')">⭕ A +1</button>
+        <button class="gbtn" style="background:#333;color:#fff;" onclick="gPoint('B')">✖ B +1</button>
+      </div>
+    </div>
+    <button class="reset-btn" onclick="gReset()">↺ Reset game</button>
+  `;
+  const grid = wrap.querySelector('#gGrid');
+  for(let i=0;i<12;i++){
+    const c=document.createElement('div');
+    c.className='game-cell'; c.id='gc'+i; c.textContent=i+1;
+    c.onclick=()=>gSelect(i);
+    grid.appendChild(c);
+  }
+  return wrap;
+}
+window.gSelect=function(ci){
+  if(gClaimed[ci]!==null) return;
+  const qi=gShuffled[ci];
+  const q=gameSentences[qi];
+  const showJumbled=Math.random()>.5;
+  gActive={ci,qi};
+  document.getElementById('gPanel').style.display='block';
+  document.getElementById('gAnswer').style.display='none';
+  document.getElementById('gAnswer').textContent='';
+  const task=document.getElementById('gTask');
+  if(showJumbled){
+    task.innerHTML=shuffle(q.words).map(w=>`<span style="display:inline-block;background:#222;border:1px solid #444;color:#eee;border-radius:4px;padding:5px 10px;font-size:15px;margin:3px;">${w}</span>`).join('');
+  } else {
+    task.textContent=q.pos;
+  }
+  document.getElementById('gc'+ci).style.borderColor='var(--y)';
+  document.getElementById('gc'+ci).style.background='#1a1a00';
+};
+window.gReveal=function(){
+  if(!gActive) return;
+  const ans=document.getElementById('gAnswer');
+  ans.textContent=gameSentences[gActive.qi].ans;
+  ans.style.display='block';
+};
+window.gPoint=function(team){
+  if(!gActive) return;
+  gScores[team]++;
+  document.getElementById('gScore'+team).textContent=gScores[team];
+  const sym=team==='A'?'⭕':'✖';
+  const col=team==='A'?'#FFD400':'#fff';
+  const c=document.getElementById('gc'+gActive.ci);
+  c.textContent=sym; c.style.fontSize='26px'; c.style.color=col;
+  c.style.borderColor=col; c.style.background='#111'; c.style.cursor='default';
+  c.classList.add('claimed'); c.onclick=null;
+  gClaimed[gActive.ci]=team; gActive=null;
+  document.getElementById('gPanel').style.display='none';
+};
+window.gReset=function(){
+  const body=document.getElementById('stepBody');
+  body.innerHTML=''; body.appendChild(buildGame());
+};
+
+/* ── RENDER ── */
+function renderStep(){
+  const s=steps[current];
+  const body=document.getElementById('stepBody');
+  body.innerHTML='';
+  document.getElementById('sectionLabel').textContent='Lesson 4.2 \u00b7 '+s.section;
+
+  let el;
+  if(s.type==='qmark'){
+    el=document.createElement('div'); el.className='big-qmark'; el.textContent='?';
+  }
+  else if(s.type==='leadin-img'){
+    el=document.createElement('div'); el.className='image-box';
+    const img=document.createElement('img');
+    img.src='image_2026-07-02_12-54-26.png'; img.alt='transport';
+    img.onerror=()=>{ el.textContent='[ transport picture ]'; };
+    el.appendChild(img);
+  }
+  else if(s.type==='vocab-transport'){
+    el=vocabCard(transportVocab[s.idx]);
+  }
+  else if(s.type==='discussion'){
+    el=document.createElement('div'); el.className='discuss-wrap';
+    el.innerHTML=`
+      <div class="discuss-intro">Talk to your partner &mdash; use have got</div>
+      <div class="discuss-q"><span class="discuss-num">1</span><span class="discuss-text">Have you got a car at home?</span></div>
+      <div class="discuss-q"><span class="discuss-num">2</span><span class="discuss-text">Have you got a bicycle?</span></div>
+      <div class="discuss-q"><span class="discuss-num">3</span><span class="discuss-text">Has your family got a motorbike?</span></div>
+      <div class="discuss-q"><span class="discuss-num">4</span><span class="discuss-text">Have you got a bus stop near your home?</span></div>
+    `;
+  }
+  else if(s.type==='vocab-listen'){
+    el=vocabCard(listenVocab[s.idx]);
+  }
+  else if(s.type==='places'){
+    el=document.createElement('div'); el.className='places-wrap';
+    el.innerHTML=`
+      <div class="places-intro">You will hear these places</div>
+      <div class="place-item">🇩🇰 Copenhagen <span class="place-country">Denmark</span></div>
+      <div class="place-item">🇧🇷 São Paulo <span class="place-country">Brazil</span></div>
+      <div class="place-item">🇻🇳 Hanoi <span class="place-country">Vietnam</span></div>
+      <div class="place-item">🇿🇦 Johannesburg <span class="place-country">South Africa</span></div>
+      <div class="place-item">🇿🇦 Pretoria <span class="place-country">South Africa</span></div>
+    `;
+  }
+  else if(s.type==='instruction'){
+    el=document.createElement('div'); el.className='instruction-text';
+    el.innerHTML='Listen and complete<br>the exercises in your book.';
+  }
+  else if(s.type==='game'){
+    el=buildGame();
+  }
+
+  body.appendChild(el);
+  document.getElementById('stepCounter').textContent=(current+1)+' / '+steps.length;
+  document.getElementById('prevBtn').disabled=current===0;
+  document.getElementById('nextBtn').textContent=current===steps.length-1?'Done':'next \u2192';
+}
+
+document.getElementById('startBtn').onclick=()=>{
+  document.getElementById('outlineScreen').style.display='none';
+  document.getElementById('presentScreen').style.display='flex';
+  current=0; renderStep();
+};
+document.getElementById('nextBtn').onclick=()=>{ if(current<steps.length-1){current++;renderStep();} };
+document.getElementById('prevBtn').onclick=()=>{ if(current>0){current--;renderStep();} };
+</script>
+</body>
+</html>

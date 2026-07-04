@@ -29,8 +29,22 @@
   /* present */
   #presentScreen{flex:1;display:none;flex-direction:column;}
   .present-wrap{flex:1;display:flex;flex-direction:column;background:var(--bs);border-radius:10px;overflow:hidden;}
-  .present-header{background:var(--y);color:var(--b);padding:12px 24px;font-weight:bold;font-size:15px;display:flex;justify-content:space-between;align-items:center;}
-  .print-btn{background:var(--b);color:var(--y);border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;display:none;}
+
+  /* header with timer */
+  .present-header{background:var(--y);color:var(--b);padding:10px 20px;font-weight:bold;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .header-left{display:flex;align-items:center;gap:10px;}
+  .print-btn{background:var(--b);color:var(--y);border:none;border-radius:6px;padding:4px 12px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;display:none;}
+
+  /* timer widget */
+  .timer-widget{display:flex;align-items:center;gap:6px;background:var(--b);border-radius:8px;padding:5px 10px;}
+  .timer-adj{background:none;border:none;color:var(--y);font-size:16px;font-weight:bold;cursor:pointer;width:22px;line-height:1;font-family:inherit;}
+  .timer-adj:hover{color:#fff;}
+  .timer-display{font-family:'Courier New',monospace;font-size:16px;color:var(--y);min-width:56px;text-align:center;}
+  .timer-display.warning{color:#e24b4a;}
+  .timer-toggle{background:none;border:1px solid var(--y);color:var(--y);border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:4px;}
+  .timer-toggle:hover{background:rgba(255,212,0,.15);}
+  .timer-rec{color:var(--gt);font-size:11px;white-space:nowrap;}
+
   .present-body{flex:1;padding:32px 40px;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow-y:auto;}
   .present-footer{background:var(--b);border-top:1px solid var(--gb);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;}
   .nav-btn{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:var(--gt);}
@@ -42,8 +56,8 @@
   .img-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:800px;}
   .img-box{background:#000;border-radius:8px;overflow:hidden;border:1px solid #333;display:flex;align-items:center;justify-content:center;color:#555;font-size:13px;}
   .img-box img{width:100%;height:100%;object-fit:cover;display:block;}
-  .img-box.large{height:min(48vh,400px);}
-  .img-box.small{height:min(28vh,220px);}
+  .img-box.large{height:min(46vh,380px);}
+  .img-box.small{height:min(24vh,190px);}
   .discuss-wrap{width:100%;max-width:800px;margin-top:18px;}
   .discuss-q{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;}
   .discuss-num{color:var(--y);font-weight:bold;min-width:22px;font-size:16px;}
@@ -54,16 +68,12 @@
   .tab-bar{display:flex;border-bottom:1px solid var(--gb);}
   .tab{flex:1;padding:10px 6px;text-align:center;font-size:13px;font-weight:bold;cursor:pointer;color:var(--gt);background:var(--b);border-bottom:2px solid transparent;}
   .tab.active{color:var(--y);border-bottom:2px solid var(--y);background:var(--bs);}
-  .tab-pane{display:none;padding:18px 4px;max-height:58vh;overflow-y:auto;}
+  .tab-pane{display:none;padding:18px 4px;max-height:56vh;overflow-y:auto;}
   .tab-pane.active{display:block;}
-
-  /* article */
   .article-title{color:var(--y);font-size:18px;font-weight:bold;margin-bottom:14px;}
   .article-text{color:#eee;font-size:14px;line-height:1.95;}
   .article-text p{margin-bottom:12px;}
   .hl{background:var(--y);color:var(--b);padding:1px 4px;border-radius:2px;font-weight:bold;}
-
-  /* exercises */
   .ex-instruction{color:var(--gt);font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;}
   .ex-list{display:flex;flex-direction:column;gap:12px;}
   .ex-item{display:flex;gap:10px;align-items:flex-start;}
@@ -73,20 +83,24 @@
   .answer-line{border-bottom:1px solid #555;min-width:110px;display:inline-block;margin-left:8px;}
   .word-pair{color:var(--y);font-size:15px;font-weight:bold;}
 
-  /* print */
+  /* PRINT */
   @media print{
-    body{background:#fff!important;color:#000!important;}
-    .page,#presentScreen,.present-wrap{display:block!important;background:none!important;}
-    #outlineScreen,.present-header,.present-footer,.topbar,.tab-bar,.print-btn{display:none!important;}
-    .tab-pane{display:block!important;max-height:none!important;overflow:visible!important;page-break-inside:avoid;}
-    .reading-wrap{max-width:100%!important;}
+    .topbar,#outlineScreen,.present-header,.present-footer,
+    .tab-bar,.print-btn{display:none!important;}
+    body,.page,#presentScreen,.present-wrap,
+    .present-body,.reading-wrap{
+      display:block!important;background:#fff!important;color:#000!important;
+      padding:0!important;margin:0!important;max-width:100%!important;
+      width:100%!important;border:none!important;border-radius:0!important;overflow:visible!important;
+    }
+    .tab-pane{display:block!important;max-height:none!important;overflow:visible!important;padding:0 0 20px!important;page-break-inside:avoid;}
+    .tab-pane+.tab-pane{border-top:1px solid #ccc;padding-top:20px!important;margin-top:4px;}
     .article-title,.ex-num,.discuss-num,.word-pair{color:#000!important;}
-    .article-text,.ex-text,.discuss-text{color:#000!important;}
+    .article-text,.ex-text,.discuss-text,.ex-instruction{color:#000!important;}
+    .ex-text em{color:#000!important;font-style:italic;font-weight:bold;}
     .hl{background:#ffff00!important;color:#000!important;}
-    .ex-text em{color:#000!important;font-style:italic;}
-    *{border-color:#000!important;}
+    .answer-line{border-bottom:1px solid #000!important;}
     .img-box{border:1px solid #ccc!important;}
-    .tab-pane+.tab-pane{margin-top:24px;border-top:1px solid #ccc;padding-top:16px;}
   }
 </style>
 </head>
@@ -99,8 +113,8 @@
     <div class="lesson-title">Lesson 6.1</div>
     <div class="lesson-sub">Unit 6 &middot; A home away from home</div>
     <div class="outline-list">
-      <div class="outline-item"><span class="num">1</span>Lead-in<span class="tag">2 steps</span></div>
-      <div class="outline-item"><span class="num">2</span>Article &amp; exercises<span class="tag">article · ex 1 · ex 2 · ex 3</span></div>
+      <div class="outline-item"><span class="num">1</span>Lead-in<span class="tag">5 min</span></div>
+      <div class="outline-item"><span class="num">2</span>Article &amp; exercises<span class="tag">20 min</span></div>
     </div>
     <div class="btn-row"><button class="btn" id="startBtn">Start lesson &#8594;</button></div>
   </div>
@@ -109,8 +123,19 @@
   <div id="presentScreen">
     <div class="present-wrap">
       <div class="present-header">
-        <span id="sectionLabel">Lesson 6.1</span>
-        <button class="print-btn" id="printBtn" onclick="window.print()">&#128438; Print / Download</button>
+        <div class="header-left">
+          <span id="sectionLabel">Lesson 6.1</span>
+          <button class="print-btn" id="printBtn" onclick="window.print()">&#128438; Print</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="timer-rec" id="recLabel"></span>
+          <div class="timer-widget">
+            <button class="timer-adj" id="tMinus">&#8722;</button>
+            <span class="timer-display" id="tDisplay">05:00</span>
+            <button class="timer-adj" id="tPlus">+</button>
+            <button class="timer-toggle" id="tToggle">&#9654;</button>
+          </div>
+        </div>
       </div>
       <div class="present-body" id="stepBody"></div>
       <div class="present-footer">
@@ -126,34 +151,53 @@
 const IMG1 = 'image_2026-07-03_13-13-50.png';
 const IMG2 = 'image_2026-07-03_13-14-09.png';
 
-function imgBox(src, cls){
-  const d = document.createElement('div');
-  d.className = 'img-box ' + cls;
-  if(src){
-    const i = document.createElement('img');
-    i.src = src; i.alt = '';
-    i.onerror = () => { d.textContent = '[ ' + src + ' ]'; };
-    d.appendChild(i);
-  }
-  return d;
+/* ── TIMER ── */
+const REC = [5, 20]; // recommended minutes per step
+let timerSecs = 300, timerRunning = false, timerInterval = null;
+
+function setTimer(mins){
+  timerSecs = mins * 60;
+  timerRunning = false;
+  clearInterval(timerInterval);
+  document.getElementById('tToggle').textContent = '▶';
+  renderTimer();
 }
+function renderTimer(){
+  const m = Math.floor(Math.abs(timerSecs) / 60);
+  const s = Math.abs(timerSecs) % 60;
+  const neg = timerSecs < 0 ? '-' : '';
+  const d = document.getElementById('tDisplay');
+  d.textContent = neg + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  d.className = 'timer-display' + (timerSecs <= 30 && timerSecs >= -999 ? ' warning' : '');
+}
+document.getElementById('tToggle').onclick = function(){
+  if(timerRunning){ clearInterval(timerInterval); timerRunning=false; this.textContent='▶'; }
+  else { timerRunning=true; this.textContent='⏸'; timerInterval=setInterval(()=>{ timerSecs--; renderTimer(); },1000); }
+};
+document.getElementById('tMinus').onclick = ()=>{ timerSecs = Math.max(0, timerSecs-60); renderTimer(); };
+document.getElementById('tPlus').onclick  = ()=>{ timerSecs += 60; renderTimer(); };
 
 /* ── STEPS ── */
 const steps = [
-  { section:'Lead-in', type:'leadin-pics'  },
-  { section:'Lead-in', type:'leadin-discuss'},
-  { section:'Article & exercises', type:'reading' }
+  { section:'Lead-in',            type:'leadin-pics',    rec:5  },
+  { section:'Lead-in',            type:'leadin-discuss', rec:5  },
+  { section:'Article & exercises',type:'reading',        rec:20 },
 ];
-
 let current = 0;
 
+function imgBox(src, cls){
+  const d = document.createElement('div');
+  d.className = 'img-box ' + cls;
+  const i = document.createElement('img');
+  i.src = src; i.alt = '';
+  i.onerror = ()=>{ d.textContent = '[ '+src+' ]'; };
+  d.appendChild(i);
+  return d;
+}
+
 function switchTab(n){
-  document.querySelectorAll('.tab').forEach((t,i)=>{
-    t.classList.toggle('active', i===n-1);
-  });
-  document.querySelectorAll('.tab-pane').forEach((p,i)=>{
-    p.classList.toggle('active', i===n-1);
-  });
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.tab-pane').forEach((p,i)=>p.classList.toggle('active',i===n-1));
 }
 
 function renderReading(){
@@ -167,7 +211,6 @@ function renderReading(){
       <div class="tab" onclick="switchTab(4)">Exercise 3</div>
     </div>
 
-    <!-- ARTICLE -->
     <div class="tab-pane active">
       <div class="article-title">A home away from home</div>
       <div class="article-text">
@@ -177,7 +220,6 @@ function renderReading(){
       </div>
     </div>
 
-    <!-- EXERCISE 1 -->
     <div class="tab-pane">
       <div class="ex-instruction">Match the definitions with the highlighted words in the article</div>
       <div class="ex-list">
@@ -188,7 +230,6 @@ function renderReading(){
       </div>
     </div>
 
-    <!-- EXERCISE 2 -->
     <div class="tab-pane">
       <div class="ex-instruction">Work with a partner. Explain the difference between each pair or group of words highlighted in the article</div>
       <div class="ex-list">
@@ -199,7 +240,6 @@ function renderReading(){
       </div>
     </div>
 
-    <!-- EXERCISE 3 -->
     <div class="tab-pane">
       <div class="ex-instruction">Choose the correct option to complete the questions, then answer them</div>
       <div class="ex-list">
@@ -220,11 +260,16 @@ function renderStep(){
   const body = document.getElementById('stepBody');
   body.innerHTML = '';
   body.style.textAlign = 'center';
-  document.getElementById('sectionLabel').textContent = 'Lesson 6.1 \u00b7 ' + s.section;
+  document.getElementById('sectionLabel').textContent = s.section;
   document.getElementById('printBtn').style.display = s.type === 'reading' ? 'inline-block' : 'none';
+  document.getElementById('recLabel').textContent = 'rec: ' + s.rec + ' min';
+
+  // reset timer to recommended time
+  clearInterval(timerInterval); timerRunning = false;
+  document.getElementById('tToggle').textContent = '▶';
+  setTimer(s.rec);
 
   let el;
-
   if(s.type === 'leadin-pics'){
     const wrap = document.createElement('div');
     wrap.style.cssText = 'width:100%;max-width:800px;';

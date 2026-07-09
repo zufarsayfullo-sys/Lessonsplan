@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 6.3</title>
+<style>
+  :root{--blue:#1D4ED8;--blue-light:#BFDBFE;--blue-bg:#F0F4FF;--blue-mid:#3B82F6;--blue-pale:#EFF6FF;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif;background:#E8EDF8;color:#111;min-height:100vh;display:flex;flex-direction:column;}
+  a{text-decoration:none;color:inherit;}
+  .page{flex:1;display:flex;flex-direction:column;padding:16px 28px 20px;max-width:1100px;width:100%;margin:0 auto;}
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .back-link{color:var(--blue);font-size:20px;font-weight:bold;}
+  #outlineScreen{flex:1;display:flex;flex-direction:column;}
+  .lesson-title{color:var(--blue);font-size:26px;font-weight:bold;margin-bottom:4px;}
+  .lesson-sub{color:#666;font-size:14px;margin-bottom:20px;}
+  .outline-list{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;}
+  .outline-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:8px;padding:12px 16px;font-size:15px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+  .num{background:var(--blue);color:#fff;border-radius:50%;width:26px;height:26px;min-width:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;}
+  .tag{margin-left:auto;color:#93C5FD;font-size:12px;}
+  .btn-row{display:flex;justify-content:flex-end;}
+  .startbtn{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:12px 28px;font-weight:bold;font-size:15px;cursor:pointer;font-family:inherit;}
+  .startbtn:hover{background:#1E40AF;}
+  #presentScreen{flex:1;display:none;flex-direction:column;}
+  .present-wrap{flex:1;display:flex;flex-direction:column;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.1);}
+  .present-header{background:var(--blue);color:#fff;padding:10px 18px;font-weight:bold;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+  .hbtn{background:#fff;color:var(--blue);border:none;border-radius:6px;padding:4px 11px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  .hbtn:hover{background:var(--blue-light);}
+  .print-hbtn{display:none;}
+  .timer-w{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:8px;padding:4px 9px;}
+  .tadj{background:none;border:none;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;width:20px;font-family:inherit;}
+  .tdisp{font-family:'Courier New',monospace;font-size:15px;color:#fff;min-width:52px;text-align:center;}
+  .tdisp.warn{color:#FCA5A5;}
+  .ttog{background:none;border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:4px;padding:2px 7px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:3px;}
+  .trec{color:rgba(255,255,255,.6);font-size:11px;}
+  .present-body{flex:1;padding:24px 36px;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow-y:auto;background:var(--blue-bg);}
+  .present-footer{background:#fff;border-top:2px solid var(--blue-light);padding:12px 22px;display:flex;justify-content:space-between;align-items:center;}
+  .nav-btn{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:#93C5FD;}
+  .nav-btn:disabled{opacity:.25;cursor:not-allowed;}
+  .nav-btn.primary{background:var(--blue);color:#fff;border-radius:6px;padding:9px 20px;}
+  .step-ctr{color:#BFDBFE;font-size:13px;}
+  /* lead-in */
+  .lead-wrap{width:100%;max-width:820px;text-align:center;}
+  .discuss-list{text-align:left;margin-top:20px;display:flex;flex-direction:column;gap:12px;}
+  .dq{display:flex;gap:10px;align-items:flex-start;}
+  .dq-num{background:var(--blue);color:#fff;border-radius:50%;width:22px;height:22px;min-width:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;}
+  .dq-text{color:#333;font-size:15px;line-height:1.6;}
+  /* flip board */
+  .board-wrap{width:100%;max-width:900px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);}
+  .board-head{background:var(--blue);padding:10px 18px;display:flex;justify-content:space-between;align-items:center;}
+  .board-head span{color:#fff;font-weight:bold;font-size:13px;}
+  .board-head .bcnt{color:rgba(255,255,255,.7);font-size:12px;}
+  .board-grid{padding:14px;display:grid;gap:10px;}
+  .flip-card{background:var(--blue-pale);border:2px solid var(--blue-light);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;}
+  .flip-card.open{background:#fff;border-color:var(--blue);}
+  .flip-card .qm{font-size:22px;color:var(--blue-light);}
+  .flip-card .cword{font-size:10px;font-weight:bold;color:var(--blue);margin-top:3px;line-height:1.2;}
+  .flip-card .ctrans{font-size:9px;color:#888;margin-top:2px;}
+  .board-foot{padding:8px 14px;display:flex;justify-content:flex-end;border-top:1px solid var(--blue-light);}
+  .rst-btn{background:none;border:1.5px solid var(--blue-light);color:var(--blue);border-radius:6px;padding:4px 14px;font-size:12px;cursor:pointer;font-family:inherit;}
+  /* overlay/popup */
+  #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:200;}
+  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:3px solid var(--blue);border-radius:14px;padding:22px 28px;text-align:center;min-width:260px;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
+  .pop-q{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
+  .pop-word{font-size:22px;font-weight:bold;color:var(--blue);margin-top:10px;display:none;}
+  .pop-trans{font-size:12px;color:#888;margin-top:4px;display:none;line-height:1.5;}
+  .pop-ex{background:var(--blue-bg);border-left:3px solid var(--blue);padding:8px 12px;margin-top:10px;font-size:13px;color:#333;text-align:left;border-radius:4px;display:none;font-style:italic;}
+  .pop-reveal{margin-top:12px;background:var(--blue);border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;}
+  .pop-hint{color:#ccc;font-size:11px;margin-top:10px;}
+  /* tabs */
+  .tab-wrap{width:100%;max-width:900px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);}
+  .tab-bar{display:flex;border-bottom:2px solid var(--blue-light);}
+  .tab{flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:bold;cursor:pointer;color:#93C5FD;background:#fff;border-bottom:3px solid transparent;}
+  .tab.active{color:#fff;background:var(--blue);border-bottom:3px solid var(--blue);}
+  .tab-pane{display:none;padding:18px;max-height:54vh;overflow-y:auto;}
+  .tab-pane.active{display:block;}
+  /* reading */
+  .text-block{border:1.5px solid var(--blue-light);border-radius:8px;padding:14px 16px;background:var(--blue-pale);margin-bottom:12px;}
+  .text-block-head{display:flex;gap:10px;align-items:center;margin-bottom:8px;}
+  .text-num{background:var(--blue);color:#fff;font-weight:bold;font-size:12px;border-radius:50%;width:22px;height:22px;min-width:22px;display:flex;align-items:center;justify-content:center;}
+  .text-title{font-weight:bold;color:var(--blue);font-size:14px;}
+  .text-body{color:#333;font-size:14px;line-height:1.8;}
+  .ex-instr{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
+  .ex-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;}
+  .ex-n{background:var(--blue);color:#fff;font-weight:bold;font-size:11px;border-radius:50%;width:20px;height:20px;min-width:20px;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .ex-t{color:#333;font-size:14px;line-height:1.6;flex:1;}
+  .blank{display:inline-block;border-bottom:1.5px solid var(--blue-light);min-width:100px;margin:0 3px;}
+  .mc-opts{display:flex;flex-direction:column;gap:5px;padding-left:30px;margin-top:6px;}
+  .mc-opt{background:var(--blue-pale);border:1.5px solid var(--blue-light);color:#333;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit;text-align:left;transition:all .15s;}
+  .mc-opt:hover{border-color:var(--blue);color:var(--blue);}
+  .mc-opt.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;}
+  .mc-opt.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+  /* vocab focus */
+  .vcf-wrap{width:100%;max-width:900px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);text-align:center;}
+  .vcf-body{padding:24px;display:flex;flex-direction:column;align-items:center;}
+  .vcf-verb{font-size:42px;font-weight:bold;color:var(--blue);margin-bottom:6px;}
+  .vcf-q{color:#93C5FD;font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
+  .vcf-reveal-wrap{display:none;width:100%;max-width:500px;text-align:left;}
+  .vcf-collocs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .vcf-chip{background:var(--blue-pale);border:1.5px solid var(--blue-light);color:var(--blue);border-radius:20px;padding:5px 12px;font-size:13px;font-weight:bold;}
+  .vcf-ex{background:var(--blue-bg);border-left:3px solid var(--blue);padding:10px 14px;font-size:14px;color:#333;font-style:italic;border-radius:4px;margin-bottom:10px;}
+  .vcf-trans{font-size:12px;color:#888;line-height:1.6;}
+  .vcf-disc{width:100%;max-width:900px;text-align:left;background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.08);}
+  .vcf-disc-title{color:var(--blue);font-weight:bold;font-size:14px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.05em;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar"><a class="back-link" href="index.html">&#8592;</a></div>
+  <div id="outlineScreen">
+    <div class="lesson-title">Lesson 6.3</div>
+    <div class="lesson-sub">Unit 6 &middot; Online communities</div>
+    <div class="outline-list">
+      <div class="outline-item"><span class="num">1</span>Lead-in<span class="tag">5 min</span></div>
+      <div class="outline-item"><span class="num">2</span>Reading — pre-teach vocabulary<span class="tag">9 words</span></div>
+      <div class="outline-item"><span class="num">3</span>Reading<span class="tag">text · T/F/NG · discussion</span></div>
+      <div class="outline-item"><span class="num">4</span>Listening — pre-teach vocabulary<span class="tag">7 words · printable</span></div>
+      <div class="outline-item"><span class="num">5</span>Listening task 6.5<span class="tag">note completion · MC · printable</span></div>
+      <div class="outline-item"><span class="num">6</span>Vocabulary focus<span class="tag">collocations · printable</span></div>
+    </div>
+    <div class="btn-row"><button class="startbtn" id="startBtn">Start lesson &#8594;</button></div>
+  </div>
+  <div id="presentScreen">
+    <div class="present-wrap">
+      <div class="present-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span id="sLabel">Lesson 6.3</span>
+          <button class="hbtn print-hbtn" id="printBtn">&#128438; Print</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="trec" id="recLbl"></span>
+          <div class="timer-w">
+            <button class="tadj" id="tMin">&#8722;</button>
+            <span class="tdisp" id="tDisp">05:00</span>
+            <button class="tadj" id="tPls">+</button>
+            <button class="ttog" id="tTog">&#9654;</button>
+          </div>
+          <button class="hbtn" id="fsBtn" style="font-size:15px;padding:4px 8px;" title="Fullscreen">&#x26F6;</button>
+        </div>
+      </div>
+      <div class="present-body" id="stepBody"></div>
+      <div class="present-footer">
+        <button class="nav-btn" id="prevBtn">&#8592; prev</button>
+        <span class="step-ctr" id="stepCtr"></span>
+        <button class="nav-btn primary" id="nextBtn">next &#8594;</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+  <div class="pop-q" id="popQ"></div>
+  <div id="popSvg"></div>
+  <div class="pop-word" id="popWord"></div>
+  <div class="pop-trans" id="popTrans"></div>
+  <div class="pop-ex" id="popEx"></div>
+  <button class="pop-reveal" id="popReveal" onclick="revealPopup()">Show answer ▾</button>
+  <div class="pop-hint">tap outside to close</div>
+</div>
+
+<script>
+/* FULLSCREEN */
+document.getElementById('fsBtn').onclick=function(){
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});this.textContent='✕';}
+  else{document.exitFullscreen();this.textContent='⛶';}
+};
+document.addEventListener('fullscreenchange',()=>{document.getElementById('fsBtn').textContent=document.fullscreenElement?'✕':'⛶';});
+
+/* TIMER */
+let tS=300,tR=false,tI=null;
+function setT(m){tS=m*60;tR=false;clearInterval(tI);document.getElementById('tTog').textContent='▶';rendT();}
+function rendT(){const m=Math.floor(Math.abs(tS)/60),s=Math.abs(tS)%60,n=tS<0?'-':'',d=document.getElementById('tDisp');d.textContent=n+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');d.className='tdisp'+(tS<=30&&tS>=-999?' warn':'');}
+document.getElementById('tTog').onclick=function(){if(tR){clearInterval(tI);tR=false;this.textContent='▶';}else{tR=true;this.textContent='⏸';tI=setInterval(()=>{tS--;rendT();},1000);}};
+document.getElementById('tMin').onclick=()=>{tS=Math.max(0,tS-60);rendT();};
+document.getElementById('tPls').onclick=()=>{tS+=60;rendT();};
+
+/* SVGs - all unique */
+const RSVG={
+  community:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="20" r="11" fill="#1D4ED8"/><circle cx="20" cy="58" r="9" fill="#3B82F6"/><circle cx="50" cy="68" r="9" fill="#60A5FA"/><circle cx="80" cy="58" r="9" fill="#93C5FD"/><line x1="50" y1="31" x2="26" y2="54" stroke="#1D4ED8" stroke-width="2"/><line x1="50" y1="31" x2="50" y2="59" stroke="#1D4ED8" stroke-width="2"/><line x1="50" y1="31" x2="74" y2="54" stroke="#1D4ED8" stroke-width="2"/><line x1="26" y1="60" x2="44" y2="63" stroke="#BFDBFE" stroke-width="1.5" stroke-dasharray="3,2"/><line x1="56" y1="65" x2="72" y2="62" stroke="#BFDBFE" stroke-width="1.5" stroke-dasharray="3,2"/></svg>`,
+  setup:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="62" cy="32" r="18" fill="#F97316" opacity=".15"/><path d="M54,28 L54,20 L70,20 L70,28" stroke="#F97316" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="62" cy="34" r="8" fill="#F97316"/><rect x="22" y="55" width="56" height="18" rx="5" fill="#FFF7ED" stroke="#F97316" stroke-width="2"/><circle cx="50" cy="38" r="3" fill="#fff"/><text x="50" y="68" text-anchor="middle" font-size="9" fill="#F97316" font-family="Arial" font-weight="bold">NEW PROJECT</text><text x="50" y="12" text-anchor="middle" font-size="10" fill="#F97316" font-family="Arial">start / create</text></svg>`,
+  fee:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="36" r="24" fill="#4CAF50"/><circle cx="50" cy="36" r="18" fill="#fff" opacity=".2"/><text x="50" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff" font-family="Arial">$</text><text x="50" y="46" text-anchor="middle" font-size="10" fill="#fff" font-family="Arial">FEE</text><text x="50" y="70" text-anchor="middle" font-size="9" fill="#666" font-family="Arial">money paid to join</text></svg>`,
+  abbreviation:`<svg viewBox="0 0 110 80" width="130" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="10" width="100" height="32" rx="6" fill="#7C3AED" opacity=".1"/><text x="55" y="31" text-anchor="middle" font-size="20" font-weight="bold" fill="#7C3AED" font-family="Arial">WHO</text><rect x="5" y="48" width="100" height="26" rx="6" fill="#7C3AED" opacity=".06"/><text x="55" y="65" text-anchor="middle" font-size="9" fill="#555" font-family="Arial">World Health Organization</text><line x1="25" y1="42" x2="85" y2="42" stroke="#7C3AED" stroke-width="1.5"/><polygon points="85,38 92,42 85,46" fill="#7C3AED"/></svg>`,
+  standfor:`<svg viewBox="0 0 110 80" width="130" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="8" width="100" height="64" rx="8" fill="#FFF" stroke="#BFDBFE" stroke-width="1.5"/><text x="55" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#1D4ED8" font-family="Arial">UN</text><text x="55" y="44" text-anchor="middle" font-size="16" fill="#93C5FD" font-family="Arial">=</text><text x="55" y="60" text-anchor="middle" font-size="9" fill="#555" font-family="Arial">United Nations</text></svg>`,
+  costume:`<svg viewBox="0 0 100 90" width="110" xmlns="http://www.w3.org/2000/svg"><path d="M30,20 L18,32 L28,35 L28,72 L72,72 L72,35 L82,32 L70,20 L58,28 Q50,32 42,28Z" fill="#EF4444"/><ellipse cx="50" cy="20" rx="12" ry="8" fill="#111" stroke="#EF4444" stroke-width="2"/><polygon points="50,8 44,0 56,0" fill="#1D4ED8"/><polygon points="42,32 28,42 32,52 42,44" fill="#1D4ED8"/><polygon points="58,32 72,42 68,52 58,44" fill="#1D4ED8"/></svg>`,
+  arrange:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="14" width="76" height="58" rx="7" fill="#fff" stroke="#1D4ED8" stroke-width="2"/><rect x="12" y="14" width="76" height="20" rx="7" fill="#1D4ED8"/><line x1="30" y1="13" x2="30" y2="22" stroke="#fff" stroke-width="3" stroke-linecap="round"/><line x1="70" y1="13" x2="70" y2="22" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text x="50" y="28" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">FRIDAY 3PM</text><line x1="24" y1="48" x2="56" y2="48" stroke="#BFDBFE" stroke-width="1.5"/><line x1="24" y1="57" x2="68" y2="57" stroke="#BFDBFE" stroke-width="1.5"/><circle cx="74" cy="48" r="7" fill="#4CAF50"/><text x="74" y="52" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial">✓</text></svg>`,
+  worldwide:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="40" rx="33" ry="33" fill="none" stroke="#1D4ED8" stroke-width="2.5"/><ellipse cx="50" cy="40" rx="15" ry="33" fill="none" stroke="#1D4ED8" stroke-width="1.5" stroke-dasharray="4,3"/><line x1="17" y1="40" x2="83" y2="40" stroke="#1D4ED8" stroke-width="1.5"/><line x1="21" y1="24" x2="79" y2="24" stroke="#93C5FD" stroke-width="1"/><line x1="21" y1="56" x2="79" y2="56" stroke="#93C5FD" stroke-width="1"/><circle cx="38" cy="30" r="3" fill="#EF4444"/><circle cx="62" cy="48" r="3" fill="#EF4444"/><circle cx="70" cy="28" r="3" fill="#EF4444"/></svg>`,
+  pickup:`<svg viewBox="0 0 100 85" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="24" y="50" width="52" height="30" rx="5" fill="#92400E"/><line x1="24" y1="65" x2="76" y2="65" stroke="#B45309" stroke-width="1.5"/><text x="50" y="74" text-anchor="middle" font-size="9" fill="#FDE68A" font-family="Arial">BOOK</text><path d="M50" y1="50" Q64,20 76,50" fill="none"/><path d="M36,50 Q50,14 64,50" fill="none" stroke="#92400E" stroke-width="2.5" stroke-linecap="round"/><circle cx="64" cy="50" r="5" fill="#92400E"/><line x1="64" y1="45" x2="75" y2="38" stroke="#92400E" stroke-width="2" stroke-linecap="round"/><line x1="64" y1="45" x2="72" y2="52" stroke="#92400E" stroke-width="2" stroke-linecap="round"/></svg>`
+};
+
+const LSVG={
+  fastestgrowing:`<svg viewBox="0 0 110 80" width="130" xmlns="http://www.w3.org/2000/svg"><rect x="15" y="55" width="16" height="20" rx="3" fill="#4CAF50" opacity=".5"/><rect x="36" y="40" width="16" height="35" rx="3" fill="#4CAF50" opacity=".7"/><rect x="57" y="22" width="16" height="53" rx="3" fill="#4CAF50" opacity=".85"/><rect x="78" y="8" width="16" height="67" rx="3" fill="#4CAF50"/><polygon points="78,8 86,2 94,8" fill="#22C55E"/><text x="55" y="78" text-anchor="middle" font-size="9" fill="#666" font-family="Arial">growing rapidly</text></svg>`,
+  gettogether:`<svg viewBox="0 0 110 80" width="130" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="28" r="12" fill="#BFDBFE"/><circle cx="22" cy="28" r="7" fill="#1D4ED8"/><rect x="14" y="40" width="16" height="20" rx="5" fill="#1D4ED8"/><circle cx="88" cy="28" r="12" fill="#BFDBFE"/><circle cx="88" cy="28" r="7" fill="#1D4ED8"/><rect x="80" y="40" width="16" height="20" rx="5" fill="#1D4ED8"/><circle cx="55" cy="35" r="16" fill="#FFD400" opacity=".8"/><polygon points="30,35 44,30 44,40" fill="#FFD400"/><polygon points="80,35 66,30 66,40" fill="#FFD400"/><text x="55" y="39" text-anchor="middle" font-size="9" fill="#111" font-family="Arial" font-weight="bold">SAME</text></svg>`,
+  shareinterests:`<svg viewBox="0 0 110 80" width="130" xmlns="http://www.w3.org/2000/svg"><ellipse cx="38" cy="40" rx="28" ry="28" fill="#F97316" opacity=".35"/><ellipse cx="72" cy="40" rx="28" ry="28" fill="#1D4ED8" opacity=".35"/><ellipse cx="55" cy="40" rx="13" ry="20" fill="#8B5CF6" opacity=".6"/><text x="22" y="42" text-anchor="middle" font-size="8" fill="#EA580C" font-family="Arial">📷</text><text x="88" y="42" text-anchor="middle" font-size="8" fill="#1D4ED8" font-family="Arial">🎵</text><text x="55" y="38" text-anchor="middle" font-size="7" fill="#fff" font-family="Arial" font-weight="bold">BOTH</text><text x="55" y="72" text-anchor="middle" font-size="9" fill="#666" font-family="Arial">shared</text></svg>`,
+  crossborders:`<svg viewBox="0 0 110 80" width="130" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="30" width="100" height="20" rx="4" fill="#F8FAFF"/><line x1="55" y1="10" x2="55" y2="70" stroke="#EF4444" stroke-width="2.5" stroke-dasharray="6,4"/><text x="28" y="44" text-anchor="middle" font-size="9" fill="#333" font-family="Arial">🇺🇿 UZ</text><text x="82" y="44" text-anchor="middle" font-size="9" fill="#333" font-family="Arial">🇬🇧 UK</text><polygon points="58,26 72,38 58,50" fill="#1D4ED8"/><polygon points="52,26 38,38 52,50" fill="#1D4ED8" opacity=".4"/></svg>`,
+  distancelearning:`<svg viewBox="0 0 110 80" width="130" xmlns="http://www.w3.org/2000/svg"><rect x="15" y="24" width="80" height="44" rx="6" fill="#1a1a1a"/><rect x="20" y="28" width="70" height="34" rx="3" fill="#1D4ED8" opacity=".15"/><rect x="10" y="68" width="90" height="6" rx="3" fill="#333"/><circle cx="55" cy="40" r="12" fill="#1D4ED8" opacity=".8"/><polygon points="51,35 51,45 62,40" fill="#fff"/><text x="55" y="56" text-anchor="middle" font-size="8" fill="#93C5FD" font-family="Arial">📡 learn online</text></svg>`,
+  dressup:`<svg viewBox="0 0 100 90" width="120" xmlns="http://www.w3.org/2000/svg"><rect x="32" y="8" width="36" height="60" rx="4" fill="#E2E8F0" stroke="#94A3B8" stroke-width="1.5"/><path d="M30,22 L18,34 L28,37 L28,72 L72,72 L72,37 L82,34 L70,22 L58,30 Q50,34 42,30Z" fill="#D946EF" opacity=".85"/><ellipse cx="50" cy="22" rx="11" ry="7" fill="#111" stroke="#D946EF" stroke-width="2"/><polygon points="50,12 45,2 55,2" fill="#FFD400"/><line x1="36" y1="8" x2="50" y2="22" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3,2"/></svg>`,
+  ultimateaim:`<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="none" stroke="#EF4444" stroke-width="2.5" opacity=".3"/><circle cx="50" cy="50" r="28" fill="none" stroke="#EF4444" stroke-width="2.5" opacity=".5"/><circle cx="50" cy="50" r="16" fill="none" stroke="#EF4444" stroke-width="2.5" opacity=".7"/><circle cx="50" cy="50" r="6" fill="#EF4444"/><line x1="50" y1="10" x2="50" y2="44" stroke="#333" stroke-width="2" stroke-linecap="round"/><polygon points="46,44 54,44 50,52" fill="#333"/></svg>`
+};
+
+const VSVG={
+  do:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="38" r="28" fill="#F0FDF4"/><circle cx="50" cy="38" r="28" fill="none" stroke="#4CAF50" stroke-width="2.5"/><polyline points="36,38 46,50 66,26" stroke="#4CAF50" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  get:`<svg viewBox="0 0 110 80" width="130" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="40" r="12" fill="#BFDBFE"/><circle cx="20" cy="40" r="7" fill="#1D4ED8"/><rect x="12" y="52" width="16" height="20" rx="5" fill="#1D4ED8"/><line x1="36" y1="40" x2="72" y2="40" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/><polygon points="68,34 80,40 68,46" fill="#1D4ED8"/><circle cx="90" cy="40" r="12" fill="#BFDBFE" stroke="#1D4ED8" stroke-width="2" stroke-dasharray="4,3"/><text x="90" y="44" text-anchor="middle" font-size="8" fill="#1D4ED8" font-family="Arial">GOAL</text></svg>`,
+  give:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="35" y="24" width="30" height="26" rx="4" fill="#FFD400"/><polygon points="50,10 42,24 58,24" fill="#FFD400"/><rect x="48" y="10" width="4" height="14" fill="#FFD400"/><path d="M20,56 Q20,50 28,50 L72,50 Q80,50 80,56 L75,68 L25,68 Z" fill="#FEF3C7" stroke="#FFD400" stroke-width="2"/><text x="50" y="63" text-anchor="middle" font-size="8" fill="#92400E" font-family="Arial">GIFT</text></svg>`,
+  have:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="46" r="18" fill="#FFF7ED"/><circle cx="50" cy="46" r="18" fill="none" stroke="#F97316" stroke-width="2"/><rect x="42" y="38" width="4" height="12" rx="1" fill="#F97316"/><circle cx="44" cy="52" r="2.5" fill="#F97316"/><ellipse cx="68" cy="20" rx="20" ry="12" fill="#FFF7ED" stroke="#F97316" stroke-width="1.5"/><text x="68" y="15" text-anchor="middle" font-size="7" fill="#F97316" font-family="Arial">experience</text><text x="68" y="25" text-anchor="middle" font-size="7" fill="#F97316" font-family="Arial">argument</text><polygon points="54,34 58,28 62,36" fill="#FFF7ED" stroke="#F97316" stroke-width="1.5"/></svg>`,
+  make:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="38" width="60" height="32" rx="5" fill="#FEF2F2" stroke="#EF4444" stroke-width="2"/><path d="M35,38 L35,28 Q35,18 50,18 Q65,18 65,28 L65,38" fill="none" stroke="#EF4444" stroke-width="2.5"/><circle cx="50" cy="18" r="6" fill="#EF4444"/><line x1="32" y1="52" x2="52" y2="52" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/><line x1="32" y1="60" x2="68" y2="60" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/><text x="60" y="56" text-anchor="middle" font-size="9" fill="#EF4444" font-family="Arial" font-weight="bold">✓</text></svg>`,
+  put:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="48" width="56" height="26" rx="5" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2"/><text x="50" y="65" text-anchor="middle" font-size="9" fill="#7C3AED" font-family="Arial">in practice</text><path d="M50,10 L50,44" stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round"/><polygon points="44,40 50,52 56,40" fill="#7C3AED"/><circle cx="50" cy="10" r="6" fill="#7C3AED" opacity=".8"/></svg>`,
+  take:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="30" r="20" fill="#ECFDF5" stroke="#059669" stroke-width="2"/><text x="50" y="26" text-anchor="middle" font-size="8" fill="#059669" font-family="Arial">CONTROL</text><polygon points="43,28 57,28 50,36" fill="#059669"/><line x1="50" y1="50" x2="50" y2="65" stroke="#059669" stroke-width="2.5" stroke-linecap="round"/><line x1="32" y1="58" x2="50" y2="50" stroke="#059669" stroke-width="2" stroke-linecap="round"/><line x1="68" y1="58" x2="50" y2="50" stroke="#059669" stroke-width="2" stroke-linecap="round"/></svg>`,
+  set:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="38" r="22" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/><path d="M50,20 L50,38 L62,38" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/><circle cx="50" cy="38" r="3" fill="#1D4ED8"/><line x1="50" y1="16" x2="50" y2="12" stroke="#1D4ED8" stroke-width="2"/><line x1="50" y1="60" x2="50" y2="64" stroke="#1D4ED8" stroke-width="2"/><line x1="28" y1="38" x2="24" y2="38" stroke="#1D4ED8" stroke-width="2"/><line x1="72" y1="38" x2="76" y2="38" stroke="#1D4ED8" stroke-width="2"/><text x="50" y="74" text-anchor="middle" font-size="9" fill="#1D4ED8" font-family="Arial">set a limit / date</text></svg>`
+};
+
+/* DATA */
+const readingVocab=[
+  {w:'community',     ru:'сообщество',        uz:'jamoa',              svg:'community',  ex:'"BookCrossing is an online community with members in 132 countries."'},
+  {w:'set up',        ru:'создать / основать', uz:'tashkil qilmoq',     svg:'setup',      ex:'"Users can set up their own courses and study groups."'},
+  {w:'fee',           ru:'плата / взнос',      uz:'toʻlov',             svg:'fee',        ex:'"All the courses are open to anyone and no fees are charged."'},
+  {w:'abbreviation',  ru:'аббревиатура',       uz:'qisqartma',          svg:'abbreviation',ex:'"WHO is an abbreviation for World Health Organization."'},
+  {w:'stand for',     ru:'означать',           uz:'anglatmoq',          svg:'standfor',   ex:'"P2PU stands for Peer to Peer University."'},
+  {w:'costume',       ru:'костюм / наряд',     uz:'kostyum',            svg:'costume',    ex:'"Cosplayers dress up in costumes as superheroes."'},
+  {w:'arrange',       ru:'организовать',       uz:'tashkil etmoq',      svg:'arrange',    ex:'"They can arrange meetings with other cosplayers online."'},
+  {w:'worldwide',     ru:'по всему миру',      uz:'butun dunyo boʻylab', svg:'worldwide',  ex:'"BookCrossing has over a million members worldwide."'},
+  {w:'pick up',       ru:'взять / забрать',    uz:'olib ketmoq',        svg:'pickup',     ex:'"People list where they have left books for others to pick up."'},
+];
+
+const listenVocab=[
+  {w:'fastest growing',                   ru:'самый быстрорастущий',      uz:'eng tez o\'sayotgan',            svg:'fastestgrowing',  disc:'What do you think is the fastest growing type of online community today?',   ex:'"Online communities are the fastest growing type of community."'},
+  {w:'get people with similar interests together', ru:'объединять людей со схожими интересами', uz:'bir xil qiziqishlari bor odamlarni birlashtirmoq', svg:'gettogether', disc:'How do you usually get people with similar interests together in your life?', ex:'"Online communities get people with similar interests together."'},
+  {w:'share interests',                   ru:'делиться интересами',        uz:'qiziqishlarni baham koʻrmoq',    svg:'shareinterests',  disc:'Do you share your interests online? Which platforms do you use?',           ex:'"Members share their interests and help each other."'},
+  {w:'cross international borders',       ru:'пересекать международные границы', uz:'xalqaro chegaralardan o\'tmoq', svg:'crossborders', disc:'Can you think of something from Uzbekistan that has crossed international borders?', ex:'"Many of these communities cross international borders."'},
+  {w:'distance learning',                 ru:'дистанционное обучение',     uz:'masofaviy ta\'lim',               svg:'distancelearning', disc:'Have you ever tried distance learning? What did you think of it?',        ex:'"Distance learning is nothing new, but seeing each other online makes it better."'},
+  {w:'dress up',                          ru:'наряжаться',                 uz:'kiyinib olmoq',                  svg:'dressup',         disc:'Do you ever dress up for special occasions? Describe the last time.',        ex:'"Cosplayers dress up as superheroes and arrange meetings."'},
+  {w:'ultimate aim',                      ru:'конечная цель',              uz:'asosiy maqsad',                  svg:'ultimateaim',     disc:'What is your ultimate aim in learning English?',                            ex:'"The ultimate aim of StreetBank is to encourage neighbours to know each other better."'},
+];
+
+const vcfData=[
+  {v:'do',   cols:['do you good','do a lot of damage','do nothing','do your best'],   ex:'"Exercise does you good every day."',  ru:'приносить пользу / наносить вред',  uz:'foyda keltirmoq / zarar keltirmoq', disc:'What is one thing you do that does you good every day?'},
+  {v:'get',  cols:['get to know someone','get into an argument','get an illness','get together'], ex:'"I got to know my neighbours through StreetBank."', ru:'познакомиться / поспорить', uz:'tanishmoq / tortishmoq', disc:'How do you usually get to know new people — online or face to face?'},
+  {v:'give', cols:['give someone an idea','give someone a fright','give a speech','give something some thought'], ex:'"She gave a speech about online communities."', ru:'подать идею / произнести речь', uz:'g\'oya bermoq / nutq so\'zlamoq', disc:'Have you ever given a speech or presentation? How did it go?'},
+  {v:'have', cols:['have an argument','have a chat','have problems','have an accident','have a lie-down'], ex:'"We had a chat online and arranged to meet."', ru:'поспорить / поговорить / иметь трудности', uz:'bahslashmoq / suhbatlashmoq', disc:'Have you ever had an argument with someone online? What happened?'},
+  {v:'make', cols:['make yourself understood','make the most of something','make sure of something','make all the difference'], ex:'"Online video calls make all the difference in distance learning."', ru:'объяснить себя / использовать по максимуму', uz:'o\'zingizni tushuntirmoq / maksimal foydalanmoq', disc:'Can you think of a situation where someone made all the difference?'},
+  {v:'put',  cols:['put into practice','put in charge','put pressure on','put the blame on'], ex:'"It is important to put new vocabulary into practice."', ru:'применять на практике / назначить ответственным', uz:'amalda qo\'llamoq / mas\'ul qilmoq', disc:'Which English skill would you most like to put into practice this week?'},
+  {v:'take', cols:['take the blame','take control','take something seriously','take a look'], ex:'"Someone needs to take control of the situation."', ru:'взять на себя вину / взять под контроль', uz:'aybni o\'z zimmaga olmoq / nazorat qilmoq', disc:'Who do you think should take control in an emergency situation?'},
+  {v:'set',  cols:['set free','set a limit','set a date','set a good/bad example'], ex:'"We need to set a date for the next meeting."', ru:'освободить / установить предел / назначить дату', uz:'ozod qilmoq / chegara belgilamoq / sana tayinlamoq', disc:'What limits do you set for yourself when using social media?'},
+];
+
+/* BUILD BOARD */
+let popCloseCb=null;
+function makeBoard(vocab,cols,svgMap,questionText){
+  const opened=new Set();
+  const wrap=document.createElement('div');wrap.className='board-wrap';
+  const head=document.createElement('div');head.className='board-head';
+  const htitle=document.createElement('span');htitle.textContent='Vocabulary';
+  const hcnt=document.createElement('span');hcnt.className='bcnt';hcnt.id='bcnt_'+Math.random().toString(36).slice(2);
+  head.appendChild(htitle);head.appendChild(hcnt);
+  const grid=document.createElement('div');grid.className='board-grid';grid.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  const foot=document.createElement('div');foot.className='board-foot';
+  const rst=document.createElement('button');rst.className='rst-btn';rst.textContent='↺ Reset';
+  function render(){
+    const allOpen=opened.size===vocab.length;
+    grid.innerHTML='';
+    vocab.forEach((item,i)=>{
+      const isOpen=opened.has(i);
+      const card=document.createElement('div');
+      card.className='flip-card'+(isOpen?' open':'');
+      if(isOpen){
+        card.innerHTML=svgMap[item.svg].replace(/width="\d+"/,'width="55"')
+          +`<div class="cword">${item.w}</div>`
+          +(allOpen?`<div class="ctrans">🇷🇺 ${item.ru}</div><div class="ctrans">🇺🇿 ${item.uz}</div>`:'');
+      }else{
+        card.innerHTML='<div class="qm">?</div>';
+      }
+      card.onclick=()=>{
+        document.getElementById('popQ').textContent=questionText;
+        document.getElementById('popSvg').innerHTML=svgMap[item.svg];
+        document.getElementById('popWord').style.display='none';
+        document.getElementById('popWord').textContent=item.w;
+        document.getElementById('popTrans').style.display='none';
+        document.getElementById('popTrans').innerHTML='🇷🇺 '+item.ru+'<br>🇺🇿 '+item.uz;
+        document.getElementById('popEx').style.display='none';
+        document.getElementById('popEx').textContent=item.ex;
+        document.getElementById('popReveal').style.display='inline-block';
+        popCloseCb=()=>{opened.add(i);render();};
+        document.getElementById('overlay').style.display='block';
+        document.getElementById('popup').style.display='block';
+      };
+      grid.appendChild(card);
+    });
+    document.getElementById(hcnt.id).textContent=opened.size+' / '+vocab.length+' opened';
+  }
+  rst.onclick=()=>{opened.clear();render();};
+  foot.appendChild(rst);
+  wrap.appendChild(head);wrap.appendChild(grid);wrap.appendChild(foot);
+  render();return wrap;
+}
+
+function revealPopup(){
+  document.getElementById('popWord').style.display='block';
+  document.getElementById('popTrans').style.display='block';
+  document.getElementById('popEx').style.display='block';
+  document.getElementById('popReveal').style.display='none';
+}
+function closePopup(){
+  document.getElementById('overlay').style.display='none';
+  document.getElementById('popup').style.display='none';
+  if(popCloseCb)popCloseCb();popCloseCb=null;
+}
+
+/* PRINT FUNCTIONS */
+function printListenPreteach(){
+  const rows=listenVocab.map(v=>`<div style="border:1px solid #ddd;border-radius:8px;padding:14px;margin-bottom:12px;"><div style="font-size:17px;font-weight:bold;color:#1D4ED8;">${v.w}</div><div style="font-size:13px;color:#666;margin-top:4px;">🇷🇺 ${v.ru} &nbsp;|&nbsp; 🇺🇿 ${v.uz}</div><div style="margin-top:8px;font-size:13px;color:#333;padding:8px;background:#EFF6FF;border-radius:4px;font-style:italic;">${v.ex}</div><div style="margin-top:8px;font-size:13px;color:#555;"><b>Discuss:</b> ${v.disc}</div></div>`).join('');
+  const w=window.open('','_blank','width=800,height=700');
+  w.document.write(`<!DOCTYPE html><html><head><title>Listening Pre-teach — Lesson 6.3</title><style>body{font-family:Arial,sans-serif;margin:30px;color:#111;}h2{color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:8px;margin-bottom:18px;}</style></head><body><h2>Listening — Pre-teach Vocabulary &middot; Lesson 6.3</h2>${rows}</body></html>`);
+  w.document.close();w.focus();setTimeout(()=>w.print(),500);
+}
+
+function printListenTask(){
+  const ncomp=`<h3 style="color:#1D4ED8;margin-bottom:12px;">6.5 ▶▶ Note completion — listen and complete with 1–2 words</h3>
+    <ol style="font-size:14px;line-height:2.4;color:#333;">
+      <li><span style="display:inline-block;border-bottom:1px solid #333;min-width:120px;">&nbsp;</span> communities are expanding more rapidly than any other.</li>
+      <li>BookCrossing members are usually people <span style="display:inline-block;border-bottom:1px solid #333;min-width:120px;">&nbsp;</span> sharing the experience of reading.</li>
+      <li>People with a/an <span style="display:inline-block;border-bottom:1px solid #333;min-width:120px;">&nbsp;</span> can benefit from advice from others with the same disease.</li>
+      <li>Distance learning is much better when you can talk to and see <span style="display:inline-block;border-bottom:1px solid #333;min-width:120px;">&nbsp;</span> online.</li>
+      <li>Cosplayers may use the internet <span style="display:inline-block;border-bottom:1px solid #333;min-width:120px;">&nbsp;</span> face-to-face conventions.</li>
+      <li>StreetBank neighbours might lend barbecue <span style="display:inline-block;border-bottom:1px solid #333;min-width:100px;">&nbsp;</span> or help each other to <span style="display:inline-block;border-bottom:1px solid #333;min-width:80px;">&nbsp;</span> their houses.</li>
+    </ol>`;
+  const qs=[
+    ['According to the text, the fastest-growing type of community is','A) local neighbourhood &nbsp;&nbsp; B) online &nbsp;&nbsp; C) educational'],
+    ['What makes distance learning better than before?','A) Better textbooks &nbsp;&nbsp; B) Being able to see and talk to each other online &nbsp;&nbsp; C) Lower cost'],
+    ['What is the ultimate aim of StreetBank?','A) To help people share books &nbsp;&nbsp; B) To help neighbours know each other better &nbsp;&nbsp; C) To sell second-hand items'],
+    ['Online communities can be used for','A) fun only &nbsp;&nbsp; B) serious purposes only &nbsp;&nbsp; C) both fun and serious purposes'],
+    ['BookCrossing is a community where people','A) sell books &nbsp;&nbsp; B) leave books for others to find and read &nbsp;&nbsp; C) review books online'],
+  ];
+  const mc=`<h3 style="color:#1D4ED8;margin:20px 0 12px;">Multiple choice — choose A, B, or C</h3>`
+    +qs.map((q,i)=>`<div style="margin-bottom:14px;"><b>${i+1}.</b> ${q[0]}<br><span style="color:#555;font-size:13px;">${q[1]}</span><div style="margin-top:4px;border:1px solid #ddd;height:24px;width:60px;border-radius:4px;display:inline-block;">&nbsp;</div></div>`).join('');
+  const w=window.open('','_blank','width=800,height=700');
+  w.document.write(`<!DOCTYPE html><html><head><title>Listening Task 6.5 — Lesson 6.3</title><style>body{font-family:Arial,sans-serif;margin:30px;color:#111;}h2{color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:8px;margin-bottom:18px;}</style></head><body><h2>Listening Task 6.5 &middot; Lesson 6.3</h2>${ncomp}${mc}</body></html>`);
+  w.document.close();w.focus();setTimeout(()=>w.print(),500);
+}
+
+function printVocabFocus(){
+  const rows=vcfData.map(d=>`<div style="margin-bottom:16px;border:1px solid #ddd;border-radius:8px;padding:14px;"><div style="font-size:18px;font-weight:bold;color:#1D4ED8;margin-bottom:6px;">${d.v}</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">${d.cols.map(c=>`<span style="background:#EFF6FF;border:1px solid #BFDBFE;color:#1D4ED8;border-radius:16px;padding:3px 10px;font-size:12px;">${d.v} + <b>${c.replace(d.v+' ','')}</b></span>`).join('')}</div><div style="font-size:13px;color:#555;font-style:italic;margin-bottom:6px;">${d.ex}</div><div style="font-size:12px;color:#888;">🇷🇺 ${d.ru}<br>🇺🇿 ${d.uz}</div><div style="margin-top:8px;font-size:13px;color:#333;"><b>Discuss:</b> ${d.disc}</div></div>`).join('');
+  const w=window.open('','_blank','width=800,height=700');
+  w.document.write(`<!DOCTYPE html><html><head><title>Vocabulary Focus — Lesson 6.3</title><style>body{font-family:Arial,sans-serif;margin:30px;color:#111;}h2{color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:8px;margin-bottom:18px;}</style></head><body><h2>Vocabulary Focus: Verb Collocations &middot; Lesson 6.3</h2>${rows}</body></html>`);
+  w.document.close();w.focus();setTimeout(()=>w.print(),500);
+}
+
+/* TAB SWITCHER */
+function swTab(el,n,paneClass){
+  const bar=el.parentElement;
+  const wrap=bar.parentElement;
+  bar.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  wrap.querySelectorAll('.tab-pane').forEach((p,i)=>p.classList.toggle('active',i===n));
+}
+window.swTab=swTab;
+
+function mcAns(btn,correct){
+  if(btn.classList.contains('correct')||btn.classList.contains('wrong'))return;
+  const g=btn.closest('.mc-opts');
+  g.querySelectorAll('.mc-opt').forEach(b=>b.onclick=null);
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct)g.querySelector('[data-c]').classList.add('correct');
+}
+window.mcAns=mcAns;
+
+/* VOCAB FOCUS STEP */
+let vcfIdx=0,vcfRevealed=false;
+function buildVcfStep(){
+  vcfIdx=0;vcfRevealed=false;
+  const wrap=document.createElement('div');wrap.style.cssText='width:100%;max-width:900px;';
+  const card=document.createElement('div');card.className='vcf-wrap';
+  const body=document.createElement('div');body.className='vcf-body';
+  const verbEl=document.createElement('div');verbEl.className='vcf-verb';
+  const qEl=document.createElement('div');qEl.className='vcf-q';qEl.textContent='What collocations do you know with this verb?';
+  const svgEl=document.createElement('div');svgEl.id='vcfSvg';svgEl.style.margin='0 0 10px';
+  const revWrap=document.createElement('div');revWrap.className='vcf-reveal-wrap';revWrap.id='vcfReveal';
+  const colWrap=document.createElement('div');colWrap.className='vcf-collocs';colWrap.id='vcfCols';
+  const exEl=document.createElement('div');exEl.className='vcf-ex';exEl.id='vcfEx';
+  const trEl=document.createElement('div');trEl.className='vcf-trans';trEl.id='vcfTr';
+  revWrap.appendChild(colWrap);revWrap.appendChild(exEl);revWrap.appendChild(trEl);
+  const revBtn=document.createElement('button');
+  revBtn.style.cssText='background:var(--blue);border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;margin-top:12px;';
+  revBtn.textContent='Show collocations ▾';revBtn.id='vcfBtn';
+  revBtn.onclick=()=>{revWrap.style.display='block';revBtn.style.display='none';vcfRevealed=true;};
+  const nav=document.createElement('div');nav.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-top:16px;width:100%;max-width:500px;';
+  const bPrev=document.createElement('button');bPrev.style.cssText='background:none;border:1.5px solid #BFDBFE;color:var(--blue);border-radius:6px;padding:7px 16px;cursor:pointer;font-family:inherit;font-weight:bold;';bPrev.textContent='← prev';
+  const bCtr=document.createElement('span');bCtr.style.cssText='color:#BFDBFE;font-size:12px;';bCtr.id='vcfCtr';
+  const bNext=document.createElement('button');bNext.style.cssText='background:var(--blue);border:none;border-radius:6px;color:#fff;padding:7px 16px;cursor:pointer;font-family:inherit;font-weight:bold;';bNext.textContent='next →';
+
+  function renderVcf(){
+    const d=vcfData[vcfIdx];
+    verbEl.textContent=d.v;
+    svgEl.innerHTML=VSVG[d.v];
+    revWrap.style.display='none';
+    revBtn.style.display='inline-block';
+    colWrap.innerHTML=d.cols.map(c=>`<div class="vcf-chip">${d.v} <b>${c}</b></div>`).join('');
+    exEl.textContent=d.ex;
+    trEl.innerHTML='🇷🇺 '+d.ru+'<br>🇺🇿 '+d.uz;
+    bCtr.textContent=(vcfIdx+1)+' / '+vcfData.length;
+    bPrev.disabled=vcfIdx===0;bPrev.style.opacity=vcfIdx===0?'0.3':'1';
+    bNext.textContent=vcfIdx===vcfData.length-1?'Discussion →':'next →';
+    vcfRevealed=false;
+  }
+  bPrev.onclick=()=>{if(vcfIdx>0){vcfIdx--;renderVcf();}};
+  bNext.onclick=()=>{
+    if(vcfIdx<vcfData.length-1){vcfIdx++;renderVcf();}
+    else{
+      card.style.display='none';
+      const disc=document.getElementById('vcfDiscSection');
+      if(disc)disc.style.display='block';
+    }
+  };
+  nav.appendChild(bPrev);nav.appendChild(bCtr);nav.appendChild(bNext);
+  body.appendChild(verbEl);body.appendChild(svgEl);body.appendChild(qEl);body.appendChild(revBtn);body.appendChild(revWrap);body.appendChild(nav);
+  card.appendChild(body);
+  const discSec=document.createElement('div');discSec.className='vcf-disc';discSec.id='vcfDiscSection';discSec.style.display='none';
+  discSec.innerHTML='<div class="vcf-disc-title">Discussion questions</div>'
+    +vcfData.map((d,i)=>`<div class="dq" style="margin-bottom:10px;"><div class="dq-num">${i+1}</div><div class="dq-text">${d.disc}</div></div>`).join('');
+  wrap.appendChild(card);wrap.appendChild(discSec);
+  renderVcf();
+  return wrap;
+}
+
+/* STEPS */
+const steps=[
+  {section:'Lead-in',type:'lead1',rec:3},
+  {section:'Lead-in',type:'lead2',rec:5},
+  {section:'Reading — pre-teach vocabulary',type:'read-preteach',rec:10},
+  {section:'Reading',type:'reading',rec:15},
+  {section:'Listening — pre-teach vocabulary',type:'listen-preteach',rec:10},
+  {section:'Listening task 6.5',type:'listen-task',rec:15},
+  {section:'Vocabulary focus',type:'vocab-focus',rec:15},
+];
+let cur=0;
+
+function renderStep(){
+  const s=steps[cur];
+  const body=document.getElementById('stepBody');
+  body.innerHTML='';body.style.textAlign='center';
+  document.getElementById('sLabel').textContent=s.section;
+  document.getElementById('recLbl').textContent='rec: '+s.rec+' min';
+  document.getElementById('printBtn').style.display='none';
+  document.getElementById('printBtn').onclick=null;
+  clearInterval(tI);tR=false;document.getElementById('tTog').textContent='▶';setT(s.rec);
+
+  let el;
+
+  if(s.type==='lead1'){
+    el=document.createElement('div');el.className='lead-wrap';
+    el.innerHTML=`<svg viewBox="0 0 320 200" width="360" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="160" cy="100" r="30" fill="#1D4ED8"/><text x="160" y="96" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">ONLINE</text><text x="160" y="108" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">COMMUNITY</text>
+      <circle cx="55" cy="42" r="19" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/><circle cx="55" cy="36" r="9" fill="#1D4ED8"/><rect x="45" y="45" width="20" height="15" rx="5" fill="#1D4ED8"/>
+      <line x1="73" y1="54" x2="133" y2="88" stroke="#1D4ED8" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <circle cx="265" cy="42" r="19" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/><circle cx="265" cy="36" r="9" fill="#3B82F6"/><rect x="255" y="45" width="20" height="15" rx="5" fill="#3B82F6"/>
+      <line x1="247" y1="54" x2="187" y2="88" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <circle cx="55" cy="158" r="19" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2"/><circle cx="55" cy="152" r="9" fill="#60A5FA"/><rect x="45" y="161" width="20" height="15" rx="5" fill="#60A5FA"/>
+      <line x1="73" y1="147" x2="133" y2="114" stroke="#60A5FA" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <circle cx="265" cy="158" r="19" fill="#EFF6FF" stroke="#93C5FD" stroke-width="2"/><circle cx="265" cy="152" r="9" fill="#93C5FD"/><rect x="255" y="161" width="20" height="15" rx="5" fill="#93C5FD"/>
+      <line x1="247" y1="147" x2="187" y2="114" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <circle cx="28" cy="100" r="19" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="2"/><circle cx="28" cy="94" r="9" fill="#BFDBFE"/><rect x="18" y="103" width="20" height="15" rx="5" fill="#BFDBFE"/>
+      <line x1="47" y1="100" x2="130" y2="100" stroke="#BFDBFE" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <circle cx="292" cy="100" r="19" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="2"/><circle cx="292" cy="94" r="9" fill="#BFDBFE"/><rect x="282" y="103" width="20" height="15" rx="5" fill="#BFDBFE"/>
+      <line x1="273" y1="100" x2="190" y2="100" stroke="#BFDBFE" stroke-width="1.5" stroke-dasharray="5,4"/>
+    </svg>`;
+  }
+  else if(s.type==='lead2'){
+    el=document.createElement('div');el.className='lead-wrap';
+    el.innerHTML=`<svg viewBox="0 0 320 200" width="200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="160" cy="100" r="30" fill="#1D4ED8"/><text x="160" y="96" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">ONLINE</text><text x="160" y="108" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">COMMUNITY</text>
+      <circle cx="55" cy="42" r="19" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/><circle cx="55" cy="36" r="9" fill="#1D4ED8"/><rect x="45" y="45" width="20" height="15" rx="5" fill="#1D4ED8"/><line x1="73" y1="54" x2="133" y2="88" stroke="#1D4ED8" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <circle cx="265" cy="42" r="19" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/><circle cx="265" cy="36" r="9" fill="#3B82F6"/><rect x="255" y="45" width="20" height="15" rx="5" fill="#3B82F6"/><line x1="247" y1="54" x2="187" y2="88" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <circle cx="55" cy="158" r="19" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2"/><circle cx="55" cy="152" r="9" fill="#60A5FA"/><rect x="45" y="161" width="20" height="15" rx="5" fill="#60A5FA"/><line x1="73" y1="147" x2="133" y2="114" stroke="#60A5FA" stroke-width="1.5" stroke-dasharray="5,4"/>
+    </svg>`;
+    const dl=document.createElement('div');dl.className='discuss-list';
+    dl.innerHTML=`<div class="dq"><div class="dq-num">1</div><div class="dq-text">Are you a member of any online community? What do you do there?</div></div>
+      <div class="dq"><div class="dq-num">2</div><div class="dq-text">Why do people join online communities? What are the benefits?</div></div>
+      <div class="dq"><div class="dq-num">3</div><div class="dq-text">Can online communities replace real-life friendships? Why / why not?</div></div>`;
+    el.appendChild(dl);
+  }
+  else if(s.type==='read-preteach'){
+    el=makeBoard(readingVocab,3,RSVG,'What does this word mean?');
+  }
+  else if(s.type==='reading'){
+    body.style.textAlign='left';
+    el=document.createElement('div');el.className='tab-wrap';
+    const mcQ=[
+      {q:'P2PU members pay a fee to access courses.',a:false},
+      {q:'P2PU stands for Peer to Peer University.',a:true},
+      {q:'P2PU was founded in the United States.',a:null},
+      {q:'Cosplayers use online communities only to post photos.',a:false},
+      {q:'BookCrossing has more than one million members worldwide.',a:true},
+    ];
+    const tfHTML=mcQ.map((item,i)=>`<div class="ex-item"><div class="ex-n">${i+1}</div><div class="ex-t">${item.q}<span class="blank">&nbsp;</span></div></div>`).join('');
+    const discHTML=[
+      'Would you like to join any of these communities? Which one and why?',
+      'What other online communities do you know about?',
+      'Are online communities as valuable as face-to-face ones? Why / why not?',
+      'What are the advantages and disadvantages of learning online through communities like P2PU?',
+    ].map((q,i)=>`<div class="ex-item"><div class="ex-n">${i+1}</div><div class="ex-t">${q}</div></div>`).join('');
+    el.innerHTML=`<div class="tab-bar">
+      <div class="tab active" onclick="swTab(this,0)">Text</div>
+      <div class="tab" onclick="swTab(this,1)">T/F/NG</div>
+      <div class="tab" onclick="swTab(this,2)">Discussion</div>
+    </div>
+    <div class="tab-pane active">
+      <div class="text-block"><div class="text-block-head"><div class="text-num">1</div><div class="text-title">P2PU</div></div><div class="text-body">P2PU is an online learning community where users set up their own courses and study groups. All the courses are open to anyone and no fees are charged. The abbreviation stands for Peer to Peer University, as members learn from each other.</div></div>
+      <div class="text-block"><div class="text-block-head"><div class="text-num">2</div><div class="text-title">Cosplay</div></div><div class="text-body">People interested in cosplay (dressing up in costumes as superheroes and other characters) use online communities to post photos of their costumes so other people can see them. They can also talk to, and arrange meetings with, other cosplayers.</div></div>
+      <div class="text-block"><div class="text-block-head"><div class="text-num">3</div><div class="text-title">BookCrossing</div></div><div class="text-body">With over a million members worldwide, BookCrossing is a website where people list where they have left books they enjoyed for other people to pick up and read.</div></div>
+    </div>
+    <div class="tab-pane"><div class="ex-instr">Write TRUE, FALSE, or NOT GIVEN</div>${tfHTML}</div>
+    <div class="tab-pane"><div class="ex-instr">Discuss with a partner</div>${discHTML}</div>`;
+  }
+  else if(s.type==='listen-preteach'){
+    const pb=document.getElementById('printBtn');
+    pb.style.display='inline-block';pb.textContent='🖨 Print pre-teach';
+    pb.onclick=printListenPreteach;
+    el=makeBoard(listenVocab,4,LSVG,'What does this phrase mean?');
+  }
+  else if(s.type==='listen-task'){
+    const pb=document.getElementById('printBtn');
+    pb.style.display='inline-block';pb.textContent='🖨 Print task';
+    pb.onclick=printListenTask;
+    body.style.textAlign='left';
+    el=document.createElement('div');el.className='tab-wrap';
+    const mcQs=[
+      {q:'According to the text, the fastest-growing type of community is',opts:['local neighbourhood communities','online communities','educational communities'],c:1},
+      {q:'What makes distance learning better than before?',opts:['Better textbooks and materials','Being able to see and talk to each other online','Lower cost of courses'],c:1},
+      {q:'What is the ultimate aim of StreetBank?',opts:['To help people share books','To help neighbours get to know each other better','To help people find second-hand products'],c:1},
+      {q:'Online communities can be used for',opts:['fun purposes only','serious purposes only','both fun and serious purposes'],c:2},
+      {q:'BookCrossing is described as a community where people',opts:['sell books they have read','leave books for others to find and read','review books online for other members'],c:1},
+    ];
+    const mcHTML=mcQs.map((q,i)=>`<div class="ex-item"><div class="ex-n">${i+1}</div><div class="ex-t">${q.q}<div class="mc-opts">${q.opts.map((o,j)=>`<button class="mc-opt" ${j===q.c?'data-c':''}onclick="mcAns(this,${j===q.c})">${String.fromCharCode(65+j)}) ${o}</button>`).join('')}</div></div></div>`).join('');
+    el.innerHTML=`<div class="tab-bar">
+      <div class="tab active" onclick="swTab(this,0)">Note completion</div>
+      <div class="tab" onclick="swTab(this,1)">Multiple choice</div>
+    </div>
+    <div class="tab-pane active">
+      <div class="ex-instr">6.5 ▶▶ Listen and complete with 1–2 words</div>
+      <div class="ex-item"><div class="ex-n">1</div><div class="ex-t"><span class="blank">&nbsp;</span> communities are expanding more rapidly than any other.</div></div>
+      <div class="ex-item"><div class="ex-n">2</div><div class="ex-t">BookCrossing members are usually people <span class="blank">&nbsp;</span> sharing the experience of reading.</div></div>
+      <div class="ex-item"><div class="ex-n">3</div><div class="ex-t">People with a/an <span class="blank">&nbsp;</span> can benefit from advice from others with the same disease.</div></div>
+      <div class="ex-item"><div class="ex-n">4</div><div class="ex-t">Distance learning is much better when you can talk to and see <span class="blank">&nbsp;</span> online.</div></div>
+      <div class="ex-item"><div class="ex-n">5</div><div class="ex-t">Cosplayers may use the internet <span class="blank">&nbsp;</span> face-to-face conventions.</div></div>
+      <div class="ex-item"><div class="ex-n">6</div><div class="ex-t">Neighbours might lend barbecue <span class="blank">&nbsp;</span> or help each other to <span class="blank" style="min-width:80px;">&nbsp;</span> their houses.</div></div>
+    </div>
+    <div class="tab-pane"><div class="ex-instr">Choose the correct answer A, B, or C</div>${mcHTML}</div>`;
+  }
+  else if(s.type==='vocab-focus'){
+    const pb=document.getElementById('printBtn');
+    pb.style.display='inline-block';pb.textContent='🖨 Print collocations';
+    pb.onclick=printVocabFocus;
+    el=buildVcfStep();
+  }
+
+  if(el)body.appendChild(el);
+  document.getElementById('stepCtr').textContent=(cur+1)+' / '+steps.length;
+  document.getElementById('prevBtn').disabled=cur===0;
+  document.getElementById('nextBtn').textContent=cur===steps.length-1?'Done':'next \u2192';
+}
+
+document.getElementById('startBtn').onclick=()=>{
+  document.getElementById('outlineScreen').style.display='none';
+  document.getElementById('presentScreen').style.display='flex';
+  cur=0;renderStep();
+};
+document.getElementById('nextBtn').onclick=()=>{if(cur<steps.length-1){cur++;renderStep();}};
+document.getElementById('prevBtn').onclick=()=>{if(cur>0){cur--;renderStep();}};
+</script>
+</body>
+</html>

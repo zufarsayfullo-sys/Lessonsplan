@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5.2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif;background:#DDE6F8;min-height:100vh;display:flex;flex-direction:column;}
+  a{text-decoration:none;color:inherit;}
+
+  /* ── OUTLINE ── */
+  .outline-page{flex:1;padding:24px 36px;display:flex;flex-direction:column;}
+  .ol-title{color:#1D4ED8;font-size:28px;font-weight:bold;margin-bottom:4px;}
+  .ol-sub{color:#666;font-size:14px;margin-bottom:24px;}
+  .ol-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+  .ol-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:14px 18px;font-size:15px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+  .ol-n{background:#1D4ED8;color:#fff;border-radius:50%;width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;}
+  .ol-tag{margin-left:auto;color:#93C5FD;font-size:12px;}
+  .sbtn{background:#1D4ED8;color:#fff;border:none;border-radius:10px;padding:14px 32px;font-weight:bold;font-size:16px;cursor:pointer;font-family:inherit;align-self:flex-end;}
+  .sbtn:hover{background:#1E40AF;}
+  .back-link{color:#1D4ED8;font-size:18px;font-weight:bold;margin-bottom:16px;display:inline-block;}
+
+  /* ── LESSON LAYOUT ── */
+  #lessonScreen{flex:1;display:none;flex-direction:column;min-height:0;}
+
+  .top-bar{padding:12px 32px 6px;display:flex;align-items:center;gap:14px;}
+  .step-label{color:#1D4ED8;font-size:20px;font-weight:bold;}
+
+  .content-area{
+    flex:1;min-height:0;
+    display:flex;flex-direction:column;
+    justify-content:center;align-items:center;
+    padding:8px 32px;overflow-y:auto;
+  }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar{
+    background:rgba(255,255,255,.94);
+    border-top:2px solid #BFDBFE;
+    padding:10px 28px;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    flex-wrap:wrap;
+  }
+  .nav-side{display:flex;align-items:center;gap:8px;}
+  .nb{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:#93C5FD;padding:6px 10px;}
+  .nb:disabled{opacity:.25;cursor:not-allowed;}
+  .nb.pri{background:#1D4ED8;color:#fff;border-radius:8px;padding:8px 20px;}
+  .sc{color:#BFDBFE;font-size:13px;min-width:60px;text-align:center;}
+  .tools-side{display:flex;align-items:center;gap:8px;}
+  .trec{color:#93C5FD;font-size:11px;}
+  .tw{display:flex;align-items:center;gap:4px;background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:5px 10px;}
+  .ta{background:none;border:none;color:#1D4ED8;font-size:16px;font-weight:bold;cursor:pointer;width:22px;font-family:inherit;}
+  .td{font-family:'Courier New',monospace;font-size:15px;color:#1D4ED8;min-width:52px;text-align:center;font-weight:bold;}
+  .td.warn{color:#EF4444;}
+  .tt{background:none;border:1.5px solid #1D4ED8;color:#1D4ED8;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:2px;}
+  .hbtn{background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  .hbtn:hover{background:#1E40AF;}
+  .pdf-btn{display:none;}
+
+  /* ── FLIP BOARD ── */
+  .board-grid{display:grid;gap:10px;width:100%;max-width:1080px;}
+  .fc{background:#fff;border:2px solid #BFDBFE;border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+  .fc:hover{border-color:#1D4ED8;box-shadow:0 2px 8px rgba(29,78,216,.15);}
+  .fc.op{border-color:#1D4ED8;background:#F8FAFF;}
+  .fc .qm{font-size:26px;color:#BFDBFE;}
+  .fc .cw{font-size:12px;font-weight:bold;color:#1D4ED8;margin-top:4px;line-height:1.3;}
+  .fc .ct{font-size:9px;color:#888;margin-top:1px;}
+  .board-foot{display:flex;justify-content:flex-end;margin-top:8px;width:100%;max-width:1080px;}
+  .rb{background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:6px;padding:5px 16px;font-size:12px;cursor:pointer;font-family:inherit;}
+
+  /* ── OVERLAY / POPUP ── */
+  #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:200;}
+  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:3px solid #1D4ED8;border-radius:14px;padding:22px 28px;text-align:center;min-width:260px;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
+  .pq{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+  .pw{font-size:20px;font-weight:bold;color:#1D4ED8;margin-top:10px;display:none;}
+  .pt{font-size:12px;color:#888;margin-top:4px;display:none;line-height:1.5;}
+  .pe{background:#EFF6FF;border-left:3px solid #1D4ED8;padding:8px 12px;margin-top:10px;font-size:13px;color:#333;text-align:left;border-radius:4px;display:none;font-style:italic;}
+  .pr{margin-top:12px;background:#1D4ED8;border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;}
+  .ph2{color:#ccc;font-size:11px;margin-top:10px;}
+
+  /* ── LEAD-IN ── */
+  .lead-big{font-size:52px;font-weight:bold;color:#1D4ED8;text-align:center;line-height:1.2;}
+  .lead-sub{font-size:18px;color:#666;margin-top:8px;text-align:center;}
+  .scale-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;max-width:600px;}
+  .scale-row{display:flex;align-items:center;gap:12px;width:100%;}
+  .scale-label{font-size:16px;font-weight:bold;color:#333;min-width:90px;}
+  .scale-bar{flex:1;height:14px;border-radius:7px;}
+  .scale-word{font-size:18px;font-weight:bold;color:#1D4ED8;min-width:90px;text-align:right;}
+  .arrow-label{font-size:13px;color:#888;font-style:italic;}
+
+  /* ── TABS ── */
+  .tw2{width:100%;max-width:1000px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+  .tbar{display:flex;border-bottom:2px solid #BFDBFE;}
+  .tab{flex:1;padding:10px 6px;text-align:center;font-size:13px;font-weight:bold;cursor:pointer;color:#93C5FD;background:#fff;border-bottom:3px solid transparent;}
+  .tab.active{color:#fff;background:#1D4ED8;border-bottom:3px solid #1D4ED8;}
+  .tpane{display:none;padding:20px;max-height:56vh;overflow-y:auto;}
+  .tpane.active{display:block;}
+  .einstr{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
+  .ei{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;}
+  .en{background:#1D4ED8;color:#fff;font-weight:bold;font-size:11px;border-radius:50%;width:20px;height:20px;min-width:20px;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .et{color:#333;font-size:14px;line-height:1.6;flex:1;}
+  .bl{display:inline-block;border-bottom:1.5px solid #BFDBFE;min-width:100px;margin:0 3px;}
+  .mco{display:flex;flex-direction:column;gap:5px;padding-left:30px;margin-top:6px;}
+  .mo{background:#EFF6FF;border:1.5px solid #BFDBFE;color:#333;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit;text-align:left;}
+  .mo:hover{border-color:#1D4ED8;color:#1D4ED8;}
+  .mo.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;}
+  .mo.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+  /* note completion grid */
+  .nc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .nc-card{border:1.5px solid #BFDBFE;border-radius:10px;padding:16px;background:#F8FAFF;}
+  .nc-title{font-weight:bold;color:#1D4ED8;font-size:15px;margin-bottom:10px;}
+  .nc-row{font-size:14px;color:#333;margin-bottom:9px;line-height:1.6;}
+  .nc-key{font-weight:bold;color:#555;}
+</style>
+</head>
+<body>
+
+<!-- OUTLINE -->
+<div id="outlineScreen">
+  <div class="outline-page">
+    <a class="back-link" href="index.html">&#8592;</a>
+    <div class="ol-title">Lesson 5.2</div>
+    <div class="ol-sub">Unit 5 &middot; Amazing architecture</div>
+    <div class="ol-list">
+      <div class="ol-item"><span class="ol-n">1</span>Lead-in — amazing architecture<span class="ol-tag">3 min</span></div>
+      <div class="ol-item"><span class="ol-n">2</span>Grammar — amazing vs good<span class="ol-tag">3 min</span></div>
+      <div class="ol-item"><span class="ol-n">3</span>Listening pre-teach vocabulary<span class="ol-tag">14 words</span></div>
+      <div class="ol-item"><span class="ol-n">4</span>Listening task<span class="ol-tag">note completion · T/F · PDF</span></div>
+    </div>
+    <button class="sbtn" id="startBtn">Start lesson &#8594;</button>
+  </div>
+</div>
+
+<!-- LESSON -->
+<div id="lessonScreen">
+  <div class="top-bar">
+    <a class="back-link" href="index.html" style="font-size:18px;font-weight:bold;color:#1D4ED8;">&#8592;</a>
+    <span class="step-label" id="sLabel">Lesson 5.2</span>
+  </div>
+
+  <div class="content-area" id="contentArea"></div>
+
+  <div class="bottom-bar">
+    <div class="nav-side">
+      <button class="nb" id="prevBtn">&#8592; prev</button>
+      <span class="sc" id="stepCtr"></span>
+      <button class="nb pri" id="nextBtn">next &#8594;</button>
+    </div>
+    <div class="tools-side">
+      <span class="trec" id="recLbl"></span>
+      <div class="tw">
+        <button class="ta" id="tMin">&#8722;</button>
+        <span class="td" id="tDisp">03:00</span>
+        <button class="ta" id="tPls">+</button>
+        <button class="tt" id="tTog">&#9654;</button>
+      </div>
+      <button class="hbtn pdf-btn" id="pdfBtn">📄 PDF</button>
+      <button class="hbtn" id="fsBtn" style="font-size:14px;padding:6px 10px;">&#x26F6;</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+  <div class="pq" id="popQ"></div>
+  <div id="popSvg"></div>
+  <div class="pw" id="popWord"></div>
+  <div class="pt" id="popTrans"></div>
+  <div class="pe" id="popEx"></div>
+  <button class="pr" id="popReveal" onclick="revealPopup()">Show answer ▾</button>
+  <div class="ph2">tap outside to close</div>
+</div>
+
+<script>
+/* FULLSCREEN */
+document.getElementById('fsBtn').onclick=function(){
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});this.textContent='✕';}
+  else{document.exitFullscreen();this.textContent='⛶';}
+};
+document.addEventListener('fullscreenchange',()=>{document.getElementById('fsBtn').textContent=document.fullscreenElement?'✕':'⛶';});
+
+/* TIMER */
+let tS=180,tR=false,tI=null;
+function setT(m){tS=m*60;tR=false;clearInterval(tI);document.getElementById('tTog').textContent='▶';rendT();}
+function rendT(){const m=Math.floor(Math.abs(tS)/60),s=Math.abs(tS)%60,n=tS<0?'-':'',d=document.getElementById('tDisp');d.textContent=n+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');d.className='td'+(tS<=30&&tS>=-999?' warn':'');}
+document.getElementById('tTog').onclick=function(){if(tR){clearInterval(tI);tR=false;this.textContent='▶';}else{tR=true;this.textContent='⏸';tI=setInterval(()=>{tS--;rendT();},1000);}};
+document.getElementById('tMin').onclick=()=>{tS=Math.max(0,tS-60);rendT();};
+document.getElementById('tPls').onclick=()=>{tS+=60;rendT();};
+
+/* PDF */
+function savePDF(el,name){
+  html2pdf().set({margin:10,filename:name,image:{type:'jpeg',quality:.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();
+}
+
+/* TAB */
+function swTab(el,n){
+  const bar=el.parentElement,wrap=bar.parentElement;
+  bar.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  wrap.querySelectorAll('.tpane').forEach((p,i)=>p.classList.toggle('active',i===n));
+}
+window.swTab=swTab;
+function mcAns(btn,ok){
+  if(btn.classList.contains('correct')||btn.classList.contains('wrong'))return;
+  const g=btn.closest('.mco');
+  g.querySelectorAll('.mo').forEach(b=>b.onclick=null);
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok)g.querySelector('[data-c]').classList.add('correct');
+}
+window.mcAns=mcAns;
+
+/* ── SVGs ── */
+const SVG={
+  building:`<svg viewBox="0 0 80 90" width="70" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="18" width="44" height="70" rx="3" fill="#1D4ED8"/><rect x="24" y="24" width="10" height="10" rx="2" fill="#fff"/><rect x="46" y="24" width="10" height="10" rx="2" fill="#fff"/><rect x="24" y="42" width="10" height="10" rx="2" fill="#fff"/><rect x="46" y="42" width="10" height="10" rx="2" fill="#fff"/><rect x="24" y="60" width="10" height="10" rx="2" fill="#fff"/><rect x="46" y="60" width="10" height="10" rx="2" fill="#fff"/><rect x="32" y="70" width="16" height="18" rx="2" fill="#93C5FD"/></svg>`,
+  there:`<svg viewBox="0 0 80 90" width="70" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="32" r="18" fill="#EF4444"/><circle cx="40" cy="32" r="8" fill="#fff"/><path d="M40 50 L40 78" stroke="#EF4444" stroke-width="5" stroke-linecap="round"/><circle cx="40" cy="80" r="4" fill="#EF4444"/></svg>`,
+  team:`<svg viewBox="0 0 100 80" width="90" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="11" fill="#3B82F6"/><rect x="14" y="33" width="16" height="20" rx="5" fill="#3B82F6"/><circle cx="50" cy="20" r="13" fill="#1D4ED8"/><rect x="41" y="33" width="18" height="22" rx="5" fill="#1D4ED8"/><circle cx="78" cy="22" r="11" fill="#60A5FA"/><rect x="70" y="33" width="16" height="20" rx="5" fill="#60A5FA"/></svg>`,
+  different:`<svg viewBox="0 0 100 80" width="90" xmlns="http://www.w3.org/2000/svg"><circle cx="28" cy="40" r="22" fill="#EF4444"/><rect x="56" y="18" width="32" height="44" rx="4" fill="#1D4ED8"/><line x1="45" y1="40" x2="55" y2="40" stroke="#FFD400" stroke-width="3" stroke-dasharray="4,3"/></svg>`,
+  change:`<svg viewBox="0 0 100 80" width="90" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="40" r="16" fill="#EF4444" opacity=".8"/><circle cx="78" cy="40" r="16" fill="#4CAF50"/><path d="M38,32 Q58,22 64,40" stroke="#FFD400" stroke-width="3" fill="none" stroke-linecap="round"/><polygon points="60,36 68,40 60,48" fill="#FFD400"/></svg>`,
+  when:`<svg viewBox="0 0 80 80" width="70" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="42" r="28" fill="#fff" stroke="#1D4ED8" stroke-width="3"/><line x1="40" y1="24" x2="40" y2="30" stroke="#1D4ED8" stroke-width="2"/><line x1="40" y1="60" x2="40" y2="54" stroke="#1D4ED8" stroke-width="2"/><line x1="22" y1="42" x2="28" y2="42" stroke="#1D4ED8" stroke-width="2"/><line x1="58" y1="42" x2="52" y2="42" stroke="#1D4ED8" stroke-width="2"/><line x1="40" y1="42" x2="40" y2="30" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/><line x1="40" y1="42" x2="52" y2="38" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/><rect x="26" y="12" width="28" height="8" rx="3" fill="#1D4ED8"/></svg>`,
+  ontopfloor:`<svg viewBox="0 0 80 90" width="70" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="40" width="40" height="48" rx="3" fill="#93C5FD"/><rect x="26" y="47" width="8" height="8" rx="1" fill="#fff"/><rect x="46" y="47" width="8" height="8" rx="1" fill="#fff"/><rect x="26" y="63" width="8" height="8" rx="1" fill="#fff"/><rect x="46" y="63" width="8" height="8" rx="1" fill="#fff"/><rect x="24" y="24" width="32" height="18" rx="3" fill="#1D4ED8"/><circle cx="40" cy="8" r="8" fill="#FFD400"/><polygon points="36,8 44,8 40,2" fill="#FFD400"/></svg>`,
+  why:`<svg viewBox="0 0 80 80" width="70" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="28" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2.5"/><text x="40" y="36" text-anchor="middle" font-size="22" font-weight="bold" fill="#1D4ED8" font-family="Arial">?</text><text x="40" y="56" text-anchor="middle" font-size="10" fill="#1D4ED8" font-family="Arial">WHY</text></svg>`,
+  exciting:`<svg viewBox="0 0 90 80" width="80" xmlns="http://www.w3.org/2000/svg"><polygon points="45,5 52,30 78,30 57,46 65,72 45,56 25,72 33,46 12,30 38,30" fill="#FFD400"/><text x="45" y="44" text-anchor="middle" font-size="14" font-weight="bold" fill="#111" font-family="Arial">!</text></svg>`,
+  because:`<svg viewBox="0 0 110 80" width="100" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="24" width="36" height="32" rx="6" fill="#EF4444"/><text x="23" y="44" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">CAUSE</text><line x1="41" y1="40" x2="66" y2="40" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round"/><polygon points="62,34 74,40 62,46" fill="#1D4ED8"/><rect x="70" y="24" width="36" height="32" rx="6" fill="#4CAF50"/><text x="88" y="44" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">EFFECT</text></svg>`,
+  modern:`<svg viewBox="0 0 90 80" width="80" xmlns="http://www.w3.org/2000/svg"><polygon points="45,8 78,32 70,72 20,72 12,32" fill="#1D4ED8" opacity=".8"/><rect x="32" y="40" width="10" height="15" rx="2" fill="#fff"/><rect x="48" y="40" width="10" height="15" rx="2" fill="#fff"/><rect x="40" y="22" width="10" height="10" rx="2" fill="#fff"/></svg>`,
+  old:`<svg viewBox="0 0 80 90" width="70" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="25" width="52" height="63" rx="3" fill="#92400E"/><polygon points="40,4 14,25 66,25" fill="#7C2D12"/><rect x="22" y="35" width="10" height="12" rx="1" fill="#FEF3C7" stroke="#B45309" stroke-width="1"/><rect x="48" y="35" width="10" height="12" rx="1" fill="#FEF3C7" stroke="#B45309" stroke-width="1"/><rect x="32" y="58" width="16" height="30" rx="1" fill="#7C2D12"/><line x1="14" y1="55" x2="66" y2="55" stroke="#7C2D12" stroke-width="2"/></svg>`,
+  unusual:`<svg viewBox="0 0 90 80" width="80" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="48" rx="24" ry="18" fill="#D946EF" opacity=".8"/><polygon points="62,12 78,38 58,38 74,62 46,62 50,40 34,40 62,12" fill="#F97316" opacity=".85"/></svg>`,
+  function:`<svg viewBox="0 0 90 80" width="80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="20" width="30" height="40" rx="5" fill="#4CAF50"/><text x="25" y="44" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">OFFICE</text><rect x="52" y="24" width="28" height="16" rx="4" fill="#FFD400"/><text x="66" y="36" text-anchor="middle" font-size="8" fill="#111" font-family="Arial" font-weight="bold">MUSEUM</text><rect x="52" y="46" width="28" height="16" rx="4" fill="#EF4444"/><text x="66" y="58" text-anchor="middle" font-size="8" fill="#fff" font-family="Arial" font-weight="bold">HOME</text><text x="45" y="44" text-anchor="middle" font-size="12" fill="#1D4ED8">→</text></svg>`
+};
+
+const vocab=[
+  {w:'building',      ru:'здание',                uz:'bino',                    k:'building',     ex:'"The Allianz Arena is a famous building in Munich."'},
+  {w:'there',         ru:'там',                   uz:'u yerda',                 k:'there',        ex:'"There is a restaurant on the top floor."'},
+  {w:'team',          ru:'команда',               uz:'jamoa',                   k:'team',         ex:'"A big team of architects designed the building."'},
+  {w:'different',     ru:'разный',                uz:'har xil',                 k:'different',    ex:'"The two buildings look very different."'},
+  {w:'change',        ru:'меняться',              uz:'o\'zgarmoq',              k:'change',       ex:'"The colour of the arena can change at night."'},
+  {w:'when',          ru:'когда',                 uz:'qachon',                  k:'when',         ex:'"When does the building open?"'},
+  {w:'on top floor',  ru:'на верхнем этаже',      uz:'yuqori qavatda',          k:'ontopfloor',   ex:'"The restaurant is on the top floor."'},
+  {w:'why',           ru:'почему',                uz:'nima uchun',              k:'why',          ex:'"Why is this building so famous?"'},
+  {w:'exciting',      ru:'захватывающий',         uz:'hayajonli',               k:'exciting',     ex:'"It is an exciting and unusual building."'},
+  {w:'because',       ru:'потому что',            uz:'chunki',                  k:'because',      ex:'"It is famous because of its unusual shape."'},
+  {w:'modern',        ru:'современный',           uz:'zamonaviy',               k:'modern',       ex:'"The Dancing House is a modern building."'},
+  {w:'old',           ru:'старый',                uz:'eski',                    k:'old',          ex:'"The church next to it is very old."'},
+  {w:'unusual',       ru:'необычный',             uz:'g\'ayrioddiy',            k:'unusual',      ex:'"The shape of the building is very unusual."'},
+  {w:'function',      ru:'функция / назначение',  uz:'vazifa / maqsad',         k:'function',     ex:'"The function of the building is to be an office and a restaurant."'},
+];
+
+/* POPUP */
+let popCb=null;
+function openPopup(svgHtml,word,trans,ex){
+  document.getElementById('popQ').textContent='What does this word mean?';
+  document.getElementById('popSvg').innerHTML=svgHtml;
+  document.getElementById('popWord').style.display='none';
+  document.getElementById('popWord').textContent=word;
+  document.getElementById('popTrans').style.display='none';
+  document.getElementById('popTrans').innerHTML=trans;
+  document.getElementById('popEx').style.display='none';
+  document.getElementById('popEx').textContent=ex;
+  document.getElementById('popReveal').style.display='inline-block';
+  document.getElementById('overlay').style.display='block';
+  document.getElementById('popup').style.display='block';
+}
+function revealPopup(){
+  document.getElementById('popWord').style.display='block';
+  document.getElementById('popTrans').style.display='block';
+  document.getElementById('popEx').style.display='block';
+  document.getElementById('popReveal').style.display='none';
+}
+function closePopup(){
+  document.getElementById('overlay').style.display='none';
+  document.getElementById('popup').style.display='none';
+  if(popCb){popCb();popCb=null;}
+}
+
+/* BOARD */
+function makeBoard(cols){
+  const opened=new Set();
+  const frag=document.createDocumentFragment();
+  const grid=document.createElement('div');
+  grid.className='board-grid';
+  grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  const cntEl=document.createElement('div');
+  cntEl.style.cssText='text-align:right;font-size:12px;color:#93C5FD;margin-bottom:6px;width:100%;max-width:1080px;';
+  const foot=document.createElement('div');foot.className='board-foot';
+  const rb=document.createElement('button');rb.className='rb';rb.textContent='↺ Reset';
+  function render(){
+    const allOpen=opened.size===vocab.length;
+    grid.innerHTML='';
+    vocab.forEach((item,i)=>{
+      const isOpen=opened.has(i);
+      const card=document.createElement('div');
+      card.className='fc'+(isOpen?' op':'');
+      if(isOpen){
+        card.innerHTML=SVG[item.k].replace(/width="\d+"/,'width="55"')
+          +'<div class="cw">'+item.w+'</div>'
+          +(allOpen?'<div class="ct">🇷🇺 '+item.ru+'</div><div class="ct">🇺🇿 '+item.uz+'</div>':'');
+      }else{
+        card.innerHTML='<div class="qm">?</div>';
+      }
+      card.onclick=()=>{
+        popCb=()=>{opened.add(i);render();};
+        openPopup(
+          SVG[item.k].replace(/width="\d+"/,'width="140"'),
+          item.w,
+          '🇷🇺 '+item.ru+'<br>🇺🇿 '+item.uz,
+          item.ex
+        );
+      };
+      grid.appendChild(card);
+    });
+    cntEl.textContent=opened.size+' / '+vocab.length+' opened';
+  }
+  rb.onclick=()=>{opened.clear();render();};
+  foot.appendChild(rb);
+  frag.appendChild(cntEl);
+  frag.appendChild(grid);
+  frag.appendChild(foot);
+  render();
+  return frag;
+}
+
+/* STEPS */
+const steps=[
+  {label:'Lead-in',              type:'leadin1', rec:3},
+  {label:'Amazing vs Good',      type:'leadin2', rec:3},
+  {label:'Pre-teach vocabulary', type:'board',   rec:10},
+  {label:'Listening task',       type:'task',    rec:15},
+];
+let cur=0;
+
+function buildPrintEl(html){
+  const el=document.createElement('div');
+  el.style.cssText='font-family:Arial,sans-serif;padding:20px;color:#111;max-width:740px;';
+  el.innerHTML=html;
+  document.body.appendChild(el);
+  setTimeout(()=>{if(el.parentNode)el.parentNode.removeChild(el);},8000);
+  return el;
+}
+
+function pdfTask(){
+  const nc=`<h3 style="color:#1D4ED8;margin-bottom:12px;">Note completion — Listen and complete with 1–2 words</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+    <div style="border:1.5px solid #BFDBFE;border-radius:8px;padding:14px;background:#F8FAFF;">
+      <div style="font-weight:bold;color:#1D4ED8;margin-bottom:8px;">The Allianz Arena</div>
+      <div style="font-size:13px;line-height:2.2;"><b>Location:</b> Munich, <span style="display:inline-block;border-bottom:1px solid #333;min-width:80px;">&nbsp;</span><br><b>Function:</b> <span style="display:inline-block;border-bottom:1px solid #333;min-width:80px;">&nbsp;</span> stadium<br><b>Design feature:</b> changes <span style="display:inline-block;border-bottom:1px solid #333;min-width:80px;">&nbsp;</span><br><b>Opening times:</b> 10.00 – <span style="display:inline-block;border-bottom:1px solid #333;min-width:60px;">&nbsp;</span></div>
+    </div>
+    <div style="border:1.5px solid #BFDBFE;border-radius:8px;padding:14px;background:#F8FAFF;">
+      <div style="font-weight:bold;color:#1D4ED8;margin-bottom:8px;">The Dancing House</div>
+      <div style="font-size:13px;line-height:2.2;"><b>Location:</b> Prague, Czech Republic<br><b>Function:</b> <span style="display:inline-block;border-bottom:1px solid #333;min-width:80px;">&nbsp;</span> building and restaurant<br><b>Design feature:</b> like two <span style="display:inline-block;border-bottom:1px solid #333;min-width:80px;">&nbsp;</span> dancing<br><b>Opening times:</b> restaurant 12.00 – <span style="display:inline-block;border-bottom:1px solid #333;min-width:60px;">&nbsp;</span></div>
+    </div>
+  </div>
+  <h3 style="color:#1D4ED8;margin-bottom:12px;">True or False?</h3>
+  ${['The Allianz Arena is located in Germany.','The Dancing House functions only as a restaurant.','Both buildings have unusual design features.','You can visit the Allianz Arena in the morning.'].map((q,i)=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;font-size:14px;"><span style="background:#1D4ED8;color:#fff;border-radius:50%;width:20px;height:20px;min-width:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;">${i+1}</span>${q}<span style="display:inline-block;border-bottom:1px solid #333;min-width:70px;margin-left:8px;">&nbsp;</span></div>`).join('')}`;
+  const el=buildPrintEl('<h2 style="color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:8px;margin-bottom:16px;">Listening Task &middot; Lesson 5.2</h2>'+nc);
+  savePDF(el,'5.2-listening-task.pdf');
+}
+
+function renderStep(){
+  const s=steps[cur];
+  const area=document.getElementById('contentArea');
+  area.innerHTML='';
+  document.getElementById('sLabel').textContent=s.label;
+  document.getElementById('recLbl').textContent='rec: '+s.rec+' min';
+  const pdfBtn=document.getElementById('pdfBtn');
+  pdfBtn.style.display='none'; pdfBtn.onclick=null;
+  clearInterval(tI);tR=false;document.getElementById('tTog').textContent='▶';setT(s.rec);
+
+  if(s.type==='leadin1'){
+    const d=document.createElement('div');
+    d.style.cssText='text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px;';
+    d.innerHTML=`
+      <div class="lead-big">Amazing<br>Architecture</div>
+      <svg viewBox="0 0 280 140" width="380" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="20" width="80" height="100" rx="5" fill="#1D4ED8"/><rect x="30" y="30" width="14" height="14" rx="2" fill="#fff"/><rect x="52" y="30" width="14" height="14" rx="2" fill="#fff"/><rect x="74" y="30" width="14" height="14" rx="2" fill="#fff"/><rect x="30" y="54" width="14" height="14" rx="2" fill="#fff"/><rect x="52" y="54" width="14" height="14" rx="2" fill="#fff"/><rect x="74" y="54" width="14" height="14" rx="2" fill="#fff"/><rect x="44" y="80" width="12" height="40" rx="2" fill="#93C5FD"/>
+        <rect x="130" y="50" width="60" height="70" rx="5" fill="#1D4ED8"/><polygon points="160,18 130,50 190,50" fill="#1E40AF"/><rect x="140" y="62" width="10" height="12" rx="2" fill="#fff"/><rect x="170" y="62" width="10" height="12" rx="2" fill="#fff"/><rect x="148" y="85" width="24" height="35" rx="2" fill="#93C5FD"/>
+        <rect x="216" y="35" width="50" height="85" rx="4" fill="#3B82F6"/><ellipse cx="241" cy="35" rx="25" ry="18" fill="#1D4ED8"/><rect x="224" y="50" width="10" height="12" rx="2" fill="#fff"/><rect x="244" y="50" width="10" height="12" rx="2" fill="#fff"/><rect x="224" y="72" width="10" height="12" rx="2" fill="#fff"/><rect x="244" y="72" width="10" height="12" rx="2" fill="#fff"/><rect x="232" y="90" width="18" height="30" rx="2" fill="#BFDBFE"/>
+      </svg>
+      <div class="lead-sub">Look at these buildings. What do you think of them?</div>
+    `;
+    area.appendChild(d);
+  }
+
+  else if(s.type==='leadin2'){
+    const d=document.createElement('div');
+    d.className='scale-wrap';
+    d.innerHTML=`
+      <div style="text-align:center;margin-bottom:8px;">
+        <div style="font-size:22px;font-weight:bold;color:#1D4ED8;">amazing</div>
+        <div style="font-size:13px;color:#666;margin-top:2px;">adjective — describes something in a very strong way</div>
+      </div>
+      <div style="width:100%;max-width:520px;background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+        <div style="font-size:13px;color:#888;margin-bottom:16px;text-align:center;text-transform:uppercase;letter-spacing:.06em;">strength scale</div>
+        <div class="scale-row" style="margin-bottom:12px;">
+          <div class="scale-label" style="color:#888;">good</div>
+          <div class="scale-bar" style="background:linear-gradient(90deg,#BFDBFE 0%,#BFDBFE 30%,#EFF6FF 30%);">  </div>
+          <div class="scale-word" style="color:#888;">★</div>
+        </div>
+        <div class="scale-row" style="margin-bottom:12px;">
+          <div class="scale-label" style="color:#666;">great</div>
+          <div class="scale-bar" style="background:linear-gradient(90deg,#3B82F6 0%,#3B82F6 60%,#EFF6FF 60%);">  </div>
+          <div class="scale-word" style="color:#3B82F6;">★★</div>
+        </div>
+        <div class="scale-row">
+          <div class="scale-label" style="color:#1D4ED8;font-size:18px;">amazing</div>
+          <div class="scale-bar" style="background:#1D4ED8;">  </div>
+          <div class="scale-word" style="color:#1D4ED8;">★★★</div>
+        </div>
+        <div style="margin-top:18px;border-top:1px solid #BFDBFE;padding-top:14px;">
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;font-size:14px;color:#333;"><span style="color:#888;">✗</span> This building is <b>good</b>.</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#333;"><span style="color:#1D4ED8;">✓</span> This building is <b style="color:#1D4ED8;">amazing</b>!</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:#888;margin-top:4px;">architecture (noun) = the design and style of buildings</div>
+    `;
+    area.appendChild(d);
+  }
+
+  else if(s.type==='board'){
+    area.appendChild(makeBoard(7));
+  }
+
+  else if(s.type==='task'){
+    pdfBtn.style.display='inline-block';
+    pdfBtn.textContent='📄 PDF';
+    pdfBtn.onclick=pdfTask;
+    const tw=document.createElement('div');tw.className='tw2';
+    tw.innerHTML=`<div class="tbar">
+      <div class="tab active" onclick="swTab(this,0)">Note completion</div>
+      <div class="tab" onclick="swTab(this,1)">True / False</div>
+    </div>
+    <div class="tpane active">
+      <div class="einstr">Listen and complete with 1–2 words from the listening (6.5 ▶▶)</div>
+      <div class="nc-grid">
+        <div class="nc-card">
+          <div class="nc-title">The Allianz Arena</div>
+          <div class="nc-row"><span class="nc-key">Location:</span> Munich, <span class="nc-key">1</span><span class="bl">&nbsp;</span></div>
+          <div class="nc-row"><span class="nc-key">Function:</span> <span class="nc-key">2</span><span class="bl">&nbsp;</span> stadium</div>
+          <div class="nc-row"><span class="nc-key">Design feature:</span> changes <span class="nc-key">3</span><span class="bl">&nbsp;</span></div>
+          <div class="nc-row"><span class="nc-key">Opening times:</span> 10.00 – <span class="nc-key">4</span><span class="bl" style="min-width:60px;">&nbsp;</span></div>
+        </div>
+        <div class="nc-card">
+          <div class="nc-title">The Dancing House</div>
+          <div class="nc-row"><span class="nc-key">Location:</span> Prague, Czech Republic</div>
+          <div class="nc-row"><span class="nc-key">Function:</span> <span class="nc-key">5</span><span class="bl">&nbsp;</span> building and restaurant</div>
+          <div class="nc-row"><span class="nc-key">Design feature:</span> like two <span class="nc-key">6</span><span class="bl">&nbsp;</span> dancing</div>
+          <div class="nc-row"><span class="nc-key">Opening times:</span> restaurant 12.00 – <span class="nc-key">7</span><span class="bl" style="min-width:60px;">&nbsp;</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tpane">
+      <div class="einstr">True or False?</div>
+      ${[
+        {q:'The Allianz Arena is located in Germany.',c:true},
+        {q:'The Dancing House functions only as a restaurant.',c:false},
+        {q:'Both buildings have unusual design features.',c:true},
+        {q:'You can visit the Allianz Arena in the morning.',c:true},
+      ].map((q,i)=>`<div class="ei"><div class="en">${i+1}</div><div class="et">${q.q}
+        <div class="mco">
+          <button class="mo" ${q.c?'data-c':''} onclick="mcAns(this,${q.c})">TRUE</button>
+          <button class="mo" ${!q.c?'data-c':''} onclick="mcAns(this,${!q.c})">FALSE</button>
+        </div>
+      </div></div>`).join('')}
+    </div>`;
+    area.appendChild(tw);
+  }
+
+  document.getElementById('stepCtr').textContent=(cur+1)+' / '+steps.length;
+  document.getElementById('prevBtn').disabled=cur===0;
+  document.getElementById('nextBtn').textContent=cur===steps.length-1?'Done':'next \u2192';
+}
+
+document.getElementById('startBtn').onclick=()=>{
+  document.getElementById('outlineScreen').style.display='none';
+  document.getElementById('lessonScreen').style.display='flex';
+  cur=0;renderStep();
+};
+document.getElementById('nextBtn').onclick=()=>{if(cur<steps.length-1){cur++;renderStep();}};
+document.getElementById('prevBtn').onclick=()=>{if(cur>0){cur--;renderStep();}};
+</script>
+</body>
+</html>

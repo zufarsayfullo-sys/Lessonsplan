@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 7.1</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif;background:#DDE6F8;min-height:100vh;display:flex;flex-direction:column;}
+  a{text-decoration:none;color:inherit;}
+  .outline-page{flex:1;padding:24px 36px;display:flex;flex-direction:column;}
+  .ol-title{color:#1D4ED8;font-size:28px;font-weight:bold;margin-bottom:4px;}
+  .ol-sub{color:#666;font-size:14px;margin-bottom:24px;}
+  .ol-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+  .ol-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:14px 18px;font-size:15px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+  .ol-n{background:#1D4ED8;color:#fff;border-radius:50%;width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;}
+  .ol-tag{margin-left:auto;color:#93C5FD;font-size:12px;}
+  .sbtn{background:#1D4ED8;color:#fff;border:none;border-radius:10px;padding:14px 32px;font-weight:bold;font-size:16px;cursor:pointer;font-family:inherit;align-self:flex-end;}
+  .back-link{color:#1D4ED8;font-size:18px;font-weight:bold;margin-bottom:16px;display:inline-block;}
+  /* LESSON LAYOUT */
+  #lessonScreen{flex:1;display:none;flex-direction:column;min-height:0;}
+  .top-bar{padding:12px 32px 6px;display:flex;align-items:center;gap:14px;}
+  .step-label{color:#1D4ED8;font-size:20px;font-weight:bold;}
+  .content-area{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8px 32px;overflow-y:auto;}
+  .bottom-bar{background:rgba(255,255,255,.94);border-top:2px solid #BFDBFE;padding:10px 28px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .nav-side{display:flex;align-items:center;gap:8px;}
+  .nb{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:#93C5FD;padding:6px 10px;}
+  .nb:disabled{opacity:.25;cursor:not-allowed;}
+  .nb.pri{background:#1D4ED8;color:#fff;border-radius:8px;padding:8px 20px;}
+  .sc{color:#BFDBFE;font-size:13px;min-width:60px;text-align:center;}
+  .tools-side{display:flex;align-items:center;gap:8px;}
+  .trec{color:#93C5FD;font-size:11px;}
+  .tw0{display:flex;align-items:center;gap:4px;background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:5px 10px;}
+  .ta{background:none;border:none;color:#1D4ED8;font-size:16px;font-weight:bold;cursor:pointer;width:22px;font-family:inherit;}
+  .td{font-family:'Courier New',monospace;font-size:15px;color:#1D4ED8;min-width:52px;text-align:center;font-weight:bold;}
+  .td.warn{color:#EF4444;}
+  .tt{background:none;border:1.5px solid #1D4ED8;color:#1D4ED8;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:2px;}
+  .hbtn{background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  .pdf-btn{display:none;}
+  /* FLIP BOARD */
+  .board-grid{display:grid;gap:10px;width:100%;max-width:1080px;}
+  .fc{background:#fff;border:2px solid #BFDBFE;border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;min-height:115px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+  .fc:hover{border-color:#1D4ED8;box-shadow:0 2px 8px rgba(29,78,216,.15);}
+  .fc.op{border-color:#1D4ED8;background:#F8FAFF;}
+  .fc .qm{font-size:26px;color:#BFDBFE;}
+  .fc .cw{font-size:11px;font-weight:bold;color:#1D4ED8;margin-top:4px;line-height:1.3;}
+  .fc .ct{font-size:9px;color:#888;margin-top:1px;}
+  .board-foot{display:flex;justify-content:flex-end;margin-top:8px;width:100%;max-width:1080px;}
+  .rb{background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:6px;padding:5px 16px;font-size:12px;cursor:pointer;font-family:inherit;}
+  /* OVERLAY */
+  #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:200;}
+  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:3px solid #1D4ED8;border-radius:14px;padding:22px 28px;text-align:center;min-width:260px;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
+  .pq{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+  .pw{font-size:20px;font-weight:bold;color:#1D4ED8;margin-top:10px;display:none;}
+  .pt{font-size:12px;color:#888;margin-top:4px;display:none;line-height:1.5;}
+  .pe{background:#EFF6FF;border-left:3px solid #1D4ED8;padding:8px 12px;margin-top:10px;font-size:13px;color:#333;text-align:left;border-radius:4px;display:none;font-style:italic;}
+  .pr{margin-top:12px;background:#1D4ED8;border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;}
+  .ph2{color:#ccc;font-size:11px;margin-top:10px;}
+  /* TABS */
+  .tw2{width:100%;max-width:1000px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+  .tbar{display:flex;border-bottom:2px solid #BFDBFE;}
+  .tab{flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:bold;cursor:pointer;color:#93C5FD;background:#fff;border-bottom:3px solid transparent;}
+  .tab.active{color:#fff;background:#1D4ED8;border-bottom:3px solid #1D4ED8;}
+  .tpane{display:none;padding:18px;max-height:55vh;overflow-y:auto;}
+  .tpane.active{display:block;}
+  .einstr{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
+  .ei{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;}
+  .en{background:#1D4ED8;color:#fff;font-weight:bold;font-size:11px;border-radius:50%;width:20px;height:20px;min-width:20px;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .et{color:#333;font-size:14px;line-height:1.6;flex:1;}
+  .bl{display:inline-block;border-bottom:1.5px solid #BFDBFE;min-width:100px;margin:0 3px;}
+  /* lead-in card */
+  .lead-card{background:#fff;border-radius:14px;padding:24px 28px;box-shadow:0 2px 12px rgba(0,0,0,.08);width:100%;max-width:900px;}
+  .lead-title{font-size:22px;font-weight:bold;color:#1D4ED8;margin-bottom:18px;text-align:center;}
+  .ex-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;padding:12px 14px;background:#F8FAFF;border-radius:8px;border:1.5px solid #BFDBFE;}
+  .ex-num{background:#1D4ED8;color:#fff;border-radius:50%;width:22px;height:22px;min-width:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+  .ex-text{font-size:14px;color:#333;line-height:1.6;flex:1;}
+  .ex-text b{color:#1D4ED8;}
+  .ex-text em{color:#888;font-size:12px;}
+  .pos-btns{display:flex;gap:6px;margin-top:6px;}
+  .pos-btn{background:none;border:1.5px solid #BFDBFE;color:#666;border-radius:6px;padding:4px 12px;font-size:12px;cursor:pointer;font-family:inherit;}
+  .pos-btn:hover{border-color:#1D4ED8;color:#1D4ED8;}
+  .pos-btn.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;}
+  .pos-btn.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+  /* reward intro */
+  .reward-intro{width:100%;max-width:860px;background:#fff;border-radius:14px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.08);}
+  .r-word{font-size:42px;font-weight:bold;color:#1D4ED8;text-align:center;margin-bottom:20px;}
+  .r-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .r-box{border-radius:10px;padding:18px;}
+  .r-box.noun{background:#EFF6FF;border:2px solid #BFDBFE;}
+  .r-box.verb{background:#F0FDF4;border:2px solid #BBF7D0;}
+  .r-tag{font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+  .r-tag.n{color:#1D4ED8;}
+  .r-tag.v{color:#166534;}
+  .r-sent{font-size:15px;color:#333;line-height:1.6;}
+  .r-sent b{color:#1D4ED8;}
+  .r-sent b.v{color:#166534;}
+  .r-hint{font-size:12px;color:#888;margin-top:6px;}
+  /* matching */
+  .match-wrap{width:100%;max-width:960px;background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.08);}
+  .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+  .match-def{background:#F8FAFF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px 14px;font-size:13px;color:#333;display:flex;gap:8px;}
+  .match-defn{background:#1D4ED8;color:#fff;border-radius:50%;width:20px;height:20px;min-width:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;}
+  .match-input{background:none;border:none;border-bottom:1.5px solid #BFDBFE;color:#1D4ED8;font-size:13px;font-weight:bold;font-family:inherit;width:160px;outline:none;padding:2px 4px;margin-left:auto;}
+  .reveal-all-btn{background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:7px 18px;font-size:12px;cursor:pointer;font-family:inherit;margin-top:14px;}
+  /* reading text */
+  .reading-text{color:#333;font-size:14px;line-height:1.85;}
+  .reading-text p{margin-bottom:10px;}
+  .hl{background:#FFD400;color:#111;padding:1px 3px;border-radius:2px;font-weight:bold;}
+  /* note completion */
+  .nc-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;}
+  .nc-n{background:#1D4ED8;color:#fff;border-radius:50%;width:20px;height:20px;min-width:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+  .nc-t{color:#333;font-size:14px;line-height:1.7;flex:1;}
+  /* writer view */
+  .view-opt{background:#F8FAFF;border:2px solid #BFDBFE;border-radius:10px;padding:14px 18px;cursor:pointer;margin-bottom:10px;font-size:14px;color:#333;transition:all .2s;}
+  .view-opt:hover{border-color:#1D4ED8;}
+  .view-opt.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;}
+  .view-opt.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+  /* tf */
+  .tf-opts{display:flex;gap:8px;margin-top:6px;}
+  .tf-btn{background:none;border:1.5px solid #BFDBFE;color:#666;border-radius:6px;padding:5px 14px;font-size:13px;cursor:pointer;font-family:inherit;}
+  .tf-btn:hover{border-color:#1D4ED8;color:#1D4ED8;}
+  .tf-btn.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;}
+  .tf-btn.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+</style>
+</head>
+<body>
+
+<!-- OUTLINE -->
+<div id="outlineScreen">
+  <div class="outline-page">
+    <a class="back-link" href="index.html">&#8592;</a>
+    <div class="ol-title">Lesson 7.1</div>
+    <div class="ol-sub">Unit 7 &middot; Finders Keepers?</div>
+    <div class="ol-list">
+      <div class="ol-item"><span class="ol-n">1</span>Lead-in — reward: noun or verb?<span class="ol-tag">5 min</span></div>
+      <div class="ol-item"><span class="ol-n">2</span>Lead-in exercise — identify parts of speech<span class="ol-tag">interactive</span></div>
+      <div class="ol-item"><span class="ol-n">3</span>Vocabulary pre-teach<span class="ol-tag">8 words</span></div>
+      <div class="ol-item"><span class="ol-n">4</span>Matching exercise<span class="ol-tag">words → definitions</span></div>
+      <div class="ol-item"><span class="ol-n">5</span>Note completion<span class="ol-tag">exercise 6</span></div>
+      <div class="ol-item"><span class="ol-n">6</span>Reading pre-teach<span class="ol-tag">7 words</span></div>
+      <div class="ol-item"><span class="ol-n">7</span>Reading + exercises<span class="ol-tag">text · ex1 · ex2 · ex3 · PDF</span></div>
+    </div>
+    <button class="sbtn" id="startBtn">Start lesson &#8594;</button>
+  </div>
+</div>
+
+<!-- LESSON -->
+<div id="lessonScreen">
+  <div class="top-bar">
+    <a class="back-link" href="index.html" style="font-size:18px;font-weight:bold;color:#1D4ED8;">&#8592;</a>
+    <span class="step-label" id="sLabel">Lesson 7.1</span>
+  </div>
+  <div class="content-area" id="contentArea"></div>
+  <div class="bottom-bar">
+    <div class="nav-side">
+      <button class="nb" id="prevBtn">&#8592; prev</button>
+      <span class="sc" id="stepCtr"></span>
+      <button class="nb pri" id="nextBtn">next &#8594;</button>
+    </div>
+    <div class="tools-side">
+      <span class="trec" id="recLbl"></span>
+      <div class="tw0">
+        <button class="ta" id="tMin">&#8722;</button>
+        <span class="td" id="tDisp">05:00</span>
+        <button class="ta" id="tPls">+</button>
+        <button class="tt" id="tTog">&#9654;</button>
+      </div>
+      <button class="hbtn pdf-btn" id="pdfBtn">📄 PDF</button>
+      <button class="hbtn" id="fsBtn" style="font-size:14px;padding:6px 10px;">&#x26F6;</button>
+    </div>
+  </div>
+</div>
+
+<div id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+  <div class="pq" id="popQ"></div>
+  <div id="popSvg"></div>
+  <div class="pw" id="popWord"></div>
+  <div class="pt" id="popTrans"></div>
+  <div class="pe" id="popEx"></div>
+  <button class="pr" id="popReveal" onclick="revealPopup()">Show answer ▾</button>
+  <div class="ph2">tap outside to close</div>
+</div>
+
+<script>
+/* FULLSCREEN */
+document.getElementById('fsBtn').onclick=function(){
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});this.textContent='✕';}
+  else{document.exitFullscreen();this.textContent='⛶';}
+};
+document.addEventListener('fullscreenchange',()=>{document.getElementById('fsBtn').textContent=document.fullscreenElement?'✕':'⛶';});
+
+/* TIMER */
+let tS=300,tR=false,tI=null;
+function setT(m){tS=m*60;tR=false;clearInterval(tI);document.getElementById('tTog').textContent='▶';rendT();}
+function rendT(){const m=Math.floor(Math.abs(tS)/60),s=Math.abs(tS)%60,n=tS<0?'-':'',d=document.getElementById('tDisp');d.textContent=n+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');d.className='td'+(tS<=30&&tS>=-999?' warn':'');}
+document.getElementById('tTog').onclick=function(){if(tR){clearInterval(tI);tR=false;this.textContent='▶';}else{tR=true;this.textContent='⏸';tI=setInterval(()=>{tS--;rendT();},1000);}};
+document.getElementById('tMin').onclick=()=>{tS=Math.max(0,tS-60);rendT();};
+document.getElementById('tPls').onclick=()=>{tS+=60;rendT();};
+
+/* PDF */
+function savePDF(el,name){
+  html2pdf().set({margin:10,filename:name,image:{type:'jpeg',quality:.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();
+}
+function buildPrintEl(html){
+  const el=document.createElement('div');
+  el.style.cssText='font-family:Arial,sans-serif;padding:20px;color:#111;max-width:740px;';
+  el.innerHTML=html;document.body.appendChild(el);
+  setTimeout(()=>{if(el.parentNode)el.parentNode.removeChild(el);},8000);
+  return el;
+}
+
+/* TAB */
+function swTab(el,n){
+  const bar=el.parentElement,wrap=bar.parentElement;
+  bar.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  wrap.querySelectorAll('.tpane').forEach((p,i)=>p.classList.toggle('active',i===n));
+}
+window.swTab=swTab;
+
+/* POPUP */
+let popCb=null;
+function openPopup(svgHtml,word,trans,ex){
+  document.getElementById('popQ').textContent='What does this word/phrase mean?';
+  document.getElementById('popSvg').innerHTML=svgHtml;
+  document.getElementById('popWord').style.display='none';
+  document.getElementById('popWord').textContent=word;
+  document.getElementById('popTrans').style.display='none';
+  document.getElementById('popTrans').innerHTML=trans;
+  document.getElementById('popEx').style.display='none';
+  document.getElementById('popEx').textContent=ex;
+  document.getElementById('popReveal').style.display='inline-block';
+  document.getElementById('overlay').style.display='block';
+  document.getElementById('popup').style.display='block';
+}
+function revealPopup(){
+  document.getElementById('popWord').style.display='block';
+  document.getElementById('popTrans').style.display='block';
+  document.getElementById('popEx').style.display='block';
+  document.getElementById('popReveal').style.display='none';
+}
+function closePopup(){
+  document.getElementById('overlay').style.display='none';
+  document.getElementById('popup').style.display='none';
+  if(popCb){popCb();popCb=null;}
+}
+
+/* ── SVGs ── */
+const SVG={
+  justify:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><polygon points="50,8 60,36 90,36 66,53 75,80 50,63 25,80 34,53 10,36 40,36" fill="#FFD400"/><text x="50" y="46" text-anchor="middle" font-size="10" font-weight="bold" fill="#111" font-family="Arial">REASON</text></svg>`,
+  valuables:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><polygon points="50,10 62,30 80,30 66,46 72,68 50,55 28,68 34,46 20,30 38,30" fill="#FFD400" opacity=".3" stroke="#FFD400" stroke-width="1.5"/><circle cx="34" cy="42" r="10" fill="#60A5FA"/><circle cx="50" cy="32" r="12" fill="#34D399"/><circle cx="68" cy="40" r="9" fill="#F87171"/><text x="50" y="72" text-anchor="middle" font-size="9" fill="#555" font-family="Arial">jewels / coins</text></svg>`,
+  suspended:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="16" width="60" height="48" rx="5" fill="#1D4ED8" opacity=".1" stroke="#1D4ED8" stroke-width="2"/><text x="50" y="38" text-anchor="middle" font-size="11" font-weight="bold" fill="#1D4ED8" font-family="Arial">COURT</text><rect x="30" y="44" width="40" height="14" rx="3" fill="#EF4444" opacity=".7"/><text x="50" y="55" text-anchor="middle" font-size="8" fill="#fff" font-family="Arial" font-weight="bold">SUSPENDED</text><polygon points="48,10 52,10 50,16" fill="#1D4ED8"/></svg>`,
+  illegal:`<svg viewBox="0 0 80 80" width="90" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="30" fill="#FEE2E2"/><circle cx="40" cy="40" r="30" fill="none" stroke="#EF4444" stroke-width="4"/><line x1="18" y1="18" x2="62" y2="62" stroke="#EF4444" stroke-width="5" stroke-linecap="round"/><text x="40" y="56" text-anchor="middle" font-size="11" font-weight="bold" fill="#EF4444" font-family="Arial">LAW</text></svg>`,
+  lostproperty:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="30" width="40" height="36" rx="5" fill="#6B7280"/><rect x="32" y="24" width="20" height="12" rx="3" fill="none" stroke="#6B7280" stroke-width="2.5"/><circle cx="42" cy="42" r="5" fill="#9CA3AF"/><text x="74" y="28" text-anchor="middle" font-size="22" font-weight="bold" fill="#1D4ED8" font-family="Arial">?</text><text x="42" y="74" text-anchor="middle" font-size="9" fill="#888" font-family="Arial">lost item</text></svg>`,
+  circumstances:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="40" r="26" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/><circle cx="50" cy="40" r="14" fill="#BFDBFE"/><circle cx="50" cy="40" r="5" fill="#1D4ED8"/><circle cx="50" cy="20" r="4" fill="#1D4ED8" opacity=".4"/><circle cx="50" cy="60" r="4" fill="#1D4ED8" opacity=".4"/><circle cx="30" cy="40" r="4" fill="#1D4ED8" opacity=".4"/><circle cx="70" cy="40" r="4" fill="#1D4ED8" opacity=".4"/></svg>`,
+  abandoned:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="28" width="42" height="38" rx="5" fill="#D1D5DB"/><rect x="28" y="22" width="22" height="12" rx="3" fill="none" stroke="#9CA3AF" stroke-width="2.5"/><circle cx="39" cy="42" r="5" fill="#9CA3AF"/><line x1="58" y1="24" x2="82" y2="8" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/><line x1="82" y1="24" x2="58" y2="8" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/><text x="39" y="72" text-anchor="middle" font-size="9" fill="#888" font-family="Arial">left behind</text></svg>`,
+  accidentally:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><polygon points="50,6 56,30 82,30 62,46 70,70 50,55 30,70 38,46 18,30 44,30" fill="#F97316" opacity=".85"/><text x="50" y="44" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff" font-family="Arial">!</text><text x="50" y="76" text-anchor="middle" font-size="9" fill="#888" font-family="Arial">by chance</text></svg>`,
+  weeper:`<svg viewBox="0 0 80 80" width="90" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="34" r="22" fill="#BFDBFE" stroke="#1D4ED8" stroke-width="2"/><circle cx="32" cy="30" r="4" fill="#1D4ED8"/><circle cx="48" cy="30" r="4" fill="#1D4ED8"/><path d="M32,44 Q40,38 48,44" stroke="#1D4ED8" stroke-width="2.5" fill="none" stroke-linecap="round"/><line x1="28" y1="42" x2="24" y2="56" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round"/><line x1="32" y1="44" x2="30" y2="58" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  chant:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="32" r="12" fill="#BFDBFE"/><circle cx="20" cy="32" r="7" fill="#1D4ED8"/><rect x="12" y="44" width="16" height="18" rx="4" fill="#1D4ED8"/><circle cx="50" cy="32" r="12" fill="#BFDBFE"/><circle cx="50" cy="32" r="7" fill="#1D4ED8"/><rect x="42" y="44" width="16" height="18" rx="4" fill="#1D4ED8"/><circle cx="80" cy="32" r="12" fill="#BFDBFE"/><circle cx="80" cy="32" r="7" fill="#1D4ED8"/><rect x="72" y="44" width="16" height="18" rx="4" fill="#1D4ED8"/><rect x="4" y="66" width="92" height="10" rx="4" fill="#FFD400"/><text x="50" y="75" text-anchor="middle" font-size="8" fill="#111" font-weight="bold" font-family="Arial">finders keepers!</text></svg>`,
+  saying:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="10" width="84" height="44" rx="8" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/><text x="50" y="28" text-anchor="middle" font-size="12" fill="#1D4ED8" font-family="Arial">"Finders keepers,</text><text x="50" y="44" text-anchor="middle" font-size="12" fill="#1D4ED8" font-family="Arial">losers weepers"</text><polygon points="20,54 10,66 32,54" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/></svg>`,
+  claim:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="28" r="14" fill="#BFDBFE"/><circle cx="30" cy="28" r="8" fill="#1D4ED8"/><rect x="22" y="42" width="16" height="22" rx="4" fill="#1D4ED8"/><line x1="44" y1="38" x2="68" y2="38" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/><polygon points="64,32 76,38 64,44" fill="#1D4ED8"/><rect x="66" y="28" width="22" height="22" rx="4" fill="#4CAF50" opacity=".8"/><text x="77" y="43" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">MINE</text></svg>`,
+  comeacross:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="28" cy="28" r="14" fill="#BFDBFE"/><circle cx="28" cy="28" r="8" fill="#1D4ED8"/><rect x="20" y="42" width="16" height="22" rx="4" fill="#1D4ED8"/><line x1="36" y1="50" x2="56" y2="50" stroke="#333" stroke-width="2" stroke-dasharray="4,3"/><rect x="58" y="42" width="20" height="20" rx="4" fill="#FFD400"/><text x="68" y="56" text-anchor="middle" font-size="9" fill="#111" font-family="Arial" font-weight="bold">$</text><text x="28" y="72" text-anchor="middle" font-size="9" fill="#888" font-family="Arial">find by chance</text></svg>`,
+  stuffed:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="32" width="64" height="42" rx="5" fill="#F3F4F6" stroke="#6B7280" stroke-width="2"/><circle cx="32" cy="28" r="8" fill="#FFD400"/><circle cx="50" cy="22" r="9" fill="#60A5FA"/><circle cx="68" cy="26" r="8" fill="#F87171"/><circle cx="40" cy="24" r="6" fill="#34D399"/><circle cx="62" cy="20" r="6" fill="#A78BFA"/><text x="50" y="72" text-anchor="middle" font-size="9" fill="#888" font-family="Arial">filled / packed</text></svg>`,
+  fairenough:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><line x1="50" y1="14" x2="50" y2="30" stroke="#1D4ED8" stroke-width="3"/><line x1="20" y1="30" x2="80" y2="30" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round"/><line x1="28" y1="30" x2="28" y2="44" stroke="#1D4ED8" stroke-width="2"/><line x1="72" y1="30" x2="72" y2="44" stroke="#1D4ED8" stroke-width="2"/><rect x="14" y="44" width="28" height="14" rx="4" fill="#4CAF50" opacity=".8"/><rect x="58" y="44" width="28" height="14" rx="4" fill="#4CAF50" opacity=".8"/><text x="28" y="55" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">OK</text><text x="72" y="55" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">OK</text><text x="50" y="76" text-anchor="middle" font-size="9" fill="#888" font-family="Arial">reasonable / acceptable</text></svg>`
+};
+
+const vocabPre=[
+  {w:'justify',           ru:'оправдывать',          uz:'oqlash',              k:'justify',      ex:'"People justify keeping lost money by saying finders keepers."'},
+  {w:'valuables',         ru:'ценности / ценные вещи', uz:'qimmatbaho narsalar', k:'valuables',   ex:'"She had her valuables — rings, watches and cash — stolen."'},
+  {w:'suspended sentence', ru:'условный приговор',   uz:'muallaq hukm',        k:'suspended',    ex:'"He received a suspended sentence, so he stayed out of prison."'},
+  {w:'illegal',           ru:'незаконный',            uz:'noqonuniy',           k:'illegal',      ex:'"It is illegal to keep lost property if you know the owner."'},
+  {w:'lost property',     ru:'найденная вещь',        uz:'yo\'qolgan mol-mulk', k:'lostproperty', ex:'"In the UK, lost property must be handed in to the police."'},
+  {w:'circumstances',     ru:'обстоятельства',        uz:'sharoit / holat',     k:'circumstances', ex:'"It depends on the circumstances — sometimes you can keep it."'},
+  {w:'abandoned',         ru:'брошенный / оставленный', uz:'tashlab ketilgan',  k:'abandoned',    ex:'"You can keep anything which the owner has clearly abandoned."'},
+  {w:'accidentally',      ru:'случайно',              uz:'tasodifan',           k:'accidentally', ex:'"She accidentally gave the sofa away while in hospital."'},
+];
+
+const readPre=[
+  {w:'weeper',       ru:'плакса / тот, кто плачет', uz:'yig\'laydigan kishi', k:'weeper',     ex:'"Losers weepers — those who lose things are left crying."'},
+  {w:'chant',        ru:'кричалка / речёвка',        uz:'sher / kuy',          k:'chant',      ex:'"Finders keepers is an old playground chant."'},
+  {w:'saying (n)',   ru:'поговорка',                 uz:'maqol / ibora',       k:'saying',     ex:'"Many people use this old saying to justify their actions."'},
+  {w:'claim',        ru:'претендовать / заявлять',   uz:'da\'vo qilmoq',       k:'claim',      ex:'"They claimed ownership of the money they found."'},
+  {w:'come across',  ru:'наткнуться / найти',        uz:'duch kelmoq',         k:'comeacross', ex:'"It is illegal to keep lost property you come across."'},
+  {w:'stuffed',      ru:'набитый / заполненный',     uz:'tiqilgan / to\'la',   k:'stuffed',    ex:'"Students found $40,000 stuffed into an old sofa."'},
+  {w:'fair enough',  ru:'достаточно справедливо',    uz:'adolatli',            k:'fairenough', ex:'"Is \'finders keepers\' really fair enough? No — it\'s theft."'},
+];
+
+/* BOARD */
+function makeBoard(vocab,cols){
+  const opened=new Set();
+  const frag=document.createDocumentFragment();
+  const cnt=document.createElement('div');cnt.style.cssText='text-align:right;font-size:12px;color:#93C5FD;margin-bottom:6px;width:100%;max-width:1080px;';
+  const grid=document.createElement('div');grid.className='board-grid';grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  const foot=document.createElement('div');foot.className='board-foot';
+  const rb=document.createElement('button');rb.className='rb';rb.textContent='↺ Reset';
+  function render(){
+    const allOpen=opened.size===vocab.length;
+    grid.innerHTML='';
+    vocab.forEach((item,i)=>{
+      const isOpen=opened.has(i);
+      const card=document.createElement('div');
+      card.className='fc'+(isOpen?' op':'');
+      if(isOpen){
+        card.innerHTML=(SVG[item.k]||'').replace(/width="\d+"/,'width="55"')
+          +'<div class="cw">'+item.w+'</div>'
+          +(allOpen?'<div class="ct">🇷🇺 '+item.ru+'</div><div class="ct">🇺🇿 '+item.uz+'</div>':'');
+      }else{card.innerHTML='<div class="qm">?</div>';}
+      card.onclick=()=>{
+        popCb=()=>{opened.add(i);render();};
+        openPopup((SVG[item.k]||'').replace(/width="\d+"/,'width="140"'),item.w,'🇷🇺 '+item.ru+'<br>🇺🇿 '+item.uz,item.ex);
+      };
+      grid.appendChild(card);
+    });
+    cnt.textContent=opened.size+' / '+vocab.length+' opened';
+  }
+  rb.onclick=()=>{opened.clear();render();};
+  foot.appendChild(rb);frag.appendChild(cnt);frag.appendChild(grid);frag.appendChild(foot);
+  render();return frag;
+}
+
+/* STEPS */
+const steps=[
+  {label:'Lead-in — reward',            type:'reward-intro', rec:3},
+  {label:'Lead-in — verb or noun?',     type:'pos-ex',       rec:5},
+  {label:'Pre-teach vocabulary',        type:'vocab-board',  rec:10},
+  {label:'Matching exercise',           type:'matching',     rec:8},
+  {label:'Note completion',             type:'note-comp',    rec:8},
+  {label:'Reading pre-teach',           type:'read-preteach',rec:8},
+  {label:'Reading',                     type:'reading',      rec:20},
+];
+let cur=0;
+
+/* ─── STEP RENDERS ─── */
+function renderStep(){
+  const s=steps[cur];
+  const area=document.getElementById('contentArea');
+  area.innerHTML='';area.style.textAlign='center';
+  document.getElementById('sLabel').textContent=s.label;
+  document.getElementById('recLbl').textContent='rec: '+s.rec+' min';
+  const pdfBtn=document.getElementById('pdfBtn');
+  pdfBtn.style.display='none';pdfBtn.onclick=null;
+  clearInterval(tI);tR=false;document.getElementById('tTog').textContent='▶';setT(s.rec);
+
+  let el;
+
+  /* ── 1. REWARD INTRO ── */
+  if(s.type==='reward-intro'){
+    el=document.createElement('div');el.className='reward-intro';
+    el.innerHTML=`<div class="r-word">reward</div>
+      <div class="r-grid">
+        <div class="r-box noun">
+          <div class="r-tag n">NOUN</div>
+          <div class="r-sent">He received a <b>reward</b> from the dealer.</div>
+          <div class="r-hint">→ a reward = a thing (money, prize)</div>
+          <div class="r-hint" style="margin-top:6px;color:#1D4ED8;">✓ article before it: <b>a</b> reward</div>
+        </div>
+        <div class="r-box verb">
+          <div class="r-tag v" style="color:#166534;">VERB</div>
+          <div class="r-sent">He was <b class="v" style="color:#166534;">rewarded</b> for his honesty.</div>
+          <div class="r-hint">→ rewarded = an action (past passive)</div>
+          <div class="r-hint" style="margin-top:6px;color:#166534;">✓ comes after subject + auxiliary: was <b>rewarded</b></div>
+        </div>
+      </div>
+      <div style="margin-top:18px;background:#EFF6FF;border-radius:8px;padding:14px;font-size:14px;color:#333;">
+        <b style="color:#1D4ED8;">How to tell the difference:</b>
+        <ul style="margin-top:8px;padding-left:18px;line-height:1.8;">
+          <li>Noun: can have <em>a / the / an</em> before it &nbsp;→ <em>a reward</em></li>
+          <li>Verb: can have <em>-ed / -ing / -s</em> ending &nbsp;→ <em>rewarded / rewarding</em></li>
+          <li>Noun: can be subject or object of sentence</li>
+          <li>Verb: shows the action or state in the sentence</li>
+        </ul>
+      </div>`;
+  }
+
+  /* ── 2. POS EXERCISE ── */
+  else if(s.type==='pos-ex'){
+    el=document.createElement('div');el.className='lead-card';
+    el.innerHTML='<div class="lead-title">Verb or noun? — Identify the highlighted word</div>';
+    const sentences=[
+      {text:'He has received a <b>reward</b> from the dealer.',opts:['Verb','Noun'],ans:1},
+      {text:'A scrap metal dealer has made a <b>profit</b> of more than $32 million.',opts:['Verb','Noun'],ans:1},
+      {text:'He found a news <b>report</b> about the eight Fabergé eggs still missing.',opts:['Verb','Noun'],ans:1},
+      {text:'They <b>claim</b> ownership of the coins found on their property.',opts:['Verb','Noun'],ans:0},
+      {text:'They still had to hand the coins over to an <b>official</b> while a decision is made.',opts:['Noun','Adjective'],ans:0},
+      {text:'The police now <b>suspect</b> that the thieves must have abandoned the valuable paintings.',opts:['Verb','Noun'],ans:0},
+    ];
+    sentences.forEach((s,i)=>{
+      const row=document.createElement('div');row.className='ex-row';
+      const btnsHTML=s.opts.map((o,j)=>`<button class="pos-btn" onclick="posAns(this,${j===s.ans})">${o}</button>`).join('');
+      row.innerHTML=`<div class="ex-num">${i+1}</div><div class="ex-text">${s.text}<div class="pos-btns">${btnsHTML}</div></div>`;
+      el.appendChild(row);
+    });
+  }
+
+  /* ── 3. VOCAB BOARD ── */
+  else if(s.type==='vocab-board'){
+    area.appendChild(makeBoard(vocabPre,4));return;
+  }
+
+  /* ── 4. MATCHING ── */
+  else if(s.type==='matching'){
+    const defs=[
+      {n:1, text:'things that people have left in a public place by accident', ans:'lost property'},
+      {n:2, text:'against the law', ans:'illegal'},
+      {n:3, text:'give or be a good reason for something', ans:'justify'},
+      {n:4, text:'the facts and events that affect what happens in a particular situation', ans:'circumstances'},
+      {n:5, text:'a court sentence — you go to jail only if you commit another crime within a specified time', ans:'suspended sentence'},
+      {n:6, text:'by chance, not planned', ans:'accidentally'},
+      {n:7, text:'left and no longer wanted or needed', ans:'abandoned'},
+      {n:8, text:'small things that you own which are worth a lot of money', ans:'valuables'},
+    ];
+    el=document.createElement('div');el.className='match-wrap';
+    el.innerHTML=`<div style="font-size:15px;font-weight:bold;color:#1D4ED8;margin-bottom:4px;">Match words to definitions</div>
+      <div style="font-size:13px;color:#888;margin-bottom:14px;">Write the correct word/phrase next to each definition.</div>
+      <div class="match-grid" id="matchGrid"></div>
+      <button class="reveal-all-btn" onclick="revealMatch()">Reveal all answers</button>`;
+    setTimeout(()=>{
+      const grid=el.querySelector('#matchGrid');
+      defs.forEach(d=>{
+        const div=document.createElement('div');div.className='match-def';
+        div.innerHTML=`<div class="match-defn">${d.n}</div><div style="flex:1;font-size:13px;color:#333;">${d.text}</div><input class="match-input" placeholder="..." data-ans="${d.ans}">`;
+        grid.appendChild(div);
+      });
+    },10);
+  }
+
+  /* ── 5. NOTE COMPLETION ── */
+  else if(s.type==='note-comp'){
+    el=document.createElement('div');el.className='lead-card';
+    el.innerHTML=`<div class="lead-title">Exercise 6 — Note completion</div>
+      <div style="font-size:13px;color:#888;margin-bottom:16px;">Complete the sentences about the couple who found the gold coins, using vocabulary from the lesson.</div>`;
+    const items=[
+      {t:'According to the <b>report</b>, the coins are two hundred years old, so the owner must be dead.',blank:'report'},
+      {t:'The coins were lost or <b>abandoned</b> two hundred years ago and were only found <b>accidentally</b>.',blank:'abandoned / accidentally'},
+      {t:'The coins may be from a bank robbery — something <b>illegal</b>.',blank:'illegal'},
+      {t:'In these <b>circumstances</b>, the coins ought to be in a museum.',blank:'circumstances'},
+      {t:'It wouldn\'t matter if the coins were only worth a small amount, but they\'re <b>valuables</b>.',blank:'valuables'},
+      {t:'The couple should get a <b>reward</b> instead of getting to keep the coins.',blank:'reward'},
+    ];
+    items.forEach((item,i)=>{
+      const row=document.createElement('div');row.className='ex-row';
+      const display=item.t.replace(/<b>(.*?)<\/b>/g,'<span style="display:inline-block;border-bottom:1.5px solid #BFDBFE;min-width:100px;color:transparent;">$1</span>');
+      row.innerHTML=`<div class="ex-num">${i+1}</div><div class="ex-text">${display}
+        <button onclick="revealNC(this,'${item.blank}')" style="margin-left:8px;background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:5px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:inherit;">Show</button>
+        <span class="nc-answer" style="display:none;color:#1D4ED8;font-weight:bold;margin-left:8px;">${item.blank}</span>
+      </div>`;
+      el.appendChild(row);
+    });
+  }
+
+  /* ── 6. READING PRETEACH ── */
+  else if(s.type==='read-preteach'){
+    area.appendChild(makeBoard(readPre,4));return;
+  }
+
+  /* ── 7. READING ── */
+  else if(s.type==='reading'){
+    area.style.textAlign='left';
+    pdfBtn.style.display='inline-block';
+    pdfBtn.textContent='📄 PDF';
+    pdfBtn.onclick=pdfReading;
+
+    const tf=[
+      {q:'The couple found the lottery ticket on the street.',ans:false},
+      {q:'The couple had to give the lottery money back.',ans:true},
+      {q:'In all countries, it is illegal to keep any lost property.',ans:false},
+      {q:'The students who found $40,000 kept the money for themselves.',ans:false},
+      {q:'The writer concludes that \'finders keepers\' is simply theft.',ans:true},
+    ];
+    const nc2=[
+      {t:'\'Finders keepers, losers weepers\' is described as an old playground ___.',ans:'chant'},
+      {t:'A local couple received an eleven-month ___ sentence for keeping lottery money.',ans:'suspended'},
+      {t:'In most countries it is ___ to keep lost property unless you can\'t find the owner.',ans:'illegal'},
+      {t:'You can usually keep anything which the owner has clearly ___.',ans:'abandoned'},
+      {t:'The writer\'s conclusion is that \'finders keepers\' is simply ___.',ans:'theft'},
+    ];
+
+    el=document.createElement('div');el.className='tw2';
+    el.innerHTML=`<div class="tbar">
+      <div class="tab active" onclick="swTab(this,0)">Text</div>
+      <div class="tab" onclick="swTab(this,1)">Exercise 1</div>
+      <div class="tab" onclick="swTab(this,2)">Exercise 2</div>
+      <div class="tab" onclick="swTab(this,3)">Exercise 3</div>
+    </div>
+
+    <div class="tpane active">
+      <div style="font-size:22px;font-weight:bold;color:#1D4ED8;margin-bottom:16px;">Finders keepers?</div>
+      <div class="reading-text">
+        <p>'Finders keepers, losers weepers' goes the old playground <span class="hl">chant</span>. And it seems that a lot of people use the <span class="hl">saying</span> to <span class="hl">justify</span> keeping money and other <span class="hl">valuables</span> that they find. But really, is it that simple?</p>
+        <p>A local couple have recently been given an eleven-month <span class="hl">suspended sentence</span> for <span class="hl">claiming</span> the money on a winning lottery ticket which they found on the floor of a shop. They also have to give the money back. The couple assumed that the money was theirs to keep, but in most countries it is actually <span class="hl">illegal</span> to keep any <span class="hl">lost property</span> you <span class="hl">come across</span> unless you are unable to find the owner.</p>
+        <p>It does depend on the <span class="hl">circumstances</span>, of course. Often, if you find a small amount of money, legally, you don't have to report it, as it would be very difficult to find the owner. And you can usually keep anything which the owner has clearly <span class="hl">abandoned</span>. But if you find anything which could be identified, you can't just keep it.</p>
+        <p>However, even if legally you don't need to find the owner, shouldn't we do the right thing anyway? Another story I read recently told of some students who found $40,000 <span class="hl">stuffed</span> into an old sofa. The sofa had been given to a charity shop, so perhaps they had a right to keep the money. But they found the original owner and discovered that her children had <span class="hl">accidentally</span> lost the money by giving the sofa away while she was in hospital. The students had no idea that she kept her life's savings in it, and that in fact she and her family needed the money badly.</p>
+        <p>So is 'finders keepers, losers weepers' <span class="hl">fair enough</span>? No, in my opinion, it's just theft.</p>
+      </div>
+    </div>
+
+    <div class="tpane">
+      <div class="einstr">Read the blog post and choose the sentence which best summarises the writer's view</div>
+      <div class="view-opt" onclick="viewAns(this,false)">a &nbsp; If people are stupid enough to lose something, it's their own fault if someone else keeps it.</div>
+      <div class="view-opt" onclick="viewAns(this,true)">b &nbsp; If something doesn't belong to you, it is almost never OK to keep it.</div>
+    </div>
+
+    <div class="tpane">
+      <div class="einstr">Complete the sentences with words from the article</div>
+      ${nc2.map((item,i)=>`<div class="nc-item"><div class="nc-n">${i+1}</div><div class="nc-t">${item.t.replace('___','<span style="display:inline-block;border-bottom:1.5px solid #BFDBFE;min-width:90px;">&nbsp;</span>')}
+        <button onclick="revealNC(this,'${item.ans}')" style="margin-left:8px;background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:5px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:inherit;">Show</button>
+        <span style="display:none;color:#1D4ED8;font-weight:bold;margin-left:6px;">${item.ans}</span>
+      </div></div>`).join('')}
+    </div>
+
+    <div class="tpane">
+      <div class="einstr">Are these statements True or False according to the article?</div>
+      ${tf.map((item,i)=>`<div class="nc-item"><div class="nc-n">${i+1}</div><div class="nc-t">${item.q}
+        <div class="tf-opts">
+          <button class="tf-btn" onclick="tfAns(this,${item.ans})">TRUE</button>
+          <button class="tf-btn" onclick="tfAns(this,${!item.ans})">FALSE</button>
+        </div>
+      </div></div>`).join('')}
+    </div>`;
+  }
+
+  if(el)area.appendChild(el);
+  document.getElementById('stepCtr').textContent=(cur+1)+' / '+steps.length;
+  document.getElementById('prevBtn').disabled=cur===0;
+  document.getElementById('nextBtn').textContent=cur===steps.length-1?'Done':'next \u2192';
+}
+
+/* HELPERS */
+window.posAns=function(btn,correct){
+  if(btn.classList.contains('correct')||btn.classList.contains('wrong'))return;
+  const g=btn.closest('.pos-btns');
+  g.querySelectorAll('.pos-btn').forEach(b=>b.onclick=null);
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct){
+    g.querySelectorAll('.pos-btn').forEach(b=>{
+      if(b!==btn&&!b.classList.contains('wrong'))b.classList.add('correct');
+    });
+  }
+};
+window.viewAns=function(el,correct){
+  el.closest('.tpane').querySelectorAll('.view-opt').forEach(o=>o.onclick=null);
+  el.classList.add(correct?'correct':'wrong');
+  if(!correct){el.closest('.tpane').querySelectorAll('.view-opt').forEach(o=>{if(o!==el)o.classList.add('correct');});}
+};
+window.tfAns=function(btn,correct){
+  if(btn.classList.contains('correct')||btn.classList.contains('wrong'))return;
+  const g=btn.closest('.tf-opts');
+  g.querySelectorAll('.tf-btn').forEach(b=>b.onclick=null);
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct)g.querySelectorAll('.tf-btn').forEach(b=>{if(b!==btn)b.classList.add('correct');});
+};
+window.revealNC=function(btn,ans){
+  const sp=btn.nextElementSibling;
+  if(sp){sp.style.display='inline';btn.style.display='none';}
+};
+window.revealMatch=function(){
+  document.querySelectorAll('.match-input').forEach(inp=>{
+    inp.value=inp.dataset.ans;inp.style.color='#1D4ED8';inp.style.fontWeight='bold';
+  });
+};
+
+/* PDF */
+function pdfReading(){
+  const nc2=[
+    'Finders keepers, losers weepers\' is described as an old playground ______.',
+    'A local couple received an eleven-month ______ sentence for keeping lottery money.',
+    'In most countries it is ______ to keep lost property unless you cannot find the owner.',
+    'You can usually keep anything which the owner has clearly ______.',
+    'The writer\'s conclusion is that \'finders keepers\' is simply ______.',
+  ];
+  const tf=[
+    'The couple found the lottery ticket on the street.',
+    'The couple had to give the lottery money back.',
+    'In all countries, it is illegal to keep any lost property.',
+    'The students who found $40,000 kept the money for themselves.',
+    'The writer concludes that \'finders keepers\' is simply theft.',
+  ];
+  const html=`
+    <h2 style="color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:8px;margin-bottom:16px;">Reading Tasks &middot; Lesson 7.1 — Finders Keepers?</h2>
+    <h3 style="color:#1D4ED8;margin-bottom:10px;">Exercise 1 — Writer's view</h3>
+    <p style="font-size:13px;margin-bottom:8px;">Read the blog post and choose the sentence which best summarises the writer's view:</p>
+    <p style="font-size:14px;padding:8px 12px;border:1px solid #ddd;border-radius:6px;margin-bottom:6px;">a &nbsp; If people are stupid enough to lose something, it's their own fault if someone else keeps it.</p>
+    <p style="font-size:14px;padding:8px 12px;border:1px solid #ddd;border-radius:6px;margin-bottom:16px;">b &nbsp; If something doesn't belong to you, it is almost never OK to keep it.</p>
+    <h3 style="color:#1D4ED8;margin-bottom:10px;">Exercise 2 — Note completion</h3>
+    <p style="font-size:12px;color:#666;margin-bottom:10px;">Complete the sentences with words from the article.</p>
+    ${nc2.map((q,i)=>`<div style="display:flex;gap:8px;margin-bottom:12px;font-size:14px;align-items:flex-start;"><span style="background:#1D4ED8;color:#fff;border-radius:50%;width:20px;height:20px;min-width:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;">${i+1}</span>${q}</div>`).join('')}
+    <h3 style="color:#1D4ED8;margin:16px 0 10px;">Exercise 3 — True or False?</h3>
+    ${tf.map((q,i)=>`<div style="display:flex;gap:8px;margin-bottom:12px;font-size:14px;align-items:center;"><span style="background:#1D4ED8;color:#fff;border-radius:50%;width:20px;height:20px;min-width:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;">${i+1}</span>${q} <span style="display:inline-block;border-bottom:1px solid #333;min-width:60px;margin-left:8px;">&nbsp;</span></div>`).join('')}`;
+  const el=buildPrintEl(html);
+  savePDF(el,'7.1-reading-tasks.pdf');
+}
+
+/* NAV */
+document.getElementById('startBtn').onclick=()=>{
+  document.getElementById('outlineScreen').style.display='none';
+  document.getElementById('lessonScreen').style.display='flex';
+  cur=0;renderStep();
+};
+document.getElementById('nextBtn').onclick=()=>{if(cur<steps.length-1){cur++;renderStep();}};
+document.getElementById('prevBtn').onclick=()=>{if(cur>0){cur--;renderStep();}};
+</script>
+</body>
+</html>

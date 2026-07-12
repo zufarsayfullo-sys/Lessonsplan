@@ -22,7 +22,7 @@
   #lessonScreen{flex:1;display:none;flex-direction:column;min-height:0;}
   .top-bar{padding:12px 32px 6px;display:flex;align-items:center;gap:14px;}
   .step-label{color:#1D4ED8;font-size:20px;font-weight:bold;}
-  .content-area{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8px 32px;overflow-y:auto;}
+  .content-area{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10px 28px;overflow-y:auto;}
   .bottom-bar{background:rgba(255,255,255,.94);border-top:2px solid #BFDBFE;padding:10px 28px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
   .nav-side{display:flex;align-items:center;gap:8px;}
   .nb{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:#93C5FD;padding:6px 10px;}
@@ -39,14 +39,15 @@
   .hbtn{background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;}
   .pdf-btn{display:none;}
   /* FLIP BOARD */
-  .board-grid{display:grid;gap:10px;width:100%;max-width:1080px;}
-  .fc{background:#fff;border:2px solid #BFDBFE;border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;min-height:115px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+  .board-grid{display:grid;gap:10px;width:100%;max-width:1200px;flex:1;min-height:0;}
+  .fc{background:#fff;border:2px solid #BFDBFE;border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06);}
   .fc:hover{border-color:#1D4ED8;box-shadow:0 2px 8px rgba(29,78,216,.15);}
   .fc.op{border-color:#1D4ED8;background:#F8FAFF;}
-  .fc .qm{font-size:26px;color:#BFDBFE;}
-  .fc .cw{font-size:11px;font-weight:bold;color:#1D4ED8;margin-top:4px;line-height:1.3;}
-  .fc .ct{font-size:9px;color:#888;margin-top:1px;}
-  .board-foot{display:flex;justify-content:flex-end;margin-top:8px;width:100%;max-width:1080px;}
+  .fc .qm{font-size:30px;color:#BFDBFE;}
+  .fc .cw{font-size:13px;font-weight:bold;color:#1D4ED8;margin-top:5px;line-height:1.3;}
+  .fc .ct{font-size:10px;color:#888;margin-top:2px;}
+  .board-foot{display:flex;justify-content:flex-end;margin-top:6px;width:100%;max-width:1200px;}
+  .board-full{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;align-items:center;padding:0;}
   .rb{background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:6px;padding:5px 16px;font-size:12px;cursor:pointer;font-family:inherit;}
   /* OVERLAY */
   #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:200;}
@@ -289,9 +290,12 @@ const readPre=[
 /* BOARD */
 function makeBoard(vocab,cols){
   const opened=new Set();
-  const frag=document.createDocumentFragment();
-  const cnt=document.createElement('div');cnt.style.cssText='text-align:right;font-size:12px;color:#93C5FD;margin-bottom:6px;width:100%;max-width:1080px;';
-  const grid=document.createElement('div');grid.className='board-grid';grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  const wrap=document.createElement('div');wrap.className='board-full';
+  const cnt=document.createElement('div');cnt.style.cssText='text-align:right;font-size:12px;color:#93C5FD;margin-bottom:6px;width:100%;max-width:1200px;';
+  const grid=document.createElement('div');grid.className='board-grid';
+  grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  grid.style.gridAutoRows='1fr';
+  grid.style.flex='1';
   const foot=document.createElement('div');foot.className='board-foot';
   const rb=document.createElement('button');rb.className='rb';rb.textContent='↺ Reset';
   function render(){
@@ -301,8 +305,9 @@ function makeBoard(vocab,cols){
       const isOpen=opened.has(i);
       const card=document.createElement('div');
       card.className='fc'+(isOpen?' op':'');
+      card.style.minHeight='0';
       if(isOpen){
-        card.innerHTML=(SVG[item.k]||'').replace(/width="\d+"/,'width="55"')
+        card.innerHTML=(SVG[item.k]||'').replace(/width="\d+"/,'width="60"')
           +'<div class="cw">'+item.w+'</div>'
           +(allOpen?'<div class="ct">🇷🇺 '+item.ru+'</div><div class="ct">🇺🇿 '+item.uz+'</div>':'');
       }else{card.innerHTML='<div class="qm">?</div>';}
@@ -315,8 +320,8 @@ function makeBoard(vocab,cols){
     cnt.textContent=opened.size+' / '+vocab.length+' opened';
   }
   rb.onclick=()=>{opened.clear();render();};
-  foot.appendChild(rb);frag.appendChild(cnt);frag.appendChild(grid);frag.appendChild(foot);
-  render();return frag;
+  foot.appendChild(rb);wrap.appendChild(cnt);wrap.appendChild(grid);wrap.appendChild(foot);
+  render();return wrap;
 }
 
 /* STEPS */
@@ -395,6 +400,9 @@ function renderStep(){
 
   /* ── 3. VOCAB BOARD ── */
   else if(s.type==='vocab-board'){
+    area.style.justifyContent='flex-start';
+    area.style.alignItems='stretch';
+    area.style.padding='8px 32px';
     area.appendChild(makeBoard(vocabPre,4));return;
   }
 
@@ -451,6 +459,9 @@ function renderStep(){
 
   /* ── 6. READING PRETEACH ── */
   else if(s.type==='read-preteach'){
+    area.style.justifyContent='flex-start';
+    area.style.alignItems='stretch';
+    area.style.padding='8px 32px';
     area.appendChild(makeBoard(readPre,4));return;
   }
 
@@ -578,6 +589,14 @@ function pdfReading(){
   ];
   const html=`
     <h2 style="color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:8px;margin-bottom:16px;">Reading Tasks &middot; Lesson 7.1 — Finders Keepers?</h2>
+    <h3 style="color:#1D4ED8;margin-bottom:10px;">Reading text</h3>
+    <div style="font-size:13px;line-height:1.85;color:#333;margin-bottom:20px;border:1px solid #BFDBFE;border-radius:8px;padding:14px;">
+      <p style="margin-bottom:8px;">'Finders keepers, losers weepers' goes the old playground chant. And it seems that a lot of people use the saying to justify keeping money and other valuables that they find. But really, is it that simple?</p>
+      <p style="margin-bottom:8px;">A local couple have recently been given an eleven-month suspended sentence for claiming the money on a winning lottery ticket which they found on the floor of a shop. They also have to give the money back. The couple assumed that the money was theirs to keep, but in most countries it is actually illegal to keep any lost property you come across unless you are unable to find the owner.</p>
+      <p style="margin-bottom:8px;">It does depend on the circumstances, of course. Often, if you find a small amount of money, legally, you don't have to report it, as it would be very difficult to find the owner. And you can usually keep anything which the owner has clearly abandoned. But if you find anything which could be identified, you can't just keep it.</p>
+      <p style="margin-bottom:8px;">However, even if legally you don't need to find the owner, shouldn't we do the right thing anyway? Another story I read recently told of some students who found $40,000 stuffed into an old sofa. The sofa had been given to a charity shop, so perhaps they had a right to keep the money. But they found the original owner and discovered that her children had accidentally lost the money by giving the sofa away while she was in hospital. The students had no idea that she kept her life's savings in it, and that in fact she and her family needed the money badly.</p>
+      <p>So is 'finders keepers, losers weepers' fair enough? No, in my opinion, it's just theft.</p>
+    </div>
     <h3 style="color:#1D4ED8;margin-bottom:10px;">Exercise 1 — Writer's view</h3>
     <p style="font-size:13px;margin-bottom:8px;">Read the blog post and choose the sentence which best summarises the writer's view:</p>
     <p style="font-size:14px;padding:8px 12px;border:1px solid #ddd;border-radius:6px;margin-bottom:6px;">a &nbsp; If people are stupid enough to lose something, it's their own fault if someone else keeps it.</p>

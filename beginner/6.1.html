@@ -1,0 +1,650 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beginner Lesson 6.1 — Our City</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif;background:#DDE6F8;min-height:100vh;display:flex;flex-direction:column;}
+  a{text-decoration:none;color:inherit;}
+  .outline-page{flex:1;padding:24px 36px;display:flex;flex-direction:column;}
+  .ol-title{color:#1D4ED8;font-size:28px;font-weight:bold;margin-bottom:4px;}
+  .ol-sub{color:#666;font-size:14px;margin-bottom:24px;}
+  .ol-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+  .ol-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:14px 18px;font-size:15px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+  .ol-n{background:#1D4ED8;color:#fff;border-radius:50%;width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;}
+  .ol-tag{margin-left:auto;color:#93C5FD;font-size:12px;}
+  .sbtn{background:#1D4ED8;color:#fff;border:none;border-radius:10px;padding:14px 32px;font-weight:bold;font-size:16px;cursor:pointer;font-family:inherit;align-self:flex-end;}
+  .back-link{color:#1D4ED8;font-size:18px;font-weight:bold;margin-bottom:16px;display:inline-block;}
+  
+  /* LESSON LAYOUT */
+  #lessonScreen{flex:1;display:none;flex-direction:column;min-height:0;}
+  .top-bar{padding:12px 32px 6px;display:flex;align-items:center;gap:14px;}
+  .step-label{color:#1D4ED8;font-size:20px;font-weight:bold;}
+  .content-area{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10px 28px;overflow-y:auto;}
+  .bottom-bar{background:rgba(255,255,255,.94);border-top:2px solid #BFDBFE;padding:10px 28px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .nav-side{display:flex;align-items:center;gap:8px;}
+  .nb{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:#93C5FD;padding:6px 10px;}
+  .nb:disabled{opacity:.25;cursor:not-allowed;}
+  .nb.pri{background:#1D4ED8;color:#fff;border-radius:8px;padding:8px 20px;}
+  .sc{color:#BFDBFE;font-size:13px;min-width:60px;text-align:center;}
+  .tools-side{display:flex;align-items:center;gap:8px;}
+  .trec{color:#93C5FD;font-size:11px;}
+  .tw0{display:flex;align-items:center;gap:4px;background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:5px 10px;}
+  .ta{background:none;border:none;color:#1D4ED8;font-size:16px;font-weight:bold;cursor:pointer;width:22px;font-family:inherit;}
+  .td{font-family:'Courier New',monospace;font-size:15px;color:#1D4ED8;min-width:52px;text-align:center;font-weight:bold;}
+  .td.warn{color:#EF4444;}
+  .tt{background:none;border:1.5px solid #1D4ED8;color:#1D4ED8;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:2px;}
+  .hbtn{background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  .pdf-btn{display:inline-block;}
+  
+  /* FLIP BOARD (Words all visible over the screen during game) */
+  .board-grid{display:grid;gap:10px;width:100%;max-width:1200px;flex:1;min-height:0;}
+  .fc{background:#fff;border:2px solid #BFDBFE;border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06);position:relative;}
+  .fc:hover{border-color:#1D4ED8;box-shadow:0 2px 8px rgba(29,78,216,.15);}
+  .fc.op{border-color:#1D4ED8;background:#F8FAFF;}
+  .fc .qm{font-size:30px;color:#BFDBFE;}
+  .fc .cw{font-size:13px;font-weight:bold;color:#1D4ED8;margin-top:5px;line-height:1.3;}
+  .fc .ct{font-size:10px;color:#888;margin-top:2px;}
+  
+  /* Constant word visibility over the top of the card so students can always see the target terms */
+  .fc .term-header {position:absolute;top:5px;font-size:11px;font-weight:bold;color:#1D4ED8;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #BFDBFE;}
+
+  .board-foot{display:flex;justify-content:flex-end;margin-top:6px;width:100%;max-width:1200px;}
+  .board-full{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;align-items:center;padding:0;}
+  .rb{background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:6px;padding:5px 16px;font-size:12px;cursor:pointer;font-family:inherit;}
+  
+  /* OVERLAY */
+  #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:200;}
+  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:3px solid #1D4ED8;border-radius:14px;padding:22px 28px;text-align:center;min-width:260px;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
+  .pq{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+  .pw{font-size:20px;font-weight:bold;color:#1D4ED8;margin-top:10px;display:none;}
+  .pt{font-size:12px;color:#888;margin-top:4px;display:none;line-height:1.5;}
+  .pe{background:#EFF6FF;border-left:3px solid #1D4ED8;padding:8px 12px;margin-top:10px;font-size:13px;color:#333;text-align:left;border-radius:4px;display:none;font-style:italic;}
+  .pr{margin-top:12px;background:#1D4ED8;border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;}
+  .ph2{color:#ccc;font-size:11px;margin-top:10px;}
+  
+  /* TABS */
+  .tw2{width:100%;max-width:1000px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+  .tbar{display:flex;border-bottom:2px solid #BFDBFE;}
+  .tab{flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:bold;cursor:pointer;color:#93C5FD;background:#fff;border-bottom:3px solid transparent;}
+  .tab.active{color:#fff;background:#1D4ED8;border-bottom:3px solid #1D4ED8;}
+  .tpane{display:none;padding:18px;max-height:55vh;overflow-y:auto;}
+  .tpane.active{display:block;}
+  
+  /* LEAD-IN CARD / DISCUSSION QUESTIONS */
+  .lead-card{background:#fff;border-radius:14px;padding:24px 28px;box-shadow:0 2px 12px rgba(0,0,0,.08);width:100%;max-width:1000px;display:flex;flex-direction:column;gap:18px;align-items:center;}
+  .lead-title{font-size:24px;font-weight:bold;color:#1D4ED8;text-align:center;}
+  .discussion-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;}
+  .dq-box{background:#F8FAFF;border:1.5px solid #BFDBFE;border-radius:10px;padding:16px;text-align:left;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+  .dq-num{color:#1D4ED8;font-weight:bold;font-size:18px;margin-right:8px;}
+  .dq-text{font-size:15px;color:#333;font-weight:500;}
+
+  /* READING SECTION LAYOUT */
+  .reading-container{display:flex;gap:20px;width:100%;max-width:1200px;align-items:stretch;}
+  .reading-pane{flex:1.2;background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.07);max-height:60vh;overflow-y:auto;}
+  .exercise-pane{flex:1;background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.07);max-height:60vh;overflow-y:auto;}
+  .town-header{border-bottom:2px solid #BFDBFE;padding-bottom:8px;margin-bottom:12px;}
+  .town-title{font-size:20px;font-weight:bold;color:#1D4ED8;}
+  .town-meta{font-size:12px;color:#666;margin-top:2px;}
+  .reading-text{color:#333;font-size:14px;line-height:1.7;}
+  .reading-text p{margin-bottom:12px;}
+  .hl{background:#FFD400;color:#111;padding:1px 3px;border-radius:2px;font-weight:bold;}
+
+  /* EXERCISE ITEMS */
+  .ex-title{font-size:16px;font-weight:bold;color:#1D4ED8;margin-bottom:12px;border-bottom:1.5px solid #EFF6FF;padding-bottom:4px;}
+  .ex-item{margin-bottom:16px;padding-bottom:12px;border-bottom:1px dashed #EFF6FF;}
+  .ex-q{font-size:13.5px;color:#333;margin-bottom:8px;line-weight:1.4;}
+  .opt-row{display:flex;gap:10px;}
+  .opt-btn{flex:1;background:#F8FAFF;border:1.5px solid #BFDBFE;border-radius:6px;padding:6px 12px;font-size:12.5px;cursor:pointer;font-family:inherit;text-align:center;font-weight:bold;transition:all 0.15s;}
+  .opt-btn:hover{border-color:#1D4ED8;}
+  .opt-btn.correct{background:#D1FAE5;border-color:#10B981;color:#065F46;}
+  .opt-btn.wrong{background:#FEE2E2;border-color:#EF4444;color:#991B1B;}
+</style>
+</head>
+<body>
+
+<!-- OUTLINE -->
+<div id="outlineScreen">
+  <div class="outline-page">
+    <a class="back-link" href="index.html">&#8592;</a>
+    <div class="ol-title">Beginner 6.1</div>
+    <div class="ol-sub">Unit 6 &middot; Our Towns and Cities</div>
+    <div class="ol-list">
+      <div class="ol-item"><span class="ol-n">1</span>Lead-in — City Map & Discussion<span class="ol-tag">5 min</span></div>
+      <div class="ol-item"><span class="ol-n">2</span>Pre-teach Vocabulary<span class="ol-tag">8 words</span></div>
+      <div class="ol-item"><span class="ol-n">3</span>Reading & Exercises<span class="ol-tag">Text + 2 Exercises</span></div>
+    </div>
+    <button class="sbtn" id="startBtn">Start lesson &#8594;</button>
+  </div>
+</div>
+
+<!-- LESSON -->
+<div id="lessonScreen">
+  <div class="top-bar">
+    <a class="back-link" href="index.html" style="font-size:18px;font-weight:bold;color:#1D4ED8;">&#8592;</a>
+    <span class="step-label" id="sLabel">Lesson 6.1</span>
+  </div>
+  <div class="content-area" id="contentArea"></div>
+  <div class="bottom-bar">
+    <div class="nav-side">
+      <button class="nb" id="prevBtn">&#8592; prev</button>
+      <span class="sc" id="stepCtr"></span>
+      <button class="nb pri" id="nextBtn">next &#8594;</button>
+    </div>
+    <div class="tools-side">
+      <span class="trec" id="recLbl"></span>
+      <div class="tw0">
+        <button class="ta" id="tMin">&#8722;</button>
+        <span class="td" id="tDisp">05:00</span>
+        <button class="ta" id="tPls">+</button>
+        <button class="tt" id="tTog">&#9654;</button>
+      </div>
+      <button class="hbtn pdf-btn" id="pdfBtn">📄 Export PDF</button>
+      <button class="hbtn" id="fsBtn" style="font-size:14px;padding:6px 10px;">&#x26F6;</button>
+    </div>
+  </div>
+</div>
+
+<div id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+  <div class="pq" id="popQ"></div>
+  <div id="popSvg"></div>
+  <div class="pw" id="popWord"></div>
+  <div class="pt" id="popTrans"></div>
+  <div class="pe" id="popEx"></div>
+  <button class="pr" id="popReveal" onclick="revealPopup()">Show answer ▾</button>
+  <div class="ph2">tap outside to close</div>
+</div>
+
+<script>
+/* FULLSCREEN */
+document.getElementById('fsBtn').onclick=function(){
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});this.textContent='✕';}
+  else{document.exitFullscreen();this.textContent='⛶';}
+};
+document.addEventListener('fullscreenchange',()=>{document.getElementById('fsBtn').textContent=document.fullscreenElement?'✕':'⛶';});
+
+/* TIMER */
+let tS=300,tR=false,tI=null;
+function setT(m){tS=m*60;tR=false;clearInterval(tI);document.getElementById('tTog').textContent='▶';rendT();}
+function rendT(){const m=Math.floor(Math.abs(tS)/60),s=Math.abs(tS)%60,n=tS<0?'-':'',d=document.getElementById('tDisp');d.textContent=n+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');d.className='td'+(tS<=30&&tS>=-999?' warn':'');}
+document.getElementById('tTog').onclick=function(){if(tR){clearInterval(tI);tR=false;this.textContent='▶';}else{tR=true;this.textContent='⏸';tI=setInterval(()=>{tS--;rendT();},1000);}};
+document.getElementById('tMin').onclick=()=>{tS=Math.max(0,tS-60);rendT();};
+document.getElementById('tPls').onclick=()=>{tS+=60;rendT();};
+
+/* POPUP */
+let popCb=null;
+function openPopup(svgHtml,word,trans,ex){
+  document.getElementById('popQ').textContent='What does this word/phrase mean?';
+  document.getElementById('popSvg').innerHTML=svgHtml;
+  document.getElementById('popWord').style.display='none';
+  document.getElementById('popWord').textContent=word;
+  document.getElementById('popTrans').style.display='none';
+  document.getElementById('popTrans').innerHTML=trans;
+  document.getElementById('popEx').style.display='none';
+  document.getElementById('popEx').textContent=ex;
+  document.getElementById('popReveal').style.display='inline-block';
+  document.getElementById('overlay').style.display='block';
+  document.getElementById('popup').style.display='block';
+}
+function revealPopup(){
+  document.getElementById('popWord').style.display='block';
+  document.getElementById('popTrans').style.display='block';
+  document.getElementById('popEx').style.display='block';
+  document.getElementById('popReveal').style.display='none';
+}
+function closePopup(){
+  document.getElementById('overlay').style.display='none';
+  document.getElementById('popup').style.display='none';
+  if(popCb){popCb();popCb=null;}
+}
+
+/* ── SVGs ── */
+const SVG={
+  like:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><path d="M50 70 C50 70 15 45 15 25 A 15 15 0 0 1 45 15 A 10 10 0 0 1 50 20 A 10 10 0 0 1 55 15 A 15 15 0 0 1 85 25 C 85 45 50 70 50 70 Z" fill="#1D4ED8" stroke="#BFDBFE" stroke-width="2"/><text x="50" y="42" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff" font-family="Arial">LIKE</text></svg>`,
+  facilities:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="15" y="15" width="30" height="20" rx="4" fill="#34D399"/><text x="30" y="28" text-anchor="middle" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">GYM</text><rect x="55" y="15" width="30" height="20" rx="4" fill="#60A5FA"/><text x="70" y="28" text-anchor="middle" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">POOL</text><rect x="35" y="45" width="30" height="20" rx="4" fill="#F87171"/><text x="50" y="58" text-anchor="middle" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">CLINIC</text></svg>`,
+  aswellas:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="40" r="14" fill="#1D4ED8" opacity="0.8"/><text x="30" y="44" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff" font-family="Arial">A</text><circle cx="70" cy="40" r="14" fill="#1D4ED8" opacity="0.8"/><text x="70" y="44" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff" font-family="Arial">B</text><path d="M 44 40 L 56 40" stroke="#1D4ED8" stroke-width="4" stroke-linecap="round"/><path d="M 50 34 L 50 46" stroke="#1D4ED8" stroke-width="4" stroke-linecap="round"/></svg>`,
+  lucky:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><path d="M 50 15 C 30 15, 30 50, 50 50 C 70 50, 70 15, 50 15 Z" fill="none" stroke="#FFD400" stroke-width="6"/><circle cx="35" cy="30" r="6" fill="#34D399"/><circle cx="65" cy="30" r="6" fill="#34D399"/><circle cx="50" cy="45" r="7" fill="#60A5FA"/><text x="50" y="70" text-anchor="middle" font-size="9" font-weight="bold" fill="#1D4ED8" font-family="Arial">LUCKY</text></svg>`,
+  bakery:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="30" width="60" height="35" rx="5" fill="#F3F4F6" stroke="#6B7280" stroke-width="2"/><path d="M 15 30 L 35 15 L 65 15 L 85 30 Z" fill="#FFD400" stroke="#B45309" stroke-width="2"/><text x="50" y="52" text-anchor="middle" font-size="11" font-weight="bold" fill="#B45309" font-family="Arial">BREAD</text></svg>`,
+  visitors:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="10" fill="#34D399"/><path d="M 15 60 C 15 45, 45 45, 45 60 Z" fill="#34D399"/><circle cx="70" cy="30" r="10" fill="#60A5FA"/><path d="M 55 60 C 55 45, 85 45, 85 60 Z" fill="#60A5FA"/><path d="M 50 15 L 50 35" stroke="#FFD400" stroke-width="3" stroke-linecap="round"/></svg>`,
+  golfcourse:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="55" rx="40" ry="20" fill="#34D399"/><line x1="50" y1="55" x2="50" y2="20" stroke="#B91C1C" stroke-width="3"/><polygon points="50,20 70,27 50,34" fill="#B91C1C"/><circle cx="48" cy="56" r="3" fill="#fff"/></svg>`,
+  twohours:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="40" r="30" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="3"/><line x1="50" y1="40" x2="50" y2="20" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round"/><line x1="50" y1="40" x2="68" y2="40" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round"/><text x="50" y="77" text-anchor="middle" font-size="9" font-weight="bold" fill="#1D4ED8" font-family="Arial">2 HOURS</text></svg>`
+};
+
+const vocabList=[
+  {w:'like (preposition)', ru:'как / подобно',   uz:'singari / kabi',    k:'like',       ex:'"A great place for old people like Jack."'},
+  {w:'facilities',         ru:'удобства / услуги', uz:'qulayliklar',       k:'facilities', ex:'"The town has facilities like museums and cinemas."'},
+  {w:'as well as',         ru:'также как и',       uz:'shuningdek',        k:'aswellas',   ex:'"There is Carnegie Hall as well as many old buildings."'},
+  {w:'lucky',              ru:'везучий / удачливый', uz:'omadli',          k:'lucky',      ex:'"We are very lucky to live in a beautiful place."'},
+  {w:'bakery',             ru:'пекарня',           uz:'novvoyxona',        k:'bakery',     ex:'"There is an amazing bakery with delicious bread."'},
+  {w:'visitors',           ru:'посетители',        uz:'tashrif buyuruvchilar', k:'visitors',ex:'"Lewisburg has a lot of visitors and nine hotels."'},
+  {w:'golf course',        ru:'поле для гольфа',   uz:'golf maydoni',      k:'golfcourse', ex:'"There is a golf course near the town."'},
+  {w:'two hours away',     ru:'в двух часах езды', uz:'ikki soatlik yo'l',  k:'twohours',   ex:'"The sea is only two hours away by car."'}
+];
+
+/* BOARD GENERATION */
+function makeBoard(vocab,cols){
+  const opened=new Set();
+  const wrap=document.createElement('div');wrap.className='board-full';
+  const cnt=document.createElement('div');cnt.style.cssText='text-align:right;font-size:12px;color:#1D4ED8;margin-bottom:6px;width:100%;max-width:1200px;font-weight:bold;';
+  const grid=document.createElement('div');grid.className='board-grid';
+  grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  grid.style.gridAutoRows='1fr';
+  grid.style.flex='1';
+  const foot=document.createElement('div');foot.className='board-foot';
+  const rb=document.createElement('button');rb.className='rb';rb.textContent='↺ Reset';
+  
+  function render(){
+    const allOpen=opened.size===vocab.length;
+    grid.innerHTML='';
+    vocab.forEach((item,i)=>{
+      const isOpen=opened.has(i);
+      const card=document.createElement('div');
+      card.className='fc'+(isOpen?' op':'');
+      card.style.minHeight='0';
+      
+      // Always show word header on the screen so students can see target vocabulary easily while interacting!
+      card.innerHTML = `<div class="term-header">${item.w}</div>`;
+      
+      if(isOpen){
+        card.innerHTML += (SVG[item.k]||'').replace(/width="\d+"/,'width="60"')
+          + '<div class="cw" style="margin-top:15px;">' + item.w + '</div>'
+          + '<div class="ct">🇷🇺 ' + item.ru + '</div><div class="ct">🇺🇿 ' + item.uz + '</div>';
+      }else{
+        card.innerHTML += '<div class="qm" style="margin-top:15px;">?</div>';
+      }
+      
+      card.onclick=()=>{
+        popCb=()=>{opened.add(i);render();};
+        openPopup((SVG[item.k]||'').replace(/width="\d+"/,'width="140"'),item.w,'🇷🇺 '+item.ru+'<br>🇺🇿 '+item.uz,item.ex);
+      };
+      grid.appendChild(card);
+    });
+    cnt.textContent=opened.size+' / '+vocab.length+' cards opened';
+  }
+  rb.onclick=()=>{opened.clear();render();};
+  foot.appendChild(rb);wrap.appendChild(cnt);wrap.appendChild(grid);wrap.appendChild(foot);
+  render();return wrap;
+}
+
+/* STEPS */
+const steps=[
+  {label:'Lead-in — City Discussion', type:'leadin', rec:5},
+  {label:'Pre-teach Vocabulary', type:'preteach', rec:10},
+  {label:'Reading & Exercises', type:'reading-pane', rec:15}
+];
+let cur=0;
+
+/* EXERCISE ANSWERS & INTERACTION LOGIC */
+const answers_ex1 = {
+  q1: 'Lewisburg',
+  q2: 'Mt. Angel',
+  q3: 'Lewisburg',
+  q4: 'Mt. Angel',
+  q5: 'Lewisburg',
+  q6: 'Mt. Angel'
+};
+
+const answers_ex2 = {
+  q1: 'True',
+  q2: 'False',
+  q3: 'False',
+  q4: 'True',
+  q5: 'True'
+};
+
+function handleEx1(btn, qKey, selectedValue) {
+  const isCorrect = answers_ex1[qKey] === selectedValue;
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.opt-btn').forEach(b => {
+    b.classList.remove('correct', 'wrong');
+    b.disabled = true;
+  });
+  if (isCorrect) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    // Highlight correct one
+    parent.querySelectorAll('.opt-btn').forEach(b => {
+      if (b.getAttribute('data-val') === answers_ex1[qKey]) b.classList.add('correct');
+    });
+  }
+}
+
+function handleEx2(btn, qKey, selectedValue) {
+  const isCorrect = answers_ex2[qKey] === selectedValue;
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.opt-btn').forEach(b => {
+    b.classList.remove('correct', 'wrong');
+    b.disabled = true;
+  });
+  if (isCorrect) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    parent.querySelectorAll('.opt-btn').forEach(b => {
+      if (b.getAttribute('data-val') === answers_ex2[qKey]) b.classList.add('correct');
+    });
+  }
+}
+
+window.handleEx1 = handleEx1;
+window.handleEx2 = handleEx2;
+
+/* ─── STEP RENDERS ─── */
+function renderStep(){
+  const s=steps[cur];
+  const area=document.getElementById('contentArea');
+  area.innerHTML='';area.style.textAlign='center';
+  document.getElementById('sLabel').textContent=s.label;
+  document.getElementById('recLbl').textContent='rec: '+s.rec+' min';
+  clearInterval(tI);tR=false;document.getElementById('tTog').textContent='▶';setT(s.rec);
+
+  let el;
+
+  if(s.type==='leadin'){
+    el=document.createElement('div');el.className='lead-card';
+    el.innerHTML=`
+      <div class="lead-title">Our Towns and Cities &middot; Lead-In Map</div>
+      <div style="width:100%; max-width:600px; margin: 0 auto;">
+        <!-- SVG City Map -->
+        <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg" style="background:#E0F2FE; border-radius:12px; border:2px solid #3B82F6; box-shadow:0 4px 10px rgba(0,0,0,0.05); width:100%; height:auto;">
+          <!-- Sky and Clouds -->
+          <circle cx="50" cy="40" r="12" fill="#fff" opacity="0.8"/>
+          <circle cx="65" cy="40" r="15" fill="#fff" opacity="0.8"/>
+          <circle cx="80" cy="40" r="12" fill="#fff" opacity="0.8"/>
+          <circle cx="320" cy="50" r="10" fill="#fff" opacity="0.8"/>
+          <circle cx="332" cy="50" r="13" fill="#fff" opacity="0.8"/>
+          
+          <!-- Sun -->
+          <circle cx="370" cy="30" r="15" fill="#FBBF24"/>
+          
+          <!-- Mountains / Hills -->
+          <polygon points="-10,120 80,60 180,120" fill="#93C5FD" opacity="0.5"/>
+          <polygon points="120,120 220,50 320,120" fill="#93C5FD" opacity="0.3"/>
+          <polygon points="250,120 340,70 420,120" fill="#93C5FD" opacity="0.4"/>
+          
+          <!-- Ground / Green Meadows -->
+          <rect x="0" y="110" width="400" height="110" fill="#10B981"/>
+          
+          <!-- Road -->
+          <polygon points="170,110 230,110 280,220 120,220" fill="#4B5563"/>
+          <line x1="200" y1="110" x2="200" y2="220" stroke="#fff" stroke-dasharray="10,8" stroke-width="2"/>
+          
+          <!-- River -->
+          <path d="M 0 160 Q 100 130 200 170 T 400 150 L 400 220 L 0 220 Z" fill="#3B82F6" opacity="0.8"/>
+          
+          <!-- City Buildings -->
+          <!-- Building 1 -->
+          <rect x="30" y="80" width="35" height="50" fill="#1E3A8A" rx="2"/>
+          <rect x="35" y="85" width="8" height="8" fill="#FBBF24"/>
+          <rect x="52" y="85" width="8" height="8" fill="#FBBF24"/>
+          <rect x="35" y="100" width="8" height="8" fill="#FBBF24"/>
+          <rect x="52" y="100" width="8" height="8" fill="#FBBF24"/>
+          <!-- Building 2 (Hospital/School) -->
+          <rect x="80" y="70" width="55" height="60" fill="#3B82F6" rx="2"/>
+          <rect x="100" y="75" width="15" height="15" fill="#EF4444" rx="2"/>
+          <text x="107.5" y="86" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">+</text>
+          <!-- Building 3 (Tall Residential) -->
+          <rect x="250" y="60" width="30" height="70" fill="#1F2937" rx="2"/>
+          <rect x="255" y="65" width="6" height="6" fill="#FBBF24"/>
+          <rect x="270" y="65" width="6" height="6" fill="#FBBF24"/>
+          <rect x="255" y="75" width="6" height="6" fill="#fff"/>
+          <rect x="270" y="75" width="6" height="6" fill="#FBBF24"/>
+          <rect x="255" y="85" width="6" height="6" fill="#fff"/>
+          <rect x="270" y="85" width="6" height="6" fill="#fff"/>
+          
+          <!-- Trees -->
+          <circle cx="150" cy="120" r="12" fill="#047857"/>
+          <rect x="148" y="120" width="4" height="15" fill="#78350F"/>
+          
+          <circle cx="310" cy="130" r="10" fill="#065F46"/>
+          <rect x="308" y="130" width="4" height="12" fill="#78350F"/>
+          
+          <circle cx="330" cy="140" r="14" fill="#047857"/>
+          <rect x="328" y="140" width="4" height="15" fill="#78350F"/>
+
+          <!-- Map Labels -->
+          <text x="47" y="142" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">MUSEUM</text>
+          <text x="107" y="142" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">CLINIC</text>
+          <text x="265" y="142" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">HOTEL</text>
+        </svg>
+      </div>
+      
+      <div class="discussion-grid">
+        <div class="dq-box">
+          <span class="dq-num">1.</span>
+          <span class="dq-text">Do you like your city? Why?</span>
+        </div>
+        <div class="dq-box">
+          <span class="dq-num">2.</span>
+          <span class="dq-text">What facilities do you have in your city?</span>
+        </div>
+        <div class="dq-box">
+          <span class="dq-num">3.</span>
+          <span class="dq-text">What is your favorite place in the city?</span>
+        </div>
+        <div class="dq-box">
+          <span class="dq-num">4.</span>
+          <span class="dq-text">Is there a park or bakery near your home?</span>
+        </div>
+      </div>
+    `;
+  }
+
+  else if(s.type==='preteach'){
+    // Create the vocabulary deck. The target words remain visible on top of each card during the exercise.
+    el = makeBoard(vocabList, 4);
+  }
+
+  else if(s.type==='reading-pane'){
+    el=document.createElement('div');el.className='reading-container';
+    el.innerHTML=`
+      <!-- Left side: Reading text -->
+      <div class="reading-pane" id="printableReadingArea">
+        <div class="town-header">
+          <div class="town-title">Lewisburg, WEST VIRGINIA</div>
+          <div class="town-meta">Founded: 1782 &middot; Population: 4,000 &middot; Average age: 46</div>
+        </div>
+        <div class="reading-text">
+          <p><b>Jack:</b> I live in Lewisburg, West Virginia, and I love the place. I'm 68 and it's a great place for people <span class="hl">like</span> me. There are only 4,000 people in Lewisburg, but it has the <span class="hl">facilities</span> of a big town. There are museums, cinemas and good shops. There's a theatre, too, and the famous Carnegie Hall, <span class="hl">as well as</span> many other beautiful old buildings. We're very <span class="hl">lucky</span>. Oh, and there's an amazing <span class="hl">bakery</span> – my favourite shop in Lewisburg. They have great pizza. But one problem is that Lewisburg has a lot of <span class="hl">visitors</span>. There are nine different hotels for them!</p>
+        </div>
+        
+        <div class="town-header" style="margin-top:24px;">
+          <div class="town-title">Mount Angel, OREGON</div>
+          <div class="town-meta">Founded: 1850 &middot; Population: 3,400 &middot; Average age: 37</div>
+        </div>
+        <div class="reading-text">
+          <p><b>Sara:</b> I live in Mt. Angel, a small town in the lovely Willamette Valley in Oregon. Mt. Angel is famous for its festival – the 'Oktoberfest'. There are four nice restaurants in the town. My favourite is the Glockenspiel. It's a German restaurant. But Mt. Angel doesn't have a lot of <span class="hl">facilities</span>. There isn't a hotel, for example. There are banks and supermarkets. But there isn't a cinema and there aren't any museums. There isn't a theatre either. There's a <span class="hl">golf course</span> near the town, but I don't play golf. But that's OK, because the country is beautiful and the sea is only <span class="hl">two hours away</span> by car.</p>
+        </div>
+      </div>
+      
+      <!-- Right side: Exercises -->
+      <div class="exercise-pane">
+        <div class="ex-title">Exercise 1: Underline the Correct Town</div>
+        
+        <div class="ex-item">
+          <div class="ex-q">1. This is a good town for old people.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="Lewisburg" onclick="handleEx1(this, 'q1', 'Lewisburg')">Lewisburg</button>
+            <button class="opt-btn" data-val="Mt. Angel" onclick="handleEx1(this, 'q1', 'Mt. Angel')">Mt. Angel</button>
+          </div>
+        </div>
+        
+        <div class="ex-item">
+          <div class="ex-q">2. This town has a famous festival.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="Lewisburg" onclick="handleEx1(this, 'q2', 'Lewisburg')">Lewisburg</button>
+            <button class="opt-btn" data-val="Mt. Angel" onclick="handleEx1(this, 'q2', 'Mt. Angel')">Mt. Angel</button>
+          </div>
+        </div>
+        
+        <div class="ex-item">
+          <div class="ex-q">3. A lot of tourists (visitors) visit here.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="Lewisburg" onclick="handleEx1(this, 'q3', 'Lewisburg')">Lewisburg</button>
+            <button class="opt-btn" data-val="Mt. Angel" onclick="handleEx1(this, 'q3', 'Mt. Angel')">Mt. Angel</button>
+          </div>
+        </div>
+        
+        <div class="ex-item">
+          <div class="ex-q">4. This town does not have a lot of facilities.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="Lewisburg" onclick="handleEx1(this, 'q4', 'Lewisburg')">Lewisburg</button>
+            <button class="opt-btn" data-val="Mt. Angel" onclick="handleEx1(this, 'q4', 'Mt. Angel')">Mt. Angel</button>
+          </div>
+        </div>
+
+        <div class="ex-item">
+          <div class="ex-q">5. This town has famous old buildings.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="Lewisburg" onclick="handleEx1(this, 'q5', 'Lewisburg')">Lewisburg</button>
+            <button class="opt-btn" data-val="Mt. Angel" onclick="handleEx1(this, 'q5', 'Mt. Angel')">Mt. Angel</button>
+          </div>
+        </div>
+
+        <div class="ex-item">
+          <div class="ex-q">6. This town is near the sea.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="Lewisburg" onclick="handleEx1(this, 'q6', 'Lewisburg')">Lewisburg</button>
+            <button class="opt-btn" data-val="Mt. Angel" onclick="handleEx1(this, 'q6', 'Mt. Angel')">Mt. Angel</button>
+          </div>
+        </div>
+
+        <div class="ex-title" style="margin-top:24px;">Exercise 2: True or False (Vocabulary Practice)</div>
+        
+        <div class="ex-item">
+          <div class="ex-q">1. Lewisburg has good facilities, <span class="hl">as well as</span> Carnegie Hall.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="True" onclick="handleEx2(this, 'q1', 'True')">True</button>
+            <button class="opt-btn" data-val="False" onclick="handleEx2(this, 'q1', 'False')">False</button>
+          </div>
+        </div>
+
+        <div class="ex-item">
+          <div class="ex-q">2. Mt. Angel is very lucky because it has nine different hotels for <span class="hl">visitors</span>.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="True" onclick="handleEx2(this, 'q2', 'True')">True</button>
+            <button class="opt-btn" data-val="False" onclick="handleEx2(this, 'q2', 'False')">False</button>
+          </div>
+        </div>
+
+        <div class="ex-item">
+          <div class="ex-q">3. In Mt. Angel, the bakery is only <span class="hl">two hours away</span> by car.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="True" onclick="handleEx2(this, 'q3', 'True')">True</button>
+            <button class="opt-btn" data-val="False" onclick="handleEx2(this, 'q3', 'False')">False</button>
+          </div>
+        </div>
+
+        <div class="ex-item">
+          <div class="ex-q">4. There is a <span class="hl">golf course</span> near Mt. Angel town.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="True" onclick="handleEx2(this, 'q4', 'True')">True</button>
+            <button class="opt-btn" data-val="False" onclick="handleEx2(this, 'q4', 'False')">False</button>
+          </div>
+        </div>
+
+        <div class="ex-item">
+          <div class="ex-q">5. Jack likes the <span class="hl">bakery</span> because they have great pizza.</div>
+          <div class="opt-row">
+            <button class="opt-btn" data-val="True" onclick="handleEx2(this, 'q5', 'True')">True</button>
+            <button class="opt-btn" data-val="False" onclick="handleEx2(this, 'q5', 'False')">False</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  area.appendChild(el);
+  document.getElementById('stepCtr').textContent=(cur+1)+' / '+steps.length;
+  document.getElementById('prevBtn').disabled=(cur===0);
+  document.getElementById('nextBtn').textContent=(cur===steps.length-1)?'Finish':'next →';
+}
+
+/* NAVIGATION SETUP */
+document.getElementById('startBtn').onclick=()=>{
+  document.getElementById('outlineScreen').style.display='none';
+  document.getElementById('lessonScreen').style.display='flex';
+  cur=0;
+  renderStep();
+};
+
+document.getElementById('prevBtn').onclick=()=>{
+  if(cur>0){cur--;renderStep();}
+};
+
+document.getElementById('nextBtn').onclick=()=>{
+  if(cur<steps.length-1){cur++;renderStep();}
+  else{
+    alert('Lesson Finished! Excellent job!');
+    document.getElementById('lessonScreen').style.display='none';
+    document.getElementById('outlineScreen').style.display='block';
+  }
+};
+
+/* PDF PRINTING ENGINE */
+document.getElementById('pdfBtn').onclick=function(){
+  const element = document.getElementById('contentArea');
+  const opt = {
+    margin:       10,
+    filename:     'Beginner_6.1_Lesson_Materials.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2 },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  
+  // Custom styled printable elements for offline student workbooks
+  const printableDiv = document.createElement('div');
+  printableDiv.style.padding = '25px';
+  printableDiv.style.fontFamily = 'Arial, sans-serif';
+  printableDiv.style.color = '#333';
+  printableDiv.innerHTML = `
+    <h1 style="color:#1D4ED8; font-size:24px; margin-bottom:5px; text-align:center;">Beginner Lesson 6.1 — Our Towns and Cities</h1>
+    <p style="color:#666; font-size:12px; text-align:center; margin-bottom:30px;">Unit 6 Lesson Booklet & Worksheet</p>
+    
+    <h2 style="color:#1D4ED8; font-size:16px; border-bottom:2px solid #BFDBFE; padding-bottom:5px; margin-bottom:15px;">Reading: Two Different Towns</h2>
+    
+    <div style="margin-bottom:25px; background:#F8FAFF; border-left:4px solid #1D4ED8; padding:15px; border-radius:4px;">
+      <h3 style="margin-bottom:5px; font-size:14px; color:#1D4ED8;">Lewisburg, WEST VIRGINIA</h3>
+      <p style="font-size:11px; color:#666; margin-bottom:10px;">Founded: 1782 &middot; Population: 4,000 &middot; Average age: 46</p>
+      <p style="font-size:12px; line-height:1.6;"><b>Jack:</b> I live in Lewisburg, West Virginia, and I love the place. I'm 68 and it's a great place for people <b>like</b> me. There are only 4,000 people in Lewisburg, but it has the <b>facilities</b> of a big town. There are museums, cinemas and good shops. There's a theatre, too, and the famous Carnegie Hall, <b>as well as</b> many other beautiful old buildings. We're very <b>lucky</b>. Oh, and there's an amazing <b>bakery</b> – my favourite shop in Lewisburg. They have great pizza. But one problem is that Lewisburg has a lot of <b>visitors</b>. There are nine different hotels for them!</p>
+    </div>
+
+    <div style="margin-bottom:35px; background:#F8FAFF; border-left:4px solid #1D4ED8; padding:15px; border-radius:4px;">
+      <h3 style="margin-bottom:5px; font-size:14px; color:#1D4ED8;">Mount Angel, OREGON</h3>
+      <p style="font-size:11px; color:#666; margin-bottom:10px;">Founded: 1850 &middot; Population: 3,400 &middot; Average age: 37</p>
+      <p style="font-size:12px; line-height:1.6;"><b>Sara:</b> I live in Mt. Angel, a small town in the lovely Willamette Valley in Oregon. Mt. Angel is famous for its festival – the 'Oktoberfest'. There are four nice restaurants in the town. My favourite is the Glockenspiel. It's a German restaurant. But Mt. Angel doesn't have a lot of <b>facilities</b>. There isn't a hotel, for example. There are banks and supermarkets. But there isn't a cinema and there aren't any museums. There isn't a theatre either. There's a <b>golf course</b> near the town, but I don't play golf. But that's OK, because the country is beautiful and the sea is only <b>two hours away</b> by car.</p>
+    </div>
+
+    <h2 style="color:#1D4ED8; font-size:16px; border-bottom:2px solid #BFDBFE; padding-bottom:5px; margin-bottom:15px; page-break-before: always;">Exercise 1: Underline the Correct Town</h2>
+    <div style="font-size:13px; line-height:1.8; margin-bottom:30px;">
+      <p><b>1.</b> Lewisburg / Mt. Angel is a good town for old people.</p>
+      <p><b>2.</b> Lewisburg / Mt. Angel has a famous festival.</p>
+      <p><b>3.</b> A lot of tourists (visitors) visit Lewisburg / Mt. Angel.</p>
+      <p><b>4.</b> Lewisburg / Mt. Angel does not have a lot of facilities.</p>
+      <p><b>5.</b> Lewisburg / Mt. Angel has famous old buildings.</p>
+      <p><b>6.</b> Lewisburg / Mt. Angel is near the sea.</p>
+    </div>
+
+    <h2 style="color:#1D4ED8; font-size:16px; border-bottom:2px solid #BFDBFE; padding-bottom:5px; margin-bottom:15px;">Exercise 2: True or False</h2>
+    <div style="font-size:13px; line-height:1.8;">
+      <p><b>1.</b> Lewisburg has good facilities, <i>as well as</i> Carnegie Hall. &nbsp;&nbsp;&nbsp;<b>[ TRUE / FALSE ]</b></p>
+      <p><b>2.</b> Mt. Angel is very lucky because it has nine different hotels for <i>visitors</i>. &nbsp;&nbsp;&nbsp;<b>[ TRUE / FALSE ]</b></p>
+      <p><b>3.</b> In Mt. Angel, the bakery is only <i>two hours away</i> by car. &nbsp;&nbsp;&nbsp;<b>[ TRUE / FALSE ]</b></p>
+      <p><b>4.</b> There is a <i>golf course</i> near Mt. Angel town. &nbsp;&nbsp;&nbsp;<b>[ TRUE / FALSE ]</b></p>
+      <p><b>5.</b> Jack likes the <i>bakery</i> because they have great pizza. &nbsp;&nbsp;&nbsp;<b>[ TRUE / FALSE ]</b></p>
+    </div>
+  `;
+  
+  html2pdf().set(opt).from(printableDiv).save();
+};
+
+renderStep();
+</script>
+</body>
+</html>

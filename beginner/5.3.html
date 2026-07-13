@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 6.3</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif;background:#DDE6F8;min-height:100vh;display:flex;flex-direction:column;}
+  a{text-decoration:none;color:inherit;}
+  /* OUTLINE */
+  .outline-page{flex:1;padding:24px 36px;display:flex;flex-direction:column;}
+  .ol-title{color:#1D4ED8;font-size:28px;font-weight:bold;margin-bottom:4px;}
+  .ol-sub{color:#666;font-size:14px;margin-bottom:24px;}
+  .ol-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+  .ol-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:14px 18px;font-size:15px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+  .ol-n{background:#1D4ED8;color:#fff;border-radius:50%;width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;}
+  .ol-tag{margin-left:auto;color:#93C5FD;font-size:12px;}
+  .sbtn{background:#1D4ED8;color:#fff;border:none;border-radius:10px;padding:14px 32px;font-weight:bold;font-size:16px;cursor:pointer;font-family:inherit;align-self:flex-end;}
+  .back-link{color:#1D4ED8;font-size:18px;font-weight:bold;margin-bottom:16px;display:inline-block;}
+  /* LESSON LAYOUT */
+  #lessonScreen{flex:1;display:none;flex-direction:column;min-height:0;}
+  .top-bar{padding:12px 32px 6px;display:flex;align-items:center;gap:14px;}
+  .step-label{color:#1D4ED8;font-size:20px;font-weight:bold;}
+  .content-area{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10px 28px;overflow-y:auto;}
+  .bottom-bar{background:rgba(255,255,255,.94);border-top:2px solid #BFDBFE;padding:10px 28px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .nav-side{display:flex;align-items:center;gap:8px;}
+  .nb{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:#93C5FD;padding:6px 10px;}
+  .nb:disabled{opacity:.25;cursor:not-allowed;}
+  .nb.pri{background:#1D4ED8;color:#fff;border-radius:8px;padding:8px 20px;}
+  .sc{color:#BFDBFE;font-size:13px;min-width:60px;text-align:center;}
+  .tools-side{display:flex;align-items:center;gap:8px;}
+  .trec{color:#93C5FD;font-size:11px;}
+  .tw0{display:flex;align-items:center;gap:4px;background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:5px 10px;}
+  .ta{background:none;border:none;color:#1D4ED8;font-size:16px;font-weight:bold;cursor:pointer;width:22px;font-family:inherit;}
+  .td{font-family:'Courier New',monospace;font-size:15px;color:#1D4ED8;min-width:52px;text-align:center;font-weight:bold;}
+  .td.warn{color:#EF4444;}
+  .tt{background:none;border:1.5px solid #1D4ED8;color:#1D4ED8;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:2px;}
+  .hbtn{background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  .pdf-btn{display:none;}
+  /* FLIP BOARD */
+  .board-full{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;align-items:center;}
+  .board-grid{display:grid;gap:10px;width:100%;max-width:1200px;flex:1;min-height:0;}
+  .fc{background:#fff;border:2px solid #BFDBFE;border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06);min-height:0;}
+  .fc:hover{border-color:#1D4ED8;box-shadow:0 2px 8px rgba(29,78,216,.15);}
+  .fc.op{border-color:#1D4ED8;background:#F8FAFF;}
+  .fc .qm{font-size:30px;color:#BFDBFE;}
+  .fc .cw{font-size:13px;font-weight:bold;color:#1D4ED8;margin-top:5px;line-height:1.3;}
+  .fc .ct{font-size:10px;color:#888;margin-top:2px;}
+  .board-foot{display:flex;justify-content:flex-end;margin-top:6px;width:100%;max-width:1200px;}
+  .rb{background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:6px;padding:5px 16px;font-size:12px;cursor:pointer;font-family:inherit;}
+  /* OVERLAY */
+  #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:200;}
+  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:3px solid #1D4ED8;border-radius:14px;padding:22px 28px;text-align:center;min-width:260px;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
+  .pq{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+  .pw{font-size:20px;font-weight:bold;color:#1D4ED8;margin-top:10px;display:none;}
+  .pt{font-size:12px;color:#888;margin-top:4px;display:none;line-height:1.5;}
+  .pe{background:#EFF6FF;border-left:3px solid #1D4ED8;padding:8px 12px;margin-top:10px;font-size:13px;color:#333;text-align:left;border-radius:4px;display:none;font-style:italic;}
+  .pr{margin-top:12px;background:#1D4ED8;border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;}
+  .ph2{color:#ccc;font-size:11px;margin-top:10px;}
+  /* TABS */
+  .tw2{width:100%;max-width:1000px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+  .tbar{display:flex;border-bottom:2px solid #BFDBFE;}
+  .tab{flex:1;padding:10px 6px;text-align:center;font-size:13px;font-weight:bold;cursor:pointer;color:#93C5FD;background:#fff;border-bottom:3px solid transparent;}
+  .tab.active{color:#fff;background:#1D4ED8;border-bottom:3px solid #1D4ED8;}
+  .tpane{display:none;padding:20px;max-height:56vh;overflow-y:auto;}
+  .tpane.active{display:block;}
+  /* reading */
+  .reading-title{font-size:20px;font-weight:bold;color:#1D4ED8;margin-bottom:14px;}
+  .reading-text{color:#333;font-size:14px;line-height:1.85;}
+  .text-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;padding:12px 14px;background:#F8FAFF;border-radius:8px;border-left:3px solid #1D4ED8;}
+  .text-num{background:#1D4ED8;color:#fff;border-radius:50%;width:22px;height:22px;min-width:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+  .text-body{color:#333;font-size:14px;line-height:1.8;}
+  /* exercises */
+  .einstr{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
+  .ex-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;}
+  .ex-n{background:#1D4ED8;color:#fff;font-weight:bold;font-size:11px;border-radius:50%;width:20px;height:20px;min-width:20px;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .ex-t{color:#333;font-size:14px;line-height:1.6;flex:1;}
+  .mc-opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+  .mo{background:#EFF6FF;border:1.5px solid #BFDBFE;color:#333;border-radius:6px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit;font-style:italic;}
+  .mo:hover{border-color:#1D4ED8;color:#1D4ED8;}
+  .mo.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;font-style:italic;}
+  .mo.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;text-decoration:line-through;font-style:italic;}
+  .tf-opts{display:flex;gap:8px;margin-top:6px;}
+  .tf-btn{background:none;border:1.5px solid #BFDBFE;color:#666;border-radius:6px;padding:5px 14px;font-size:13px;cursor:pointer;font-family:inherit;}
+  .tf-btn:hover{border-color:#1D4ED8;color:#1D4ED8;}
+  .tf-btn.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;}
+  .tf-btn.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+  /* lead-in */
+  .lead-card{background:#fff;border-radius:14px;padding:28px 32px;box-shadow:0 2px 12px rgba(0,0,0,.08);width:100%;max-width:760px;text-align:center;}
+</style>
+</head>
+<body>
+
+<div id="outlineScreen">
+  <div class="outline-page">
+    <a class="back-link" href="index.html">&#8592;</a>
+    <div class="ol-title">Lesson 6.3</div>
+    <div class="ol-sub">Unit 6 &middot; Styles around the world</div>
+    <div class="ol-list">
+      <div class="ol-item"><span class="ol-n">1</span>Lead-in<span class="ol-tag">3 min</span></div>
+      <div class="ol-item"><span class="ol-n">2</span>Pre-teach vocabulary<span class="ol-tag">7 words</span></div>
+      <div class="ol-item"><span class="ol-n">3</span>Reading + exercises<span class="ol-tag">text · ex 1 · ex 2 · PDF</span></div>
+    </div>
+    <button class="sbtn" id="startBtn">Start lesson &#8594;</button>
+  </div>
+</div>
+
+<div id="lessonScreen">
+  <div class="top-bar">
+    <a class="back-link" href="index.html" style="font-size:18px;font-weight:bold;color:#1D4ED8;">&#8592;</a>
+    <span class="step-label" id="sLabel">Lesson 6.3</span>
+  </div>
+  <div class="content-area" id="contentArea"></div>
+  <div class="bottom-bar">
+    <div class="nav-side">
+      <button class="nb" id="prevBtn">&#8592; prev</button>
+      <span class="sc" id="stepCtr"></span>
+      <button class="nb pri" id="nextBtn">next &#8594;</button>
+    </div>
+    <div class="tools-side">
+      <span class="trec" id="recLbl"></span>
+      <div class="tw0">
+        <button class="ta" id="tMin">&#8722;</button>
+        <span class="td" id="tDisp">03:00</span>
+        <button class="ta" id="tPls">+</button>
+        <button class="tt" id="tTog">&#9654;</button>
+      </div>
+      <button class="hbtn pdf-btn" id="pdfBtn">📄 PDF</button>
+      <button class="hbtn" id="fsBtn" style="font-size:14px;padding:6px 10px;">&#x26F6;</button>
+    </div>
+  </div>
+</div>
+
+<div id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+  <div class="pq" id="popQ"></div>
+  <div id="popSvg"></div>
+  <div class="pw" id="popWord"></div>
+  <div class="pt" id="popTrans"></div>
+  <div class="pe" id="popEx"></div>
+  <button class="pr" id="popReveal" onclick="revealPopup()">Show answer ▾</button>
+  <div class="ph2">tap outside to close</div>
+</div>
+
+<script>
+/* FULLSCREEN */
+document.getElementById('fsBtn').onclick=function(){
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});this.textContent='✕';}
+  else{document.exitFullscreen();this.textContent='⛶';}
+};
+document.addEventListener('fullscreenchange',()=>{document.getElementById('fsBtn').textContent=document.fullscreenElement?'✕':'⛶';});
+
+/* TIMER */
+let tS=180,tR=false,tI=null;
+function setT(m){tS=m*60;tR=false;clearInterval(tI);document.getElementById('tTog').textContent='▶';rendT();}
+function rendT(){const m=Math.floor(Math.abs(tS)/60),s=Math.abs(tS)%60,n=tS<0?'-':'',d=document.getElementById('tDisp');d.textContent=n+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');d.className='td'+(tS<=30&&tS>=-999?' warn':'');}
+document.getElementById('tTog').onclick=function(){if(tR){clearInterval(tI);tR=false;this.textContent='▶';}else{tR=true;this.textContent='⏸';tI=setInterval(()=>{tS--;rendT();},1000);}};
+document.getElementById('tMin').onclick=()=>{tS=Math.max(0,tS-60);rendT();};
+document.getElementById('tPls').onclick=()=>{tS+=60;rendT();};
+
+/* PDF */
+function savePDF(el,name){
+  html2pdf().set({margin:10,filename:name,image:{type:'jpeg',quality:.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();
+}
+function buildPrintEl(html){
+  const el=document.createElement('div');
+  el.style.cssText='font-family:Arial,sans-serif;padding:20px;color:#111;max-width:740px;';
+  el.innerHTML=html;document.body.appendChild(el);
+  setTimeout(()=>{if(el.parentNode)el.parentNode.removeChild(el);},8000);
+  return el;
+}
+
+/* TAB */
+function swTab(el,n){
+  const bar=el.parentElement,wrap=bar.parentElement;
+  bar.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  wrap.querySelectorAll('.tpane').forEach((p,i)=>p.classList.toggle('active',i===n));
+}
+window.swTab=swTab;
+
+/* POPUP */
+let popCb=null;
+function openPopup(svgHtml,word,trans,ex){
+  document.getElementById('popQ').textContent='What does this mean?';
+  document.getElementById('popSvg').innerHTML=svgHtml;
+  document.getElementById('popWord').style.display='none';
+  document.getElementById('popWord').textContent=word;
+  document.getElementById('popTrans').style.display='none';
+  document.getElementById('popTrans').innerHTML=trans;
+  document.getElementById('popEx').style.display='none';
+  document.getElementById('popEx').textContent=ex;
+  document.getElementById('popReveal').style.display='inline-block';
+  document.getElementById('overlay').style.display='block';
+  document.getElementById('popup').style.display='block';
+}
+function revealPopup(){
+  document.getElementById('popWord').style.display='block';
+  document.getElementById('popTrans').style.display='block';
+  document.getElementById('popEx').style.display='block';
+  document.getElementById('popReveal').style.display='none';
+}
+function closePopup(){
+  document.getElementById('overlay').style.display='none';
+  document.getElementById('popup').style.display='none';
+  if(popCb){popCb();popCb=null;}
+}
+
+/* SVGs */
+const SVG={
+  shawl:`<svg viewBox="0 0 100 86" width="110" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="22" r="16" fill="#FFD400"/>
+    <path d="M20,38 Q10,60 18,82 L50,70 L82,82 Q90,60 80,38 Q65,28 50,38 Q35,28 20,38Z" fill="#1D4ED8" opacity=".85"/>
+    <path d="M20,38 Q35,28 50,38 Q65,28 80,38" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4,3"/>
+  </svg>`,
+  bowlerhat:`<svg viewBox="0 0 100 78" width="110" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="50" cy="58" rx="44" ry="14" fill="#1a1a1a"/>
+    <rect x="22" y="22" width="56" height="38" rx="28" fill="#1a1a1a"/>
+    <ellipse cx="50" cy="22" rx="28" ry="10" fill="#2a2a2a"/>
+    <ellipse cx="50" cy="58" rx="44" ry="14" fill="none" stroke="#555" stroke-width="2"/>
+  </svg>`,
+  fake:`<svg viewBox="0 0 110 80" width="120" xmlns="http://www.w3.org/2000/svg">
+    <rect x="5" y="10" width="44" height="60" rx="6" fill="#4CAF50" opacity=".15" stroke="#4CAF50" stroke-width="2"/>
+    <text x="27" y="36" text-anchor="middle" font-size="9" fill="#4CAF50" font-family="Arial" font-weight="bold">REAL</text>
+    <circle cx="27" cy="50" r="8" fill="#4CAF50"/>
+    <rect x="61" y="10" width="44" height="60" rx="6" fill="#EF4444" opacity=".12" stroke="#EF4444" stroke-width="2"/>
+    <text x="83" y="36" text-anchor="middle" font-size="9" fill="#EF4444" font-family="Arial" font-weight="bold">FAKE</text>
+    <circle cx="83" cy="50" r="8" fill="#EF4444" opacity=".6"/>
+    <line x1="77" y1="44" x2="89" y2="56" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="89" y1="44" x2="77" y2="56" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>`,
+  tan:`<svg viewBox="0 0 110 80" width="120" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="30" cy="40" r="24" fill="#FDE8D8" stroke="#ddd" stroke-width="2"/>
+    <text x="30" y="44" text-anchor="middle" font-size="9" fill="#888" font-family="Arial">white skin</text>
+    <line x1="55" y1="40" x2="68" y2="40" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/>
+    <polygon points="64,35 76,40 64,45" fill="#1D4ED8"/>
+    <circle cx="86" cy="40" r="24" fill="#C68642" stroke="#ddd" stroke-width="2"/>
+    <text x="86" y="44" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial">tan skin</text>
+    <circle cx="24" cy="12" r="8" fill="#FFD400"/>
+  </svg>`,
+  pieceofwood:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg">
+    <rect x="18" y="28" width="64" height="26" rx="5" fill="#92400E"/>
+    <line x1="18" y1="36" x2="82" y2="36" stroke="#B45309" stroke-width="1.5"/>
+    <line x1="18" y1="44" x2="82" y2="44" stroke="#B45309" stroke-width="1.5"/>
+    <line x1="35" y1="28" x2="35" y2="54" stroke="#B45309" stroke-width="1"/>
+    <line x1="55" y1="28" x2="55" y2="54" stroke="#B45309" stroke-width="1"/>
+    <text x="50" y="72" text-anchor="middle" font-size="9" fill="#92400E" font-family="Arial">a piece of wood</text>
+  </svg>`,
+  barefeet:`<svg viewBox="0 0 100 86" width="110" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="32" cy="58" rx="22" ry="14" fill="#FFD400" opacity=".8"/>
+    <rect x="22" y="30" width="14" height="30" rx="7" fill="#FFD400"/>
+    <circle cx="22" cy="24" r="5" fill="#FFD400"/>
+    <circle cx="29" cy="21" r="5" fill="#FFD400"/>
+    <circle cx="36" cy="20" r="5" fill="#FFD400"/>
+    <ellipse cx="68" cy="58" rx="22" ry="14" fill="#FFD400" opacity=".8"/>
+    <rect x="64" y="30" width="14" height="30" rx="7" fill="#FFD400"/>
+    <circle cx="64" cy="24" r="5" fill="#FFD400"/>
+    <circle cx="71" cy="21" r="5" fill="#FFD400"/>
+    <circle cx="78" cy="20" r="5" fill="#FFD400"/>
+    <line x1="10" y1="72" x2="90" y2="72" stroke="#C68642" stroke-width="3" stroke-linecap="round"/>
+  </svg>`,
+  strange:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="40" r="28" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2.5"/>
+    <circle cx="38" cy="36" r="5" fill="#1D4ED8"/>
+    <circle cx="62" cy="36" r="5" fill="#1D4ED8"/>
+    <path d="M36,52 Q50,46 64,52" stroke="#1D4ED8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <text x="76" y="20" font-size="20" fill="#FFD400" font-family="Arial" font-weight="bold">?</text>
+    <text x="20" y="22" font-size="20" fill="#FFD400" font-family="Arial" font-weight="bold">?</text>
+  </svg>`
+};
+
+const vocab=[
+  {w:'shawl',         ru:'шаль',              uz:'ro\'mol',          k:'shawl',       ex:'"Chola women wear a shawl around their body when it is cold."'},
+  {w:'bowler hat',    ru:'котелок (шляпа)',    uz:'dumaloq shapka',   k:'bowlerhat',   ex:'"Chola women are famous for their bowler hats."'},
+  {w:'fake',          ru:'ненастоящий',        uz:'soxta',            k:'fake',        ex:'"People use fake tan — it\'s not real sun, it comes from a bottle."'},
+  {w:'tan',           ru:'загар / коричневый', uz:'qoʻngʻir teri',   k:'tan',         ex:'"People put fake tan on their skin to look brown."'},
+  {w:'a piece of wood', ru:'кусок дерева',    uz:'yog\'och parchasi', k:'pieceofwood', ex:'"The Miao women put a piece of wood on their heads and wrap their hair around it."'},
+  {w:'walk bare feet', ru:'ходить босиком',   uz:'yalangoyoq yurmoq', k:'barefeet',   ex:'"In New Zealand, children walk bare feet in the street."'},
+  {w:'strange',       ru:'странный',           uz:'g\'alati',         k:'strange',     ex:'"It is strange to see people without shoes in the street."'},
+];
+
+/* BOARD */
+function makeBoard(){
+  const opened=new Set();
+  const wrap=document.createElement('div');wrap.className='board-full';
+  const cnt=document.createElement('div');cnt.style.cssText='text-align:right;font-size:12px;color:#93C5FD;margin-bottom:6px;width:100%;max-width:1200px;';
+  const grid=document.createElement('div');grid.className='board-grid';
+  grid.style.gridTemplateColumns='repeat(4,1fr)';
+  grid.style.gridAutoRows='1fr';
+  grid.style.flex='1';
+  const foot=document.createElement('div');foot.className='board-foot';
+  const rb=document.createElement('button');rb.className='rb';rb.textContent='↺ Reset';
+  function render(){
+    const allOpen=opened.size===vocab.length;
+    grid.innerHTML='';
+    vocab.forEach((item,i)=>{
+      const isOpen=opened.has(i);
+      const card=document.createElement('div');
+      card.className='fc'+(isOpen?' op':'');
+      card.style.minHeight='0';
+      if(isOpen){
+        card.innerHTML=SVG[item.k].replace(/width="\d+"/,'width="65"')
+          +'<div class="cw">'+item.w+'</div>'
+          +(allOpen?'<div class="ct">🇷🇺 '+item.ru+'</div><div class="ct">🇺🇿 '+item.uz+'</div>':'');
+      }else{card.innerHTML='<div class="qm">?</div>';}
+      card.onclick=()=>{
+        popCb=()=>{opened.add(i);render();};
+        openPopup(SVG[item.k].replace(/width="\d+"/,'width="140"'),item.w,'🇷🇺 '+item.ru+'<br>🇺🇿 '+item.uz,item.ex);
+      };
+      grid.appendChild(card);
+    });
+    cnt.textContent=opened.size+' / '+vocab.length+' opened';
+  }
+  rb.onclick=()=>{opened.clear();render();};
+  foot.appendChild(rb);
+  wrap.appendChild(cnt);wrap.appendChild(grid);wrap.appendChild(foot);
+  render();return wrap;
+}
+
+/* HELPERS */
+function mcAns(btn,ok){
+  if(btn.classList.contains('correct')||btn.classList.contains('wrong'))return;
+  const g=btn.closest('.mc-opts');g.querySelectorAll('.mo').forEach(b=>b.onclick=null);
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok)g.querySelector('[data-c]').classList.add('correct');
+}
+function tfAns(btn,ok){
+  if(btn.classList.contains('correct')||btn.classList.contains('wrong'))return;
+  const g=btn.closest('.tf-opts');g.querySelectorAll('.tf-btn').forEach(b=>b.onclick=null);
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok)g.querySelectorAll('.tf-btn').forEach(b=>{if(b!==btn)b.classList.add('correct');});
+}
+window.mcAns=mcAns;window.tfAns=tfAns;
+
+/* PDF */
+function pdfReading(){
+  const ex1=[
+    {q:'Chola women wear a shawl because it\'s <em>stylish</em> / <em>cold in their country</em>.',opts:['stylish','cold in their country'],ans:1},
+    {q:'A Chola woman doesn\'t usually wear <em>trousers</em> / <em>skirts</em>.',opts:['trousers','skirts'],ans:0},
+    {q:'People use fake tan because they don\'t like <em>white</em> / <em>brown</em> skin.',opts:['white','brown'],ans:0},
+    {q:'B: The Miao live in the south of <em>China</em> / <em>India</em>.',opts:['China','India'],ans:0},
+    {q:'B: Do children in New Zealand always wear shoes? <em>Yes, they do.</em> / <em>No, they don\'t.</em>',opts:['Yes, they do.','No, they don\'t.'],ans:1},
+    {q:'The writer comes from <em>Japan</em> / <em>New Zealand</em>.',opts:['Japan','New Zealand'],ans:0},
+  ];
+  const ex2=[
+    {q:'Chola women wear big skirts and <b>bowler hats</b>.',ans:true},
+    {q:'Chola women\'s clothes are always black and white.',ans:false},
+    {q:'Fake tan always makes skin look brown.',ans:false},
+    {q:'The Miao women have short hair.',ans:false},
+    {q:'In New Zealand, some adults also walk with <b>bare feet</b>.',ans:true},
+    {q:'The writer thinks it is <b>strange</b> to see people without shoes.',ans:true},
+  ];
+  const html=`
+    <h2 style="color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:8px;margin-bottom:16px;">Reading Tasks &middot; Lesson 6.3</h2>
+    <h3 style="color:#1D4ED8;margin-bottom:12px;">Reading text — Styles around the world</h3>
+    ${[
+      'The Chola women of Bolivia are famous for their style. They wear big skirts and bowler hats. They also wear a shawl around their body because it is sometimes very cold in Bolivia. Their clothes are always really colourful.',
+      'In the USA and in northern Europe, people put fake tan on their hands and faces because they don\'t like very white skin. Women put it on their arms and legs too. They want to have brown skin, but sometimes the colour is orange!',
+      'The Miao live in the south of China. The women have amazing hairstyles. They\'ve got very long hair and they put it up on their heads. They wear a piece of wood on their heads and then put their hair round and round the wood.',
+      'In New Zealand, children don\'t always wear shoes. Children (and sometimes adults, too) walk with bare feet in the street. They think shoes are bad for their feet. I am from Japan and in Japan we always wear shoes in the street. So it\'s really strange to see this.'
+    ].map((t,i)=>`<div style="display:flex;gap:10px;margin-bottom:10px;font-size:13px;line-height:1.7;"><span style="background:#1D4ED8;color:#fff;border-radius:50%;width:20px;height:20px;min-width:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;">${i+1}</span>${t}</div>`).join('')}
+    <h3 style="color:#1D4ED8;margin:18px 0 10px;">Exercise 1 — Choose the correct option</h3>
+    ${ex1.map((item,i)=>`<div style="display:flex;gap:8px;margin-bottom:12px;font-size:14px;align-items:flex-start;">
+      <span style="background:#1D4ED8;color:#fff;border-radius:50%;width:20px;height:20px;min-width:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;margin-top:2px;">${i+1}</span>
+      <span>${item.q.replace(/<em>/g,'<em style="font-style:italic;color:#555;">')}</span>
+      <span style="display:inline-block;border-bottom:1px solid #333;min-width:60px;margin-left:8px;">&nbsp;</span>
+    </div>`).join('')}
+    <h3 style="color:#1D4ED8;margin:18px 0 10px;">Exercise 2 — True or False?</h3>
+    ${ex2.map((item,i)=>`<div style="display:flex;gap:8px;margin-bottom:10px;font-size:14px;align-items:center;">
+      <span style="background:#1D4ED8;color:#fff;border-radius:50%;width:20px;height:20px;min-width:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;">${i+1}</span>
+      ${item.q}
+      <span style="display:inline-block;border-bottom:1px solid #333;min-width:60px;margin-left:8px;">&nbsp;</span>
+    </div>`).join('')}`;
+  const el=buildPrintEl(html);
+  savePDF(el,'6.3-reading-tasks.pdf');
+}
+
+/* STEPS */
+const steps=[
+  {label:'Lead-in',              type:'leadin',  rec:3},
+  {label:'Pre-teach vocabulary', type:'board',   rec:10},
+  {label:'Reading',              type:'reading', rec:15},
+];
+let cur=0;
+
+function renderStep(){
+  const s=steps[cur];
+  const area=document.getElementById('contentArea');
+  area.innerHTML='';
+  area.style.justifyContent='center';area.style.alignItems='center';area.style.padding='10px 28px';
+  document.getElementById('sLabel').textContent=s.label;
+  document.getElementById('recLbl').textContent='rec: '+s.rec+' min';
+  const pdfBtn=document.getElementById('pdfBtn');
+  pdfBtn.style.display='none';pdfBtn.onclick=null;
+  clearInterval(tI);tR=false;document.getElementById('tTog').textContent='▶';setT(s.rec);
+
+  let el;
+
+  if(s.type==='leadin'){
+    el=document.createElement('div');el.className='lead-card';
+    el.innerHTML=`
+      <svg viewBox="0 0 320 110" width="400" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="50" r="28" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/>
+        <circle cx="40" cy="40" r="12" fill="#1D4ED8"/>
+        <rect x="26" y="52" width="28" height="30" rx="6" fill="#1D4ED8"/>
+        <rect x="16" y="60" width="12" height="8" rx="3" fill="#FFD400"/>
+        <rect x="54" y="60" width="12" height="8" rx="3" fill="#FFD400"/>
+        <circle cx="120" cy="50" r="28" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+        <circle cx="120" cy="40" r="12" fill="#3B82F6"/>
+        <rect x="106" y="52" width="28" height="30" rx="6" fill="#3B82F6"/>
+        <rect x="96" y="60" width="12" height="8" rx="3" fill="#F97316"/>
+        <rect x="134" y="60" width="12" height="8" rx="3" fill="#F97316"/>
+        <circle cx="200" cy="50" r="28" fill="#EFF6FF" stroke="#4CAF50" stroke-width="2"/>
+        <circle cx="200" cy="40" r="12" fill="#4CAF50"/>
+        <rect x="186" y="52" width="28" height="30" rx="6" fill="#4CAF50"/>
+        <rect x="176" y="60" width="12" height="8" rx="3" fill="#EF4444"/>
+        <rect x="214" y="60" width="12" height="8" rx="3" fill="#EF4444"/>
+        <circle cx="280" cy="50" r="28" fill="#EFF6FF" stroke="#D946EF" stroke-width="2"/>
+        <circle cx="280" cy="40" r="12" fill="#D946EF"/>
+        <rect x="266" y="52" width="28" height="30" rx="6" fill="#D946EF"/>
+        <rect x="256" y="60" width="12" height="8" rx="3" fill="#FFD400"/>
+        <rect x="294" y="60" width="12" height="8" rx="3" fill="#FFD400"/>
+        <text x="40" y="96" text-anchor="middle" font-size="8" fill="#1D4ED8" font-family="Arial">Bolivia</text>
+        <text x="120" y="96" text-anchor="middle" font-size="8" fill="#3B82F6" font-family="Arial">Japan</text>
+        <text x="200" y="96" text-anchor="middle" font-size="8" fill="#4CAF50" font-family="Arial">China</text>
+        <text x="280" y="96" text-anchor="middle" font-size="8" fill="#D946EF" font-family="Arial">New Zealand</text>
+      </svg>
+      <div style="font-size:26px;font-weight:bold;color:#1D4ED8;margin:18px 0 14px;">Have you got clothes from other countries?</div>
+      <div style="display:flex;flex-direction:column;gap:10px;text-align:left;max-width:500px;margin:0 auto;">
+        <div style="display:flex;gap:10px;"><span style="background:#1D4ED8;color:#fff;border-radius:50%;width:22px;height:22px;min-width:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;">1</span><span style="font-size:15px;color:#333;">Have you got any clothes from another country?</span></div>
+        <div style="display:flex;gap:10px;"><span style="background:#1D4ED8;color:#fff;border-radius:50%;width:22px;height:22px;min-width:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;">2</span><span style="font-size:15px;color:#333;">What country are the clothes from?</span></div>
+        <div style="display:flex;gap:10px;"><span style="background:#1D4ED8;color:#fff;border-radius:50%;width:22px;height:22px;min-width:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;">3</span><span style="font-size:15px;color:#333;">Why do you like them?</span></div>
+      </div>`;
+  }
+
+  else if(s.type==='board'){
+    area.style.justifyContent='flex-start';area.style.alignItems='stretch';area.style.padding='8px 28px';
+    area.appendChild(makeBoard());return;
+  }
+
+  else if(s.type==='reading'){
+    area.style.justifyContent='flex-start';
+    pdfBtn.style.display='inline-block';pdfBtn.textContent='📄 PDF';pdfBtn.onclick=pdfReading;
+    const ex1=[
+      {q:'Chola women wear a shawl because it\'s',opts:[{t:'stylish',c:false},{t:'cold in their country',c:true}]},
+      {q:'A Chola woman doesn\'t usually wear',opts:[{t:'trousers',c:true},{t:'skirts',c:false}]},
+      {q:'People use fake tan because they don\'t like',opts:[{t:'white skin',c:true},{t:'brown skin',c:false}]},
+      {q:'B: Where do the Miao live? In the south of',opts:[{t:'China',c:true},{t:'India',c:false}]},
+      {q:'B: Do children in New Zealand always wear shoes?',opts:[{t:'Yes, they do.',c:false},{t:'No, they don\'t.',c:true}]},
+      {q:'The writer comes from',opts:[{t:'Japan',c:true},{t:'New Zealand',c:false}]},
+    ];
+    const ex2=[
+      {q:'Chola women wear big skirts and <b>bowler hats</b>.',ans:true},
+      {q:'Chola women\'s clothes are always black and white.',ans:false},
+      {q:'<b>Fake tan</b> always makes skin look perfectly brown.',ans:false},
+      {q:'The Miao women have short hair.',ans:false},
+      {q:'In New Zealand, some adults also walk with <b>bare feet</b>.',ans:true},
+      {q:'The writer thinks it is <b>strange</b> to see people without shoes.',ans:true},
+    ];
+    el=document.createElement('div');el.className='tw2';
+    el.innerHTML=`<div class="tbar">
+      <div class="tab active" onclick="swTab(this,0)">Text</div>
+      <div class="tab" onclick="swTab(this,1)">Exercise 1</div>
+      <div class="tab" onclick="swTab(this,2)">Exercise 2</div>
+    </div>
+    <div class="tpane active">
+      <div class="reading-title">Styles around the world</div>
+      <div class="text-item"><div class="text-num">1</div><div class="text-body">The Chola women of Bolivia are famous for their style. They wear big skirts and bowler hats. They also wear a shawl around their body because it is sometimes very cold in Bolivia. Their clothes are always really colourful.</div></div>
+      <div class="text-item"><div class="text-num">2</div><div class="text-body">In the USA and in northern Europe, people put fake tan on their hands and faces because they don't like very white skin. Women put it on their arms and legs too. They want to have brown skin, but sometimes the colour is orange!</div></div>
+      <div class="text-item"><div class="text-num">3</div><div class="text-body">The Miao live in the south of China. The women have amazing hairstyles. They've got very long hair and they put it up on their heads. They wear a piece of wood on their heads and then put their hair round and round the wood.</div></div>
+      <div class="text-item"><div class="text-num">4</div><div class="text-body">In New Zealand, children don't always wear shoes. Children (and sometimes adults, too) walk with bare feet in the street. They think shoes are bad for their feet. I am from Japan and in Japan we always wear shoes in the street. So it's really strange to see this.</div></div>
+    </div>
+    <div class="tpane">
+      <div class="einstr">Read the text again and choose the correct option</div>
+      ${ex1.map((item,i)=>`<div class="ex-item"><div class="ex-n">${i+1}</div><div class="ex-t">${item.q}<div class="mc-opts">${item.opts.map(o=>`<button class="mo"${o.c?' data-c':''}onclick="mcAns(this,${o.c})">${o.t}</button>`).join('')}</div></div></div>`).join('')}
+    </div>
+    <div class="tpane">
+      <div class="einstr">True or False?</div>
+      ${ex2.map((item,i)=>`<div class="ex-item"><div class="ex-n">${i+1}</div><div class="ex-t">${item.q}<div class="tf-opts"><button class="tf-btn" onclick="tfAns(this,${item.ans})">TRUE</button><button class="tf-btn" onclick="tfAns(this,${!item.ans})">FALSE</button></div></div></div>`).join('')}
+    </div>`;
+  }
+
+  if(el)area.appendChild(el);
+  document.getElementById('stepCtr').textContent=(cur+1)+' / '+steps.length;
+  document.getElementById('prevBtn').disabled=cur===0;
+  document.getElementById('nextBtn').textContent=cur===steps.length-1?'Done':'next \u2192';
+}
+
+document.getElementById('startBtn').onclick=()=>{
+  document.getElementById('outlineScreen').style.display='none';
+  document.getElementById('lessonScreen').style.display='flex';
+  cur=0;renderStep();
+};
+document.getElementById('nextBtn').onclick=()=>{if(cur<steps.length-1){cur++;renderStep();}};
+document.getElementById('prevBtn').onclick=()=>{if(cur>0){cur--;renderStep();}};
+</script>
+</body>
+</html>

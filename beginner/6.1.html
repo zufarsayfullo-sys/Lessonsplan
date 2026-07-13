@@ -53,20 +53,19 @@
   
   /* OVERLAY MODAL */
   #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,.6);backdrop-filter:blur(2px);z-index:200;}
-  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:none;border-radius:16px;padding:26px 32px;text-align:center;min-width:300px;max-width:420px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04);}
-  .pq{color:#3B82F6;font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;font-weight:bold;}
-  .pw{font-size:22px;font-weight:bold;color:#1E3A8A;margin-top:14px;display:none;border-bottom:2px solid #EFF6FF;padding-bottom:6px;}
+  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:none;border-radius:16px;padding:22px 26px;text-align:center;width:480px;max-width:95vw;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04);}
+  .pq{color:#3B82F6;font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;font-weight:bold;}
+  .pw{font-size:22px;font-weight:bold;color:#1E3A8A;margin-top:10px;display:none;border-bottom:2px solid #EFF6FF;padding-bottom:6px;}
   .pt{font-size:14px;color:#10B981;font-weight:bold;margin-top:6px;display:none;line-height:1.5;background:#F0FDF4;padding:4px 12px;border-radius:6px;}
   .pe{background:#F8FAFF;border-left:4px solid #3B82F6;padding:10px 14px;margin-top:12px;font-size:13.5px;color:#334155;text-align:left;border-radius:0 8px 8px 0;display:none;font-style:italic;}
-  .pr{margin-top:16px;background:#1D4ED8;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;transition:background 0.2s;}
-  .pr:hover{background:#1E40AF;}
+  .pr{margin-top:14px;background:#1D4ED8;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;}
   .ph2{color:#94A3B8;font-size:11px;margin-top:12px;}
   
   /* LEAD-IN CARD */
   .lead-card{background:#fff;border-radius:14px;padding:24px 28px;box-shadow:0 2px 12px rgba(0,0,0,.08);width:100%;max-width:1000px;display:flex;flex-direction:column;gap:18px;align-items:center;}
   .lead-title{font-size:24px;font-weight:bold;color:#1D4ED8;text-align:center;}
   .discussion-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;}
-  .dq-box{background:#F8FAFF;border:1.5px solid #BFDBFE;border-radius:10px;padding:16px;text-align:left;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+  .dq-box{background:#F8FAFF;border:1.5px solid #BFDBFE;border-radius:10px;padding:16px;text-align:left;}
   .dq-num{color:#1D4ED8;font-weight:bold;font-size:18px;margin-right:8px;}
   .dq-text{font-size:15px;color:#333;font-weight:500;}
 
@@ -86,17 +85,9 @@
   .ex-item{margin-bottom:16px;padding-bottom:12px;border-bottom:1px dashed #EFF6FF;}
   .ex-q{font-size:13.5px;color:#333;margin-bottom:8px;line-height:1.4;}
   .opt-row{display:flex;gap:10px;}
-  .opt-btn{flex:1;background:#F8FAFF;border:1.5px solid #BFDBFE;border-radius:6px;padding:6px 12px;font-size:12.5px;cursor:pointer;font-family:inherit;text-align:center;font-weight:bold;transition:all 0.15s;}
-  .opt-btn:hover{border-color:#1D4ED8;}
+  .opt-btn{flex:1;background:#F8FAFF;border:1.5px solid #BFDBFE;border-radius:6px;padding:6px 12px;font-size:12.5px;cursor:pointer;font-family:inherit;text-align:center;font-weight:bold;}
   .opt-btn.correct{background:#D1FAE5;border-color:#10B981;color:#065F46;}
   .opt-btn.wrong{background:#FEE2E2;border-color:#EF4444;color:#991B1B;}
-
-  /* PRINT CLEAN PREPARATION STYLES */
-  .pdf-only-title { display: none; color: #1D4ED8; font-size: 24px; font-weight: bold; margin-bottom: 20px; border-bottom: 3px solid #1D4ED8; padding-bottom: 8px;}
-  @media print {
-    .pdf-only-title { display: block !important; }
-    .exercise-pane { margin-top: 30px; page-break-before: always; }
-  }
 </style>
 </head>
 <body>
@@ -119,7 +110,7 @@
 <!-- LESSON SCREEN -->
 <div id="lessonScreen">
   <div class="top-bar">
-    <a class="back-link" href="javascript:void(0)" onclick="goBackToOutline()" style="font-size:18px;font-weight:bold;color:#1D4ED8;">&#8592;</a>
+    <a class="back-link" href="javascript:void(0)" onclick="goBackToOutline()">&#8592;</a>
     <span class="step-label" id="sLabel">Lesson 6.1</span>
   </div>
   <div class="content-area" id="contentArea"></div>
@@ -138,7 +129,7 @@
         <button class="tt" id="tTog">&#9654;</button>
       </div>
       <button class="hbtn" id="pdfBtn">📄 Export PDF</button>
-      <button class="hbtn" id="fsBtn" style="font-size:14px;padding:6px 10px;">&#x26F6;</button>
+      <button class="hbtn" id="fsBtn">&#x26F6;</button>
     </div>
   </div>
 </div>
@@ -147,7 +138,7 @@
 <div id="overlay" onclick="closePopup()"></div>
 <div id="popup">
   <div class="pq" id="popQ"></div>
-  <div id="popSvg"></div>
+  <div id="popSvg" style="display:flex; justify-content:center; align-items:center;"></div>
   <div class="pw" id="popWord"></div>
   <div class="pt" id="popTrans"></div>
   <div class="pe" id="popEx"></div>
@@ -156,14 +147,13 @@
 </div>
 
 <script>
-/* TRANSITIONS Between Outline and Lesson screens */
+/* TRANSITIONS */
 document.getElementById('startBtn').onclick = function() {
   document.getElementById('outlineScreen').style.display = 'none';
   document.getElementById('lessonScreen').style.display = 'flex';
   cur = 0;
   renderStep();
 };
-
 function goBackToOutline() {
   document.getElementById('lessonScreen').style.display = 'none';
   document.getElementById('outlineScreen').style.display = 'block';
@@ -175,7 +165,7 @@ document.getElementById('fsBtn').onclick=function(){
   else{document.exitFullscreen();this.textContent='⛶';}
 };
 
-/* TIMER MODULE */
+/* TIMER */
 let tS=300,tR=false,tI=null;
 function setT(m){tS=m*60;tR=false;clearInterval(tI);document.getElementById('tTog').textContent='▶';rendT();}
 function rendT(){const m=Math.floor(Math.abs(tS)/60),s=Math.abs(tS)%60,n=tS<0?'-':'',d=document.getElementById('tDisp');d.textContent=n+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');d.className='td'+(tS<=30&&tS>=-999?' warn':'');}
@@ -210,105 +200,89 @@ function closePopup(){
   if(popCb){popCb();popCb=null;}
 }
 
-/* HIGH-QUALITY PREMIUM EXAMPLES SVGS WITH GRADIENTS & COMPLEX COMPONENT SCALING */
+/* HIGH-QUALITY VECTOR SCENIC PICTURES (WITH DETAILED ENVIRONMENTS) */
 const SVG={
-  like: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="gradLike" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#3B82F6"/>
-        <stop offset="100%" stop-color="#1D4ED8"/>
-      </linearGradient>
-    </defs>
-    <circle cx="50" cy="50" r="45" fill="url(#gradLike)" opacity="0.1"/>
-    <path d="M50 82C50 82 12 52 12 30C12 16 23 8 34 8C41 8 47 12 50 16C53 12 59 8 66 8C77 8 88 16 88 30C88 52 50 82 50 82Z" fill="url(#gradLike)" stroke="#ffffff" stroke-width="2"/>
-    <circle cx="34" cy="26" r="4" fill="#ffffff" opacity="0.4"/>
+  like: `<svg viewBox="0 0 160 120" width="220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="120" rx="10" fill="#F0FDF4"/>
+    <circle cx="45" cy="60" r="24" fill="#3B82F6"/>
+    <circle cx="115" cy="60" r="24" fill="#3B82F6"/>
+    <path d="M25 100 C25 80 65 80 65 100" fill="#1E3A8A"/>
+    <path d="M95 100 C95 80 135 80 135 100" fill="#1E3A8A"/>
+    <path d="M 70 60 L 90 60 M 80 50 L 80 70" stroke="#10B981" stroke-width="4" stroke-linecap="round"/>
+    <text x="80" y="22" font-size="10" font-weight="bold" fill="#15803D" text-anchor="middle">SIMILAR / SAME</text>
   </svg>`,
 
-  facilities: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="b1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#2563EB"/></linearGradient>
-      <linearGradient id="b2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#059669"/></linearGradient>
-    </defs>
-    <rect x="8" y="15" width="38" height="32" rx="6" fill="url(#b1)"/>
-    <path d="M16 26 H38 M16 34 H38" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
-    <rect x="54" y="15" width="38" height="32" rx="6" fill="url(#b2)"/>
-    <circle cx="73" cy="31" r="7" fill="none" stroke="#ffffff" stroke-width="2.5"/>
-    <rect x="15" y="56" width="70" height="30" rx="6" fill="#F59E0B"/>
-    <path d="M28 71 L42 71 M58 71 L72 71" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  facilities: `<svg viewBox="0 0 160 120" width="220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="120" rx="10" fill="#F8FAFF"/>
+    <rect x="10" y="40" width="42" height="65" rx="4" fill="#3B82F6"/>
+    <rect x="16" y="50" width="10" height="10" fill="#93C5FD"/>
+    <rect x="30" y="50" width="10" height="10" fill="#93C5FD"/>
+    <text x="31" y="95" font-size="7" fill="#fff" font-weight="bold" text-anchor="middle">CINEMA</text>
+    <rect x="58" y="25" width="44" height="80" rx="4" fill="#1E40AF"/>
+    <rect x="64" y="35" width="32" height="12" fill="#F59E0B"/>
+    <text x="80" y="43" font-size="7" fill="#fff" font-weight="bold" text-anchor="middle">HOSPITAL</text>
+    <rect x="108" y="50" width="42" height="55" rx="4" fill="#10B981"/>
+    <text x="129" y="80" font-size="7" fill="#fff" font-weight="bold" text-anchor="middle">MUSEUM</text>
   </svg>`,
 
-  aswellas: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="gradPlus" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#10B981"/>
-        <stop offset="100%" stop-color="#059669"/>
-      </linearGradient>
-    </defs>
-    <rect x="8" y="30" width="32" height="40" rx="5" fill="#3B82F6"/>
-    <rect x="14" y="38" width="20" height="5" fill="#ffffff" opacity="0.6"/>
-    <rect x="14" y="48" width="20" height="5" fill="#ffffff" opacity="0.6"/>
-    <rect x="60" y="30" width="32" height="40" rx="5" fill="#3B82F6"/>
-    <rect x="66" y="38" width="20" height="5" fill="#ffffff" opacity="0.6"/>
-    <rect x="66" y="48" width="20" height="5" fill="#ffffff" opacity="0.6"/>
-    <circle cx="50" cy="50" r="16" fill="url(#gradPlus)" stroke="#ffffff" stroke-width="2"/>
-    <path d="M50 42 V58 M42 50 H58" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+  aswellas: `<svg viewBox="0 0 160 120" width="220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="120" rx="10" fill="#EFF6FF"/>
+    <rect x="15" y="45" width="45" height="50" rx="5" fill="#3B82F6"/>
+    <text x="37.5" y="75" font-size="12" fill="#fff" font-weight="bold" text-anchor="middle">A</text>
+    <rect x="100" y="45" width="45" height="50" rx="5" fill="#3B82F6"/>
+    <text x="122.5" y="75" font-size="12" fill="#fff" font-weight="bold" text-anchor="middle">B</text>
+    <circle cx="80" cy="70" r="14" fill="#10B981"/>
+    <path d="M80 62 V78 M72 70 H88" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <text x="80" y="25" font-size="11" font-weight="bold" fill="#1E3A8A" text-anchor="middle">BOTH TOGETHER</text>
   </svg>`,
 
-  lucky: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#FBBF24"/>
-        <stop offset="50%" stop-color="#F59E0B"/>
-        <stop offset="100%" stop-color="#D97706"/>
-      </linearGradient>
-    </defs>
-    <circle cx="50" cy="50" r="42" fill="url(#goldGrad)"/>
-    <circle cx="50" cy="50" r="32" fill="none" stroke="#ffffff" stroke-dasharray="4,3" opacity="0.6"/>
-    <path d="M50 22 C35 22 32 45 50 45 C68 45 65 22 50 22 Z" fill="#ffffff" opacity="0.25"/>
-    <path d="M40 45 L45 35 M60 45 L55 35" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
-    <path d="M38 60 Q50 72 62 60" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  lucky: `<svg viewBox="0 0 160 120" width="220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="120" rx="10" fill="#FFFBEB"/>
+    <circle cx="80" cy="60" r="40" fill="#FBBF24" opacity="0.3"/>
+    <circle cx="80" cy="60" r="30" fill="#F59E0B"/>
+    <path d="M80 42 L84 52 L95 52 L86 58 L90 68 L80 62 L70 68 L74 58 L65 52 L76 52 Z" fill="#fff"/>
+    <path d="M40 25 Q80 5 120 25" fill="none" stroke="#10B981" stroke-width="3" stroke-dasharray="4,4"/>
+    <text x="80" y="110" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">WINNER!</text>
   </svg>`,
 
-  bakery: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="roof" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#EF4444"/><stop offset="50%" stop-color="#F87171"/><stop offset="100%" stop-color="#EF4444"/>
-      </linearGradient>
-    </defs>
-    <rect x="15" y="44" width="70" height="44" fill="#FFFBEB" stroke="#D97706" stroke-width="2"/>
-    <path d="M10 44 L22 24 H78 L90 44 Z" fill="url(#roof)" stroke="#B91C1C" stroke-width="2"/>
-    <rect x="28" y="58" width="16" height="30" fill="#D97706"/>
-    <rect x="56" y="56" width="18" height="18" fill="#93C5FD" rx="2"/>
-    <circle cx="33" cy="74" r="2" fill="#FBBF24"/>
+  bakery: `<svg viewBox="0 0 160 120" width="220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="120" rx="10" fill="#FEF3C7"/>
+    <path d="M10 50 L25 20 H135 L150 50 Z" fill="#EF4444"/>
+    <rect x="20" y="50" width="120" height="60" fill="#fff" stroke="#D97706" stroke-width="2"/>
+    <rect x="35" y="65" width="35" height="45" fill="#D97706"/>
+    <rect x="90" y="65" width="40" height="25" fill="#93C5FD"/>
+    <circle cx="100" cy="77" r="4" fill="#FCD34D"/>
+    <circle cx="120" cy="77" r="4" fill="#FCD34D"/>
+    <text x="80" y="42" font-size="10" fill="#fff" font-weight="bold" text-anchor="middle">BAKERY</text>
   </svg>`,
 
-  visitors: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="32" cy="38" r="12" fill="#3B82F6"/>
-    <path d="M10 78 C10 58 54 58 54 78 Z" fill="#3B82F6"/>
-    <circle cx="66" cy="46" r="10" fill="#10B981"/>
-    <path d="M48 80 C48 64 84 64 84 80 Z" fill="#10B981"/>
-    <path d="M74 20 L84 28 L74 36" fill="none" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M45 24 H82" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/>
+  visitors: `<svg viewBox="0 0 160 120" width="220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="120" rx="10" fill="#F1F5F9"/>
+    <rect x="15" y="30" width="130" height="45" rx="6" fill="#1E3A8A"/>
+    <text x="80" y="58" font-size="13" fill="#fff" font-weight="bold" text-anchor="middle">WELCOME HOTEL</text>
+    <circle cx="45" cy="100" r="10" fill="#EF4444"/>
+    <circle cx="80" cy="98" r="10" fill="#3B82F6"/>
+    <circle cx="115" cy="100" r="10" fill="#10B981"/>
+    <path d="M30 120 C30 110 60 110 60 120" fill="#EF4444"/>
+    <path d="M65 120 C65 108 95 108 95 120" fill="#3B82F6"/>
+    <path d="M100 120 C100 110 130 110 130 120" fill="#10B981"/>
   </svg>`,
 
-  golfcourse: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="greenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#059669"/>
-      </linearGradient>
-    </defs>
-    <ellipse cx="50" cy="65" rx="46" ry="25" fill="url(#greenGrad)"/>
-    <path d="M40 70 Q55 58 70 72" fill="none" stroke="#ffffff" opacity="0.4" stroke-width="2"/>
-    <line x1="55" y1="60" x2="55" y2="15" stroke="#DC2626" stroke-width="3" stroke-linecap="round"/>
-    <polygon points="55,15 82,24 55,33" fill="#DC2626"/>
-    <circle cx="50" cy="64" r="3" fill="#ffffff"/>
+  golfcourse: `<svg viewBox="0 0 160 120" width="220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="120" rx="10" fill="#ECFDF5"/>
+    <ellipse cx="80" cy="85" rx="75" ry="30" fill="#10B981"/>
+    <ellipse cx="70" cy="85" rx="40" ry="15" fill="#34D399"/>
+    <line x1="100" y1="85" x2="100" y2="25" stroke="#B91C1C" stroke-width="3"/>
+    <polygon points="100,25 130,37 100,49" fill="#EF4444"/>
+    <circle cx="90" cy="83" r="3" fill="#fff"/>
   </svg>`,
 
-  twohours: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="50" r="42" fill="#EFF6FF" stroke="#3B82F6" stroke-width="4"/>
-    <circle cx="50" cy="50" r="3" fill="#1E3A8A"/>
-    <path d="M50 16 V50 L74 50" stroke="#1E3A8A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M35 12 L20 4 M65 12 L80 4" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+  twohours: `<svg viewBox="0 0 160 120" width="220" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="120" rx="10" fill="#F0F9FF"/>
+    <circle cx="45" cy="60" r="30" fill="#fff" stroke="#3B82F6" stroke-width="4"/>
+    <path d="M45 40 V60 L60 60" stroke="#1E3A8A" stroke-width="3" stroke-linecap="round"/>
+    <path d="M95 65 H140 L130 50 M140 65 L130 80" fill="none" stroke="#10B981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="115" y="40" font-size="12" font-weight="bold" fill="#10B981" text-anchor="middle">2 HOURS</text>
   </svg>`
 };
 
@@ -341,10 +315,9 @@ function makeBoard(vocab,cols){
       const isOpen=opened.has(i);
       const card=document.createElement('div');
       card.className='fc'+(isOpen?' op':'');
-      card.style.minHeight='0';
       
       if(isOpen){
-        card.innerHTML = (SVG[item.k]||'').replace(/width="\d+"/, 'width="65"')
+        card.innerHTML = (SVG[item.k]||'').replace(/width="\d+"/, 'width="100"')
           + '<div class="cw">' + item.w + '</div>'
           + '<div class="ct">🇷🇺 ' + item.ru + '</div><div class="ct">🇺🇿 ' + item.uz + '</div>';
       }else{
@@ -455,7 +428,6 @@ function renderStep(){
     el.id='printableReadingArea';
     el.innerHTML=`
       <div class="reading-pane">
-        <div class="pdf-only-title">Lesson 6.1 — Reading Tasks & Exercises Handout</div>
         <div class="town-header">
           <div class="town-title">Lewisburg, WEST VIRGINIA</div>
           <div class="town-meta">Founded: 1782 &middot; Population: 4,000 &middot; Average age: 46</div>
@@ -566,25 +538,79 @@ function renderStep(){
 document.getElementById('prevBtn').onclick=()=>{if(cur>0){cur--;renderStep();}};
 document.getElementById('nextBtn').onclick=()=>{if(cur<steps.length-1){cur++;renderStep();}else{goBackToOutline();}};
 
-/* TARGETED EXPORTER: GRABS EXCLUSIVELY THE READING TASK COMPONENT */
+/* ADVANCED COMPILER: BUILDS A FLATTENED PRINT TEMPLATE IN-MEMORY TO PREVENT WORKsheet TRUNCATION */
 document.getElementById('pdfBtn').onclick=function(){
-  // If user is not on reading page, load element data implicitly
-  let element = document.getElementById('printableReadingArea');
-  
-  if(!element) {
-    alert("Please advance to Step 3 (Reading & Exercises) to export the reading worksheets.");
+  if(cur !== 2) {
+    alert("Please navigate to Step 3 (Reading & Exercises) to export the handouts.");
     return;
   }
-  
+
+  // Create a completely separate un-restricted print wrapper
+  const printWrapper = document.createElement('div');
+  printWrapper.style.cssText = 'width: 680px; padding: 20px; background: #fff; color: #000; font-family: Arial, sans-serif;';
+
+  printWrapper.innerHTML = `
+    <div style="color: #1D4ED8; font-size: 24px; font-weight: bold; margin-bottom: 5px; border-bottom: 3px solid #1D4ED8; padding-bottom: 8px;">
+      Lesson 6.1 — Our Towns and Cities
+    </div>
+    <div style="font-size: 13px; color: #555; margin-bottom: 25px;">Student Reading Tasks & Worksheets Handout</div>
+    
+    <!-- PAGE 1: FULL READING TEXTS -->
+    <div style="margin-bottom: 30px;">
+      <div style="border-bottom: 2px solid #BFDBFE; padding-bottom: 4px; margin-bottom: 10px;">
+        <span style="font-size: 18px; font-weight: bold; color: #1D4ED8;">Lewisburg, WEST VIRGINIA</span>
+        <span style="font-size: 11px; color: #666; margin-left: 10px;">Founded: 1782 | Population: 4,000 | Avg Age: 46</span>
+      </div>
+      <div style="font-size: 14px; line-height: 1.6; text-align: justify; margin-bottom: 25px; color: #222;">
+        <b>Jack:</b> I live in Lewisburg, West Virginia, and I love the place. I'm 68 and it's a great place for people like me. There are only 4,000 people in Lewisburg, but it has the facilities of a big town. There are museums, cinemas and good shops. There's a theatre, too, and the famous Carnegie Hall, as well as many other beautiful old buildings. We're very lucky. Oh, and there's an amazing bakery – my favourite shop in Lewisburg. They have great pizza. But one problem is that Lewisburg has a lot of visitors. There are nine different hotels for them!
+      </div>
+
+      <div style="border-bottom: 2px solid #BFDBFE; padding-bottom: 4px; margin-bottom: 10px;">
+        <span style="font-size: 18px; font-weight: bold; color: #1D4ED8;">Mount Angel, OREGON</span>
+        <span style="font-size: 11px; color: #666; margin-left: 10px;">Founded: 1850 | Population: 3,400 | Avg Age: 37</span>
+      </div>
+      <div style="font-size: 14px; line-height: 1.6; text-align: justify; color: #222;">
+        <b>Sara:</b> I live in Mt. Angel, a small town in the lovely Willamette Valley in Oregon. Mt. Angel is famous for its festival – the 'Oktoberfest'. There are four nice restaurants in the town. My favourite is the Glockenspiel. It's a German restaurant. But Mt. Angel doesn't have a lot of facilities. There isn't a hotel, for example. There are banks and supermarkets. But there isn't a cinema and there aren't any museums. There isn't a theatre either. There's a golf course near the town, but I don't play golf. But that's OK, because the country is beautiful and the sea is only two hours away by car.
+      </div>
+    </div>
+
+    <!-- FORCE BREAK TO KEEP EXERCISES PERFECTLY TOGETHER -->
+    <div class="html2pdf__page-break"></div>
+
+    <!-- PAGE 2: COMPACT TASK SHEET -->
+    <div style="color: #1D4ED8; font-size: 18px; font-weight: bold; margin-bottom: 15px; border-bottom: 1.5px solid #BFDBFE; padding-bottom: 4px;">
+      Exercise 1: Underline the Correct Town
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
+      <div style="font-size: 13px; color: #333;"><b>1.</b> This is a good town for old people.<br><span style="color:#777;">[ Lewisburg  /  Mt. Angel ]</span></div>
+      <div style="font-size: 13px; color: #333;"><b>2.</b> This town has a famous festival.<br><span style="color:#777;">[ Lewisburg  /  Mt. Angel ]</span></div>
+      <div style="font-size: 13px; color: #333;"><b>3.</b> A lot of tourists visit here.<br><span style="color:#777;">[ Lewisburg  /  Mt. Angel ]</span></div>
+      <div style="font-size: 13px; color: #333;"><b>4.</b> This town lacks basic facilities.<br><span style="color:#777;">[ Lewisburg  /  Mt. Angel ]</span></div>
+      <div style="font-size: 13px; color: #333;"><b>5.</b> Has famous historical buildings.<br><span style="color:#777;">[ Lewisburg  /  Mt. Angel ]</span></div>
+      <div style="font-size: 13px; color: #333;"><b>6.</b> This town is near the sea.<br><span style="color:#777;">[ Lewisburg  /  Mt. Angel ]</span></div>
+    </div>
+
+    <div style="color: #1D4ED8; font-size: 18px; font-weight: bold; margin-bottom: 15px; border-bottom: 1.5px solid #BFDBFE; padding-bottom: 4px;">
+      Exercise 2: True or False
+    </div>
+    <div style="font-size: 13px; color:#333; line-height: 1.8;">
+      <p style="margin-bottom: 8px;"><b>1.</b> If a town has facilities, it is easy to find things to do. &nbsp;&nbsp;<b>[ True / False ]</b></p>
+      <p style="margin-bottom: 8px;"><b>2.</b> If something is two hours away, it takes 15 minutes. &nbsp;&nbsp;<b>[ True / False ]</b></p>
+      <p style="margin-bottom: 8px;"><b>3.</b> A bakery is a business where people play tennis. &nbsp;&nbsp;<b>[ True / False ]</b></p>
+      <p style="margin-bottom: 8px;"><b>4.</b> If you are lucky, pleasant things happen to you. &nbsp;&nbsp;<b>[ True / False ]</b></p>
+      <p style="margin-bottom: 8px;"><b>5.</b> Visitors are people who live permanently in a house. &nbsp;&nbsp;<b>[ True / False ]</b></p>
+    </div>
+  `;
+
   const opt = {
-    margin:       [12, 12, 12, 12],
+    margin:       [15, 15, 15, 15],
     filename:     'Beginner_6_1_Reading_Tasks.pdf',
     image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true },
+    html2canvas:  { scale: 2, useCORS: true, logging: false },
     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  html2pdf().set(opt).from(element).save();
+  html2pdf().set(opt).from(printWrapper).save();
 };
 </script>
 </body>

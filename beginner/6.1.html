@@ -38,30 +38,29 @@
   .td.warn{color:#EF4444;}
   .tt{background:none;border:1.5px solid #1D4ED8;color:#1D4ED8;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:2px;}
   .hbtn{background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;}
-  .pdf-btn{display:inline-block;}
   
   /* FLIP BOARD */
-  .board-grid{display:grid;gap:10px;width:100%;max-width:1200px;flex:1;min-height:0;}
-  .fc{background:#fff;border:2px solid #BFDBFE;border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06);position:relative;}
-  .fc:hover{border-color:#1D4ED8;box-shadow:0 2px 8px rgba(29,78,216,.15);}
+  .board-grid{display:grid;gap:12px;width:100%;max-width:1200px;flex:1;min-height:0;}
+  .fc{background:#fff;border:2px solid #BFDBFE;border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.04);position:relative;}
+  .fc:hover{border-color:#1D4ED8;box-shadow:0 4px 12px rgba(29,78,216,.15);transform:translateY(-2px);}
   .fc.op{border-color:#1D4ED8;background:#F8FAFF;}
-  .fc .qm{font-size:30px;color:#BFDBFE;}
-  .fc .cw{font-size:13px;font-weight:bold;color:#1D4ED8;margin-top:5px;line-height:1.3;}
-  .fc .ct{font-size:10px;color:#888;margin-top:2px;}
-  .fc .term-header {position:absolute;top:5px;font-size:11px;font-weight:bold;color:#1D4ED8;background:#EFF6FF;padding:2px 6px;border-radius:4px;border:1px solid #BFDBFE;}
-  .board-foot{display:flex;justify-content:flex-end;margin-top:6px;width:100%;max-width:1200px;}
+  .fc .qm{font-size:32px;color:#93C5FD;font-weight:bold;}
+  .fc .cw{font-size:14px;font-weight:bold;color:#1E3A8A;margin-top:8px;line-height:1.3;}
+  .fc .ct{font-size:11px;color:#4B5563;margin-top:3px;}
+  .board-foot{display:flex;justify-content:flex-end;margin-top:10px;width:100%;max-width:1200px;}
   .board-full{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;align-items:center;padding:0;}
   .rb{background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:6px;padding:5px 16px;font-size:12px;cursor:pointer;font-family:inherit;}
   
-  /* OVERLAY */
-  #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:200;}
-  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:3px solid #1D4ED8;border-radius:14px;padding:22px 28px;text-align:center;min-width:260px;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
-  .pq{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
-  .pw{font-size:20px;font-weight:bold;color:#1D4ED8;margin-top:10px;display:none;}
-  .pt{font-size:12px;color:#888;margin-top:4px;display:none;line-height:1.5;}
-  .pe{background:#EFF6FF;border-left:3px solid #1D4ED8;padding:8px 12px;margin-top:10px;font-size:13px;color:#333;text-align:left;border-radius:4px;display:none;font-style:italic;}
-  .pr{margin-top:12px;background:#1D4ED8;border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;}
-  .ph2{color:#ccc;font-size:11px;margin-top:10px;}
+  /* OVERLAY MODAL */
+  #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,.6);backdrop-filter:blur(2px);z-index:200;}
+  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:none;border-radius:16px;padding:26px 32px;text-align:center;min-width:300px;max-width:420px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04);}
+  .pq{color:#3B82F6;font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;font-weight:bold;}
+  .pw{font-size:22px;font-weight:bold;color:#1E3A8A;margin-top:14px;display:none;border-bottom:2px solid #EFF6FF;padding-bottom:6px;}
+  .pt{font-size:14px;color:#10B981;font-weight:bold;margin-top:6px;display:none;line-height:1.5;background:#F0FDF4;padding:4px 12px;border-radius:6px;}
+  .pe{background:#F8FAFF;border-left:4px solid #3B82F6;padding:10px 14px;margin-top:12px;font-size:13.5px;color:#334155;text-align:left;border-radius:0 8px 8px 0;display:none;font-style:italic;}
+  .pr{margin-top:16px;background:#1D4ED8;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;transition:background 0.2s;}
+  .pr:hover{background:#1E40AF;}
+  .ph2{color:#94A3B8;font-size:11px;margin-top:12px;}
   
   /* LEAD-IN CARD */
   .lead-card{background:#fff;border-radius:14px;padding:24px 28px;box-shadow:0 2px 12px rgba(0,0,0,.08);width:100%;max-width:1000px;display:flex;flex-direction:column;gap:18px;align-items:center;}
@@ -92,20 +91,12 @@
   .opt-btn.correct{background:#D1FAE5;border-color:#10B981;color:#065F46;}
   .opt-btn.wrong{background:#FEE2E2;border-color:#EF4444;color:#991B1B;}
 
-  /* HIDDEN EXPORT TEMPLATE */
-  #pdfTemplate { display: none; }
-  .pdf-content { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; color: #1e293b; background: #fff; }
-  .pdf-header { border-bottom: 3px solid #1d4ed8; padding-bottom: 12px; margin-bottom: 24px; }
-  .pdf-header h1 { color: #1d4ed8; font-size: 26px; font-weight: 800; }
-  .pdf-header p { font-size: 14px; color: #64748b; margin-top: 4px; }
-  .pdf-section { margin-bottom: 24px; page-break-inside: avoid; }
-  .pdf-section h2 { color: #1e3a8a; font-size: 18px; margin-bottom: 12px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; }
-  .pdf-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 15px; margin-top: 10px; }
-  .pdf-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
-  .pdf-vocab-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  .pdf-vocab-table th, .pdf-vocab-table td { border: 1px solid #e2e8f0; padding: 8px 10px; text-align: left; font-size: 13px; }
-  .pdf-vocab-table th { background: #eff6ff; color: #1d4ed8; font-weight: bold; }
-  .page-break { page-break-before: always; }
+  /* PRINT CLEAN PREPARATION STYLES */
+  .pdf-only-title { display: none; color: #1D4ED8; font-size: 24px; font-weight: bold; margin-bottom: 20px; border-bottom: 3px solid #1D4ED8; padding-bottom: 8px;}
+  @media print {
+    .pdf-only-title { display: block !important; }
+    .exercise-pane { margin-top: 30px; page-break-before: always; }
+  }
 </style>
 </head>
 <body>
@@ -146,7 +137,7 @@
         <button class="ta" id="tPls">+</button>
         <button class="tt" id="tTog">&#9654;</button>
       </div>
-      <button class="hbtn pdf-btn" id="pdfBtn">📄 Export PDF</button>
+      <button class="hbtn" id="pdfBtn">📄 Export PDF</button>
       <button class="hbtn" id="fsBtn" style="font-size:14px;padding:6px 10px;">&#x26F6;</button>
     </div>
   </div>
@@ -162,131 +153,6 @@
   <div class="pe" id="popEx"></div>
   <button class="pr" id="popReveal" onclick="revealPopup()">Show answer ▾</button>
   <div class="ph2">tap outside to close</div>
-</div>
-
-<!-- EMBEDDED PRINT TEMPLATE (Hidden from normal UI) -->
-<div id="pdfTemplate">
-  <div class="pdf-content">
-    <div class="pdf-header">
-      <h1>LESSON PLAN & CLASSROOM MATERIALS</h1>
-      <p>Unit 6 &middot; Our Towns and Cities | Beginner Lesson 6.1</p>
-    </div>
-
-    <!-- Section 1: Teacher's Detailed Lesson Plan -->
-    <div class="pdf-section">
-      <h2>1. Teacher Guide & Lesson Flow</h2>
-      <p style="font-size:14px; line-height:1.6; margin-bottom:10px;">
-        This lesson focuses on reading comprehension, urban environments, and targeted city-based vocabulary. Maximize student talking time by letting them analyze the lead-in graphic and read aloud.
-      </p>
-      <table class="pdf-vocab-table">
-        <thead>
-          <tr>
-            <th style="width:20%;">Stage</th>
-            <th style="width:15%;">Timing</th>
-            <th style="width:65%;">Teacher Instructions & Student Activities</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Lead-in Map Discussion</strong></td>
-            <td>5 mins</td>
-            <td>Display the interactive vector city map. Ask students to spot structures (Museum, Clinic, Hotel). Work through the 4 reflection questions to connect ideas to their personal hometown experiences.</td>
-          </tr>
-          <tr>
-            <td><strong>Pre-teach Vocabulary</strong></td>
-            <td>10 mins</td>
-            <td>Utilize the interactive flashcards. Prompt kids to deduce the translation from visual SVGs first. Introduce usage examples and practice pronunciation of target items.</td>
-          </tr>
-          <tr>
-            <td><strong>Reading & Analysis</strong></td>
-            <td>15 mins</td>
-            <td>Have students read the profiles of Lewisburg and Mount Angel. Highlight town demographic metadata comparison cards. Discuss differences between modern and historic towns.</td>
-          </tr>
-          <tr>
-            <td><strong>Target Practice Tasks</strong></td>
-            <td>10 mins</td>
-            <td>Assign Exercise 1 (Underline Town association statements) and Exercise 2 (True/False details validation). Provide instant formative feedback.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="page-break"></div>
-
-    <!-- Section 2: Student Reading Text Handouts -->
-    <div class="pdf-section">
-      <h2>2. Reading Handout: Two Towns</h2>
-      
-      <div style="background:#f1f5f9; border-left:4px solid #1d4ed8; padding:12px; margin-bottom:16px;">
-        <h3 style="color:#1d4ed8; font-size:16px; margin-bottom:4px;">Town A: Lewisburg, WEST VIRGINIA</h3>
-        <p style="font-size:12px; color:#475569; font-style:italic; margin-bottom:8px;">Founded: 1782 | Population: 4,000 | Average age: 46</p>
-        <p style="font-size:13px; line-height:1.6; color:#1e293b;">
-          <strong>Jack:</strong> I live in Lewisburg, West Virginia, and I love the place. I'm 68 and it's a great place for people <u>like</u> me. There are only 4,000 people in Lewisburg, but it has the <u>facilities</u> of a big town. There are museums, cinemas and good shops. There's a theatre, too, and the famous Carnegie Hall, <u>as well as</u> many other beautiful old buildings. We're very <u>lucky</u>. Oh, and there's an amazing <u>bakery</u> – my favourite shop in Lewisburg. They have great pizza. But one problem is that Lewisburg has a lot of <u>visitors</u>. There are nine different hotels for them!
-        </p>
-      </div>
-
-      <div style="background:#f1f5f9; border-left:4px solid #1d4ed8; padding:12px;">
-        <h3 style="color:#1d4ed8; font-size:16px; margin-bottom:4px;">Town B: Mount Angel, OREGON</h3>
-        <p style="font-size:12px; color:#475569; font-style:italic; margin-bottom:8px;">Founded: 1850 | Population: 3,400 | Average age: 37</p>
-        <p style="font-size:13px; line-height:1.6; color:#1e293b;">
-          <strong>Sara:</strong> I live in Mt. Angel, a small town in the lovely Willamette Valley in Oregon. Mt. Angel is famous for its festival – the 'Oktoberfest'. There are four nice restaurants in the town. My favourite is the Glockenspiel. It's a German restaurant. But Mt. Angel doesn't have a lot of <u>facilities</u>. There isn't a hotel, for example. There are banks and supermarkets. But there isn't a cinema and there aren't any museums. There isn't a theatre either. There's a <u>golf course</u> near the town, but I don't play golf. But that's OK, because the country is beautiful and the sea is only <u>two hours away</u> by car.
-        </p>
-      </div>
-    </div>
-
-    <!-- Section 3: Word List -->
-    <div class="pdf-section">
-      <h2>3. Vocabulary Log</h2>
-      <table class="pdf-vocab-table">
-        <thead>
-          <tr>
-            <th>Word/Phrase</th>
-            <th>Russian translation</th>
-            <th>Uzbek translation</th>
-            <th>Context Example</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>like (prep.)</td><td>как / подобно</td><td>singari / kabi</td><td>"A great place for old people like Jack."</td></tr>
-          <tr><td>facilities</td><td>удобства / услуги</td><td>qulayliklar</td><td>"The town has facilities like museums and cinemas."</td></tr>
-          <tr><td>as well as</td><td>также как и</td><td>shuningdek</td><td>"There is Carnegie Hall as well as many old buildings."</td></tr>
-          <tr><td>lucky</td><td>везучий / удачливый</td><td>omadli</td><td>"We are very lucky to live in a beautiful place."</td></tr>
-          <tr><td>bakery</td><td>пекарня</td><td>novvoyxona</td><td>"There is an amazing bakery with delicious bread."</td></tr>
-          <tr><td>visitors</td><td>посетители</td><td>tashrif buyuruvchilar</td><td>"Lewisburg has a lot of visitors and nine hotels."</td></tr>
-          <tr><td>golf course</td><td>поле для гольфа</td><td>golf maydoni</td><td>"There is a golf course near the town."</td></tr>
-          <tr><td>two hours away</td><td>в двух часах езды</td><td>ikki soatlik yo'l</td><td>"The sea is only two hours away by car."</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="page-break"></div>
-
-    <!-- Section 4: Print Worksheets -->
-    <div class="pdf-section">
-      <h2>4. Classroom Exercises Worksheet</h2>
-      
-      <h3 style="font-size:14px; color:#1e3a8a; margin-top:14px; margin-bottom:8px;">Exercise 1: Choose the correct town</h3>
-      <p style="font-size:12px; margin-bottom:12px; color:#475569;">Write <strong>Lewisburg</strong> or <strong>Mt. Angel</strong> next to each statement:</p>
-      <div style="font-size:13px; line-height:2.0; padding-left:10px;">
-        1. This is a good town for old people. [ ________________________ ]<br>
-        2. This town has a famous festival. [ ________________________ ]<br>
-        3. A lot of tourists (visitors) visit here. [ ________________________ ]<br>
-        4. This town does not have a lot of facilities. [ ________________________ ]<br>
-        5. This town has famous old buildings. [ ________________________ ]<br>
-        6. This town is near the sea. [ ________________________ ]
-      </div>
-
-      <h3 style="font-size:14px; color:#1e3a8a; margin-top:24px; margin-bottom:8px;">Exercise 2: True or False (Vocabulary Context Practice)</h3>
-      <p style="font-size:12px; margin-bottom:12px; color:#475569;">Circle <strong>T</strong> (True) or <strong>F</strong> (False) for each statement based on word meaning:</p>
-      <div style="font-size:13px; line-height:2.0; padding-left:10px;">
-        1. If a town has a lot of facilities, it is easy to find things to do. [ <strong>T</strong> / <strong>F</strong> ]<br>
-        2. If something is two hours away, it takes 15 minutes to travel there. [ <strong>T</strong> / <strong>F</strong> ]<br>
-        3. A bakery is a business where people usually play tennis. [ <strong>T</strong> / <strong>F</strong> ]<br>
-        4. If you are lucky, good opportunities and pleasant things happen to you. [ <strong>T</strong> / <strong>F</strong> ]<br>
-        5. Visitors are people who live permanently in a house. [ <strong>T</strong> / <strong>F</strong> ]
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -308,9 +174,8 @@ document.getElementById('fsBtn').onclick=function(){
   if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});this.textContent='✕';}
   else{document.exitFullscreen();this.textContent='⛶';}
 };
-document.addEventListener('fullscreenchange',()=>{document.getElementById('fsBtn').textContent=document.fullscreenElement?'✕':'⛶';});
 
-/* TIMER SETUP */
+/* TIMER MODULE */
 let tS=300,tR=false,tI=null;
 function setT(m){tS=m*60;tR=false;clearInterval(tI);document.getElementById('tTog').textContent='▶';rendT();}
 function rendT(){const m=Math.floor(Math.abs(tS)/60),s=Math.abs(tS)%60,n=tS<0?'-':'',d=document.getElementById('tDisp');d.textContent=n+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');d.className='td'+(tS<=30&&tS>=-999?' warn':'');}
@@ -318,7 +183,7 @@ document.getElementById('tTog').onclick=function(){if(tR){clearInterval(tI);tR=f
 document.getElementById('tMin').onclick=()=>{tS=Math.max(0,tS-60);rendT();};
 document.getElementById('tPls').onclick=()=>{tS+=60;rendT();};
 
-/* POPUP MODULE */
+/* POPUP CONFIG */
 let popCb=null;
 function openPopup(svgHtml,word,trans,ex){
   document.getElementById('popQ').textContent='What does this word/phrase mean?';
@@ -345,16 +210,106 @@ function closePopup(){
   if(popCb){popCb();popCb=null;}
 }
 
-/* SVGs Vector resources */
+/* HIGH-QUALITY PREMIUM EXAMPLES SVGS WITH GRADIENTS & COMPLEX COMPONENT SCALING */
 const SVG={
-  like:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><path d="M50 70 C50 70 15 45 15 25 A 15 15 0 0 1 45 15 A 10 10 0 0 1 50 20 A 10 10 0 0 1 55 15 A 15 15 0 0 1 85 25 C 85 45 50 70 50 70 Z" fill="#1D4ED8" stroke="#BFDBFE" stroke-width="2"/><text x="50" y="42" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff" font-family="Arial">LIKE</text></svg>`,
-  facilities:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="15" y="15" width="30" height="20" rx="4" fill="#34D399"/><text x="30" y="28" text-anchor="middle" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">GYM</text><rect x="55" y="15" width="30" height="20" rx="4" fill="#60A5FA"/><text x="70" y="28" text-anchor="middle" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">POOL</text><rect x="35" y="45" width="30" height="20" rx="4" fill="#F87171"/><text x="50" y="58" text-anchor="middle" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">CLINIC</text></svg>`,
-  aswellas:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="40" r="14" fill="#1D4ED8" opacity="0.8"/><text x="30" y="44" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff" font-family="Arial">A</text><circle cx="70" cy="40" r="14" fill="#1D4ED8" opacity="0.8"/><text x="70" y="44" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff" font-family="Arial">B</text><path d="M 44 40 L 56 40" stroke="#1D4ED8" stroke-width="4" stroke-linecap="round"/><path d="M 50 34 L 50 46" stroke="#1D4ED8" stroke-width="4" stroke-linecap="round"/></svg>`,
-  lucky:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><path d="M 50 15 C 30 15, 30 50, 50 50 C 70 50, 70 15, 50 15 Z" fill="none" stroke="#FFD400" stroke-width="6"/><circle cx="35" cy="30" r="6" fill="#34D399"/><circle cx="65" cy="30" r="6" fill="#34D399"/><circle cx="50" cy="45" r="7" fill="#60A5FA"/><text x="50" y="70" text-anchor="middle" font-size="9" font-weight="bold" fill="#1D4ED8" font-family="Arial">LUCKY</text></svg>`,
-  bakery:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="30" width="60" height="35" rx="5" fill="#F3F4F6" stroke="#6B7280" stroke-width="2"/><path d="M 15 30 L 35 15 L 65 15 L 85 30 Z" fill="#FFD400" stroke="#B45309" stroke-width="2"/><text x="50" y="52" text-anchor="middle" font-size="11" font-weight="bold" fill="#B45309" font-family="Arial">BREAD</text></svg>`,
-  visitors:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="10" fill="#34D399"/><path d="M 15 60 C 15 45, 45 45, 45 60 Z" fill="#34D399"/><circle cx="70" cy="30" r="10" fill="#60A5FA"/><path d="M 55 60 C 55 45, 85 45, 85 60 Z" fill="#60A5FA"/><path d="M 50 15 L 50 35" stroke="#FFD400" stroke-width="3" stroke-linecap="round"/></svg>`,
-  golfcourse:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="55" rx="40" ry="20" fill="#34D399"/><line x1="50" y1="55" x2="50" y2="20" stroke="#B91C1C" stroke-width="3"/><polygon points="50,20 70,27 50,34" fill="#B91C1C"/><circle cx="48" cy="56" r="3" fill="#fff"/></svg>`,
-  twohours:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="40" r="30" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="3"/><line x1="50" y1="40" x2="50" y2="20" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round"/><line x1="50" y1="40" x2="68" y2="40" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round"/><text x="50" y="77" text-anchor="middle" font-size="9" font-weight="bold" fill="#1D4ED8" font-family="Arial">2 HOURS</text></svg>`
+  like: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gradLike" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3B82F6"/>
+        <stop offset="100%" stop-color="#1D4ED8"/>
+      </linearGradient>
+    </defs>
+    <circle cx="50" cy="50" r="45" fill="url(#gradLike)" opacity="0.1"/>
+    <path d="M50 82C50 82 12 52 12 30C12 16 23 8 34 8C41 8 47 12 50 16C53 12 59 8 66 8C77 8 88 16 88 30C88 52 50 82 50 82Z" fill="url(#gradLike)" stroke="#ffffff" stroke-width="2"/>
+    <circle cx="34" cy="26" r="4" fill="#ffffff" opacity="0.4"/>
+  </svg>`,
+
+  facilities: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="b1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#2563EB"/></linearGradient>
+      <linearGradient id="b2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#059669"/></linearGradient>
+    </defs>
+    <rect x="8" y="15" width="38" height="32" rx="6" fill="url(#b1)"/>
+    <path d="M16 26 H38 M16 34 H38" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+    <rect x="54" y="15" width="38" height="32" rx="6" fill="url(#b2)"/>
+    <circle cx="73" cy="31" r="7" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+    <rect x="15" y="56" width="70" height="30" rx="6" fill="#F59E0B"/>
+    <path d="M28 71 L42 71 M58 71 L72 71" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  </svg>`,
+
+  aswellas: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gradPlus" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#10B981"/>
+        <stop offset="100%" stop-color="#059669"/>
+      </linearGradient>
+    </defs>
+    <rect x="8" y="30" width="32" height="40" rx="5" fill="#3B82F6"/>
+    <rect x="14" y="38" width="20" height="5" fill="#ffffff" opacity="0.6"/>
+    <rect x="14" y="48" width="20" height="5" fill="#ffffff" opacity="0.6"/>
+    <rect x="60" y="30" width="32" height="40" rx="5" fill="#3B82F6"/>
+    <rect x="66" y="38" width="20" height="5" fill="#ffffff" opacity="0.6"/>
+    <rect x="66" y="48" width="20" height="5" fill="#ffffff" opacity="0.6"/>
+    <circle cx="50" cy="50" r="16" fill="url(#gradPlus)" stroke="#ffffff" stroke-width="2"/>
+    <path d="M50 42 V58 M42 50 H58" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+  </svg>`,
+
+  lucky: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FBBF24"/>
+        <stop offset="50%" stop-color="#F59E0B"/>
+        <stop offset="100%" stop-color="#D97706"/>
+      </linearGradient>
+    </defs>
+    <circle cx="50" cy="50" r="42" fill="url(#goldGrad)"/>
+    <circle cx="50" cy="50" r="32" fill="none" stroke="#ffffff" stroke-dasharray="4,3" opacity="0.6"/>
+    <path d="M50 22 C35 22 32 45 50 45 C68 45 65 22 50 22 Z" fill="#ffffff" opacity="0.25"/>
+    <path d="M40 45 L45 35 M60 45 L55 35" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+    <path d="M38 60 Q50 72 62 60" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  </svg>`,
+
+  bakery: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="roof" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#EF4444"/><stop offset="50%" stop-color="#F87171"/><stop offset="100%" stop-color="#EF4444"/>
+      </linearGradient>
+    </defs>
+    <rect x="15" y="44" width="70" height="44" fill="#FFFBEB" stroke="#D97706" stroke-width="2"/>
+    <path d="M10 44 L22 24 H78 L90 44 Z" fill="url(#roof)" stroke="#B91C1C" stroke-width="2"/>
+    <rect x="28" y="58" width="16" height="30" fill="#D97706"/>
+    <rect x="56" y="56" width="18" height="18" fill="#93C5FD" rx="2"/>
+    <circle cx="33" cy="74" r="2" fill="#FBBF24"/>
+  </svg>`,
+
+  visitors: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="32" cy="38" r="12" fill="#3B82F6"/>
+    <path d="M10 78 C10 58 54 58 54 78 Z" fill="#3B82F6"/>
+    <circle cx="66" cy="46" r="10" fill="#10B981"/>
+    <path d="M48 80 C48 64 84 64 84 80 Z" fill="#10B981"/>
+    <path d="M74 20 L84 28 L74 36" fill="none" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M45 24 H82" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/>
+  </svg>`,
+
+  golfcourse: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="greenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#059669"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="50" cy="65" rx="46" ry="25" fill="url(#greenGrad)"/>
+    <path d="M40 70 Q55 58 70 72" fill="none" stroke="#ffffff" opacity="0.4" stroke-width="2"/>
+    <line x1="55" y1="60" x2="55" y2="15" stroke="#DC2626" stroke-width="3" stroke-linecap="round"/>
+    <polygon points="55,15 82,24 55,33" fill="#DC2626"/>
+    <circle cx="50" cy="64" r="3" fill="#ffffff"/>
+  </svg>`,
+
+  twohours: `<svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="42" fill="#EFF6FF" stroke="#3B82F6" stroke-width="4"/>
+    <circle cx="50" cy="50" r="3" fill="#1E3A8A"/>
+    <path d="M50 16 V50 L74 50" stroke="#1E3A8A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M35 12 L20 4 M65 12 L80 4" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+  </svg>`
 };
 
 const vocabList=[
@@ -368,7 +323,7 @@ const vocabList=[
   {w:'two hours away',     ru:'в двух часах езды', uz:'ikki soatlik yo\'l',  k:'twohours',   ex:'"The sea is only two hours away by car."'}
 ];
 
-/* BOARD GENERATION */
+/* RENDERING INTERACTIVE WORD BOARD */
 function makeBoard(vocab,cols){
   const opened=new Set();
   const wrap=document.createElement('div');wrap.className='board-full';
@@ -387,19 +342,18 @@ function makeBoard(vocab,cols){
       const card=document.createElement('div');
       card.className='fc'+(isOpen?' op':'');
       card.style.minHeight='0';
-      card.innerHTML = `<div class="term-header">${item.w}</div>`;
       
       if(isOpen){
-        card.innerHTML += (SVG[item.k]||'').replace(/width="\d+"/, 'width="60"')
-          + '<div class="cw" style="margin-top:15px;">' + item.w + '</div>'
+        card.innerHTML = (SVG[item.k]||'').replace(/width="\d+"/, 'width="65"')
+          + '<div class="cw">' + item.w + '</div>'
           + '<div class="ct">🇷🇺 ' + item.ru + '</div><div class="ct">🇺🇿 ' + item.uz + '</div>';
       }else{
-        card.innerHTML += '<div class="qm" style="margin-top:15px;">?</div>';
+        card.innerHTML = '<div class="qm">?</div><div class="cw" style="color:#94A3B8;">' + item.w + '</div>';
       }
       
       card.onclick=()=>{
         popCb=()=>{opened.add(i);render();};
-        openPopup((SVG[item.k]||'').replace(/width="\d+"/, 'width="140"'),item.w,'🇷🇺 '+item.ru+'<br>🇺🇿 '+item.uz,item.ex);
+        openPopup((SVG[item.k]||''),item.w,'🇷🇺 '+item.ru+'<br>🇺🇿 '+item.uz,item.ex);
       };
       grid.appendChild(card);
     });
@@ -410,7 +364,6 @@ function makeBoard(vocab,cols){
   render();return wrap;
 }
 
-/* STEPS */
 const steps=[
   {label:'Lead-in — City Discussion', type:'leadin', rec:5},
   {label:'Pre-teach Vocabulary', type:'preteach', rec:10},
@@ -418,7 +371,6 @@ const steps=[
 ];
 let cur=0;
 
-/* EXERCISE ANSWER HOOKS */
 const answers_ex1 = { q1: 'Lewisburg', q2: 'Mt. Angel', q3: 'Lewisburg', q4: 'Mt. Angel', q5: 'Lewisburg', q6: 'Mt. Angel' };
 const answers_ex2 = { q1: 'True', q2: 'False', q3: 'False', q4: 'True', q5: 'False' };
 
@@ -429,9 +381,8 @@ function handleEx1(btn, qKey, selectedValue) {
     b.classList.remove('correct', 'wrong');
     b.disabled = true;
   });
-  if (isCorrect) {
-    btn.classList.add('correct');
-  } else {
+  if (isCorrect) btn.classList.add('correct');
+  else {
     btn.classList.add('wrong');
     parent.querySelectorAll('.opt-btn').forEach(b => {
       if (b.getAttribute('data-val') === answers_ex1[qKey]) b.classList.add('correct');
@@ -446,9 +397,8 @@ function handleEx2(btn, qKey, selectedValue) {
     b.classList.remove('correct', 'wrong');
     b.disabled = true;
   });
-  if (isCorrect) {
-    btn.classList.add('correct');
-  } else {
+  if (isCorrect) btn.classList.add('correct');
+  else {
     btn.classList.add('wrong');
     parent.querySelectorAll('.opt-btn').forEach(b => {
       if (b.getAttribute('data-val') === answers_ex2[qKey]) b.classList.add('correct');
@@ -459,7 +409,6 @@ function handleEx2(btn, qKey, selectedValue) {
 window.handleEx1 = handleEx1;
 window.handleEx2 = handleEx2;
 
-/* RENDER STEPS FUNCTION */
 function renderStep(){
   const s=steps[cur];
   const area=document.getElementById('contentArea');
@@ -475,63 +424,24 @@ function renderStep(){
     el.innerHTML=`
       <div class="lead-title">Our Towns and Cities &middot; Lead-In Map</div>
       <div style="width:100%; max-width:600px; margin: 0 auto;">
-        <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg" style="background:#E0F2FE; border-radius:12px; border:2px solid #3B82F6; box-shadow:0 4px 10px rgba(0,0,0,0.05); width:100%; height:auto;">
+        <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg" style="background:#E0F2FE; border-radius:12px; border:2px solid #3B82F6; width:100%; height:auto;">
           <circle cx="50" cy="40" r="12" fill="#fff" opacity="0.8"/>
           <circle cx="65" cy="40" r="15" fill="#fff" opacity="0.8"/>
-          <circle cx="80" cy="40" r="12" fill="#fff" opacity="0.8"/>
-          <circle cx="320" cy="50" r="10" fill="#fff" opacity="0.8"/>
-          <circle cx="332" cy="50" r="13" fill="#fff" opacity="0.8"/>
           <circle cx="370" cy="30" r="15" fill="#FBBF24"/>
-          <polygon points="-10,120 80,60 180,120" fill="#93C5FD" opacity="0.5"/>
-          <polygon points="120,120 220,50 320,120" fill="#93C5FD" opacity="0.3"/>
-          <polygon points="250,120 340,70 420,120" fill="#93C5FD" opacity="0.4"/>
           <rect x="0" y="110" width="400" height="110" fill="#10B981"/>
-          <polygon points="170,110 230,110 280,220 120,220" fill="#4B5563"/>
-          <line x1="200" y1="110" x2="200" y2="220" stroke="#fff" stroke-dasharray="10,8" stroke-width="2"/>
-          <path d="M 0 160 Q 100 130 200 170 T 400 150 L 400 220 L 0 220 Z" fill="#3B82F6" opacity="0.8"/>
           <rect x="30" y="80" width="35" height="50" fill="#1E3A8A" rx="2"/>
-          <rect x="35" y="85" width="8" height="8" fill="#FBBF24"/>
-          <rect x="52" y="85" width="8" height="8" fill="#FBBF24"/>
-          <rect x="35" y="100" width="8" height="8" fill="#FBBF24"/>
-          <rect x="52" y="100" width="8" height="8" fill="#FBBF24"/>
           <rect x="80" y="70" width="55" height="60" fill="#3B82F6" rx="2"/>
-          <rect x="100" y="75" width="15" height="15" fill="#EF4444" rx="2"/>
-          <text x="107.5" y="86" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">+</text>
           <rect x="250" y="60" width="30" height="70" fill="#1F2937" rx="2"/>
-          <rect x="255" y="65" width="6" height="6" fill="#FBBF24"/>
-          <rect x="270" y="65" width="6" height="6" fill="#FBBF24"/>
-          <rect x="255" y="75" width="6" height="6" fill="#fff"/>
-          <rect x="270" y="75" width="6" height="6" fill="#FBBF24"/>
-          <rect x="255" y="85" width="6" height="6" fill="#fff"/>
-          <rect x="270" y="85" width="6" height="6" fill="#fff"/>
-          <circle cx="150" cy="120" r="12" fill="#047857"/>
-          <rect x="148" y="120" width="4" height="15" fill="#78350F"/>
-          <circle cx="310" cy="130" r="10" fill="#065F46"/>
-          <rect x="308" y="130" width="4" height="12" fill="#78350F"/>
-          <circle cx="330" cy="140" r="14" fill="#047857"/>
-          <rect x="328" y="140" width="4" height="15" fill="#78350F"/>
           <text x="47" y="142" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">MUSEUM</text>
           <text x="107" y="142" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">CLINIC</text>
           <text x="265" y="142" font-size="7" font-weight="bold" fill="#fff" font-family="Arial">HOTEL</text>
         </svg>
       </div>
       <div class="discussion-grid">
-        <div class="dq-box">
-          <span class="dq-num">1.</span>
-          <span class="dq-text">Do you like your city? Why?</span>
-        </div>
-        <div class="dq-box">
-          <span class="dq-num">2.</span>
-          <span class="dq-text">What facilities do you have in your city?</span>
-        </div>
-        <div class="dq-box">
-          <span class="dq-num">3.</span>
-          <span class="dq-text">What is your favorite place in the city?</span>
-        </div>
-        <div class="dq-box">
-          <span class="dq-num">4.</span>
-          <span class="dq-text">Is there a park or bakery near your home?</span>
-        </div>
+        <div class="dq-box"><span class="dq-num">1.</span><span class="dq-text">Do you like your city? Why?</span></div>
+        <div class="dq-box"><span class="dq-num">2.</span><span class="dq-text">What facilities do you have in your city?</span></div>
+        <div class="dq-box"><span class="dq-num">3.</span><span class="dq-text">What is your favorite place in the city?</span></div>
+        <div class="dq-box"><span class="dq-num">4.</span><span class="dq-text">Is there a park or bakery near your home?</span></div>
       </div>
     `;
   }
@@ -542,8 +452,10 @@ function renderStep(){
 
   else if(s.type==='reading-pane'){
     el=document.createElement('div');el.className='reading-container';
+    el.id='printableReadingArea';
     el.innerHTML=`
-      <div class="reading-pane" id="printableReadingArea">
+      <div class="reading-pane">
+        <div class="pdf-only-title">Lesson 6.1 — Reading Tasks & Exercises Handout</div>
         <div class="town-header">
           <div class="town-title">Lewisburg, WEST VIRGINIA</div>
           <div class="town-meta">Founded: 1782 &middot; Population: 4,000 &middot; Average age: 46</div>
@@ -605,7 +517,7 @@ function renderStep(){
           </div>
         </div>
 
-        <div class="ex-title" style="margin-top:24px;">Exercise 2: True or False (Vocabulary Context Practice)</div>
+        <div class="ex-title" style="margin-top:24px;">Exercise 2: True or False</div>
         <div class="ex-item">
           <div class="ex-q">1. If a town has a lot of facilities, it is easy to find things to do.</div>
           <div class="opt-row">
@@ -651,33 +563,28 @@ function renderStep(){
   document.getElementById('nextBtn').textContent = (cur === steps.length - 1) ? 'Finish' : 'next →';
 }
 
-/* NAVIGATION HOOKS */
 document.getElementById('prevBtn').onclick=()=>{if(cur>0){cur--;renderStep();}};
-document.getElementById('nextBtn').onclick=()=>{
-  if(cur<steps.length-1){
-    cur++;
-    renderStep();
-  } else {
-    goBackToOutline();
-  }
-};
+document.getElementById('nextBtn').onclick=()=>{if(cur<steps.length-1){cur++;renderStep();}else{goBackToOutline();}};
 
-/* PDF EXPORTER - INJECTS TEACHER LESSON PLAN + STUDENT WORKSHEETS */
+/* TARGETED EXPORTER: GRABS EXCLUSIVELY THE READING TASK COMPONENT */
 document.getElementById('pdfBtn').onclick=function(){
-  const element = document.getElementById('pdfTemplate');
-  element.style.display = 'block'; // Make visible briefly for capturing
+  // If user is not on reading page, load element data implicitly
+  let element = document.getElementById('printableReadingArea');
+  
+  if(!element) {
+    alert("Please advance to Step 3 (Reading & Exercises) to export the reading worksheets.");
+    return;
+  }
   
   const opt = {
-    margin:       [10, 10, 10, 10],
-    filename:     'Beginner_6_1_Lesson_Plan_And_Worksheets.pdf',
+    margin:       [12, 12, 12, 12],
+    filename:     'Beginner_6_1_Reading_Tasks.pdf',
     image:        { type: 'jpeg', quality: 0.98 },
     html2canvas:  { scale: 2, useCORS: true },
     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  html2pdf().set(opt).from(element).save().then(() => {
-    element.style.display = 'none'; // Hide it again
-  });
+  html2pdf().set(opt).from(element).save();
 };
 </script>
 </body>

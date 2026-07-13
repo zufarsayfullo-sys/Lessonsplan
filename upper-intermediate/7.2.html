@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 7.2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif;background:#DDE6F8;min-height:100vh;display:flex;flex-direction:column;}
+  a{text-decoration:none;color:inherit;}
+  .outline-page{flex:1;padding:24px 36px;display:flex;flex-direction:column;}
+  .ol-title{color:#1D4ED8;font-size:28px;font-weight:bold;margin-bottom:4px;}
+  .ol-sub{color:#666;font-size:14px;margin-bottom:24px;}
+  .ol-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+  .ol-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:14px 18px;font-size:15px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+  .ol-n{background:#1D4ED8;color:#fff;border-radius:50%;width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;}
+  .ol-tag{margin-left:auto;color:#93C5FD;font-size:12px;}
+  .sbtn{background:#1D4ED8;color:#fff;border:none;border-radius:10px;padding:14px 32px;font-weight:bold;font-size:16px;cursor:pointer;font-family:inherit;align-self:flex-end;}
+  .back-link{color:#1D4ED8;font-size:18px;font-weight:bold;margin-bottom:16px;display:inline-block;}
+  #lessonScreen{flex:1;display:none;flex-direction:column;min-height:0;}
+  .top-bar{padding:12px 32px 6px;display:flex;align-items:center;gap:14px;}
+  .step-label{color:#1D4ED8;font-size:20px;font-weight:bold;}
+  .content-area{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10px 28px;overflow-y:auto;}
+  .bottom-bar{background:rgba(255,255,255,.94);border-top:2px solid #BFDBFE;padding:10px 28px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .nav-side{display:flex;align-items:center;gap:8px;}
+  .nb{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:#93C5FD;padding:6px 10px;}
+  .nb:disabled{opacity:.25;cursor:not-allowed;}
+  .nb.pri{background:#1D4ED8;color:#fff;border-radius:8px;padding:8px 20px;}
+  .sc{color:#BFDBFE;font-size:13px;min-width:60px;text-align:center;}
+  .tools-side{display:flex;align-items:center;gap:8px;}
+  .trec{color:#93C5FD;font-size:11px;}
+  .tw0{display:flex;align-items:center;gap:4px;background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:5px 10px;}
+  .ta{background:none;border:none;color:#1D4ED8;font-size:16px;font-weight:bold;cursor:pointer;width:22px;font-family:inherit;}
+  .td{font-family:'Courier New',monospace;font-size:15px;color:#1D4ED8;min-width:52px;text-align:center;font-weight:bold;}
+  .td.warn{color:#EF4444;}
+  .tt{background:none;border:1.5px solid #1D4ED8;color:#1D4ED8;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:2px;}
+  .hbtn{background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  .pdf-btn{display:none;}
+  /* BOARD */
+  .board-full{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;align-items:center;}
+  .board-grid{display:grid;gap:10px;width:100%;max-width:1200px;flex:1;min-height:0;}
+  .fc{background:#fff;border:2px solid #BFDBFE;border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06);min-height:0;}
+  .fc:hover{border-color:#1D4ED8;}.fc.op{border-color:#1D4ED8;background:#F8FAFF;}
+  .fc .qm{font-size:30px;color:#BFDBFE;}.fc .cw{font-size:13px;font-weight:bold;color:#1D4ED8;margin-top:5px;line-height:1.3;}.fc .ct{font-size:10px;color:#888;margin-top:2px;}
+  .board-foot{display:flex;justify-content:flex-end;margin-top:6px;width:100%;max-width:1200px;}
+  .rb{background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:6px;padding:5px 16px;font-size:12px;cursor:pointer;font-family:inherit;}
+  /* OVERLAY */
+  #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:200;}
+  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:3px solid #1D4ED8;border-radius:14px;padding:22px 28px;text-align:center;min-width:260px;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
+  .pq{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+  .pw{font-size:20px;font-weight:bold;color:#1D4ED8;margin-top:10px;display:none;}
+  .pt{font-size:12px;color:#888;margin-top:4px;display:none;line-height:1.5;}
+  .pe{background:#EFF6FF;border-left:3px solid #1D4ED8;padding:8px 12px;margin-top:10px;font-size:13px;color:#333;text-align:left;border-radius:4px;display:none;font-style:italic;}
+  .pr{margin-top:12px;background:#1D4ED8;border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;}
+  .ph2{color:#ccc;font-size:11px;margin-top:10px;}
+  /* TABS */
+  .tw2{width:100%;max-width:1000px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+  .tbar{display:flex;border-bottom:2px solid #BFDBFE;}
+  .tab{flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:bold;cursor:pointer;color:#93C5FD;background:#fff;border-bottom:3px solid transparent;}
+  .tab.active{color:#fff;background:#1D4ED8;border-bottom:3px solid #1D4ED8;}
+  .tpane{display:none;padding:20px;max-height:56vh;overflow-y:auto;}
+  .tpane.active{display:block;}
+  .einstr{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
+  .ei{display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;}
+  .en{background:#1D4ED8;color:#fff;font-weight:bold;font-size:11px;border-radius:50%;width:20px;height:20px;min-width:20px;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .et{color:#333;font-size:14px;line-height:1.6;flex:1;}
+  .mc-opts{display:flex;flex-direction:column;gap:5px;padding-left:30px;margin-top:6px;}
+  .mo{background:#EFF6FF;border:1.5px solid #BFDBFE;color:#333;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit;text-align:left;}
+  .mo:hover{border-color:#1D4ED8;color:#1D4ED8;}
+  .mo.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;}
+  .mo.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+  .tf-opts{display:flex;gap:8px;margin-top:6px;}
+  .tf-btn{background:none;border:1.5px solid #BFDBFE;color:#666;border-radius:6px;padding:5px 14px;font-size:13px;cursor:pointer;font-family:inherit;}
+  .tf-btn:hover{border-color:#1D4ED8;color:#1D4ED8;}
+  .tf-btn.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;}
+  .tf-btn.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+  /* reading */
+  .reading-title{font-size:19px;font-weight:bold;color:#1D4ED8;margin-bottom:14px;line-height:1.3;}
+  .reading-text p{color:#333;font-size:14px;line-height:1.85;margin-bottom:10px;}
+  .hl{background:#FFD400;color:#111;padding:1px 3px;border-radius:2px;font-weight:bold;}
+  .author{font-size:12px;color:#888;margin-top:10px;font-style:italic;}
+  /* lead-in card */
+  .lead-card{background:#fff;border-radius:14px;padding:24px 28px;box-shadow:0 2px 12px rgba(0,0,0,.08);width:100%;max-width:900px;}
+  .dq{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+  .dqn{background:#1D4ED8;color:#fff;border-radius:50%;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+  .dqt{color:#333;font-size:15px;line-height:1.6;}
+  /* listening rules */
+  .rule-card{background:#fff;border-radius:14px;padding:28px 32px;box-shadow:0 2px 12px rgba(0,0,0,.08);width:100%;max-width:800px;text-align:center;}
+  .rule-text{font-size:20px;color:#333;font-style:italic;line-height:1.6;margin-bottom:20px;padding:18px 22px;background:#F8FAFF;border-left:4px solid #1D4ED8;border-radius:6px;text-align:left;}
+  .rule-q{font-size:15px;color:#1D4ED8;font-weight:bold;}
+</style>
+</head>
+<body>
+
+<div id="outlineScreen">
+  <div class="outline-page">
+    <a class="back-link" href="index.html">&#8592;</a>
+    <div class="ol-title">Lesson 7.2</div>
+    <div class="ol-sub">Unit 7 &middot; Work emails outside working hours</div>
+    <div class="ol-list">
+      <div class="ol-item"><span class="ol-n">1</span>Lead-in — phones &amp; emails discussion<span class="ol-tag">5 min</span></div>
+      <div class="ol-item"><span class="ol-n">2</span>Reading pre-teach vocabulary<span class="ol-tag">7 words</span></div>
+      <div class="ol-item"><span class="ol-n">3</span>Reading + exercises<span class="ol-tag">text · T/F/NG · MC · PDF</span></div>
+      <div class="ol-item"><span class="ol-n">4</span>Listening — discuss company rules<span class="ol-tag">4 rules</span></div>
+      <div class="ol-item"><span class="ol-n">5</span>Listening task<span class="ol-tag">multiple choice</span></div>
+    </div>
+    <button class="sbtn" id="startBtn">Start lesson &#8594;</button>
+  </div>
+</div>
+
+<div id="lessonScreen">
+  <div class="top-bar">
+    <a class="back-link" href="index.html" style="font-size:18px;font-weight:bold;color:#1D4ED8;">&#8592;</a>
+    <span class="step-label" id="sLabel">Lesson 7.2</span>
+  </div>
+  <div class="content-area" id="contentArea"></div>
+  <div class="bottom-bar">
+    <div class="nav-side">
+      <button class="nb" id="prevBtn">&#8592; prev</button>
+      <span class="sc" id="stepCtr"></span>
+      <button class="nb pri" id="nextBtn">next &#8594;</button>
+    </div>
+    <div class="tools-side">
+      <span class="trec" id="recLbl"></span>
+      <div class="tw0">
+        <button class="ta" id="tMin">&#8722;</button>
+        <span class="td" id="tDisp">05:00</span>
+        <button class="ta" id="tPls">+</button>
+        <button class="tt" id="tTog">&#9654;</button>
+      </div>
+      <button class="hbtn pdf-btn" id="pdfBtn">📄 PDF</button>
+      <button class="hbtn" id="fsBtn" style="font-size:14px;padding:6px 10px;">&#x26F6;</button>
+    </div>
+  </div>
+</div>
+
+<div id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+  <div class="pq" id="popQ"></div>
+  <div id="popSvg"></div>
+  <div class="pw" id="popWord"></div>
+  <div class="pt" id="popTrans"></div>
+  <div class="pe" id="popEx"></div>
+  <button class="pr" id="popReveal" onclick="revealPopup()">Show answer ▾</button>
+  <div class="ph2">tap outside to close</div>
+</div>
+
+<script>
+/* FULLSCREEN */
+document.getElementById('fsBtn').onclick=function(){
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});this.textContent='✕';}
+  else{document.exitFullscreen();this.textContent='⛶';}
+};
+document.addEventListener('fullscreenchange',()=>{document.getElementById('fsBtn').textContent=document.fullscreenElement?'✕':'⛶';});
+
+/* TIMER */
+let tS=300,tR=false,tI=null;
+function setT(m){tS=m*60;tR=false;clearInterval(tI);document.getElementById('tTog').textContent='▶';rendT();}
+function rendT(){const m=Math.floor(Math.abs(tS)/60),s=Math.abs(tS)%60,n=tS<0?'-':'',d=document.getElementById('tDisp');d.textContent=n+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');d.className='td'+(tS<=30&&tS>=-999?' warn':'');}
+document.getElementById('tTog').onclick=function(){if(tR){clearInterval(tI);tR=false;this.textContent='▶';}else{tR=true;this.textContent='⏸';tI=setInterval(()=>{tS--;rendT();},1000);}};
+document.getElementById('tMin').onclick=()=>{tS=Math.max(0,tS-60);rendT();};
+document.getElementById('tPls').onclick=()=>{tS+=60;rendT();};
+
+/* PDF */
+function savePDF(el,name){html2pdf().set({margin:10,filename:name,image:{type:'jpeg',quality:.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();}
+function buildPrintEl(html){const el=document.createElement('div');el.style.cssText='font-family:Arial,sans-serif;padding:20px;color:#111;max-width:740px;';el.innerHTML=html;document.body.appendChild(el);setTimeout(()=>{if(el.parentNode)el.parentNode.removeChild(el);},8000);return el;}
+
+/* TAB */
+function swTab(el,n){const bar=el.parentElement,wrap=bar.parentElement;bar.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));wrap.querySelectorAll('.tpane').forEach((p,i)=>p.classList.toggle('active',i===n));}
+window.swTab=swTab;
+
+/* POPUP */
+let popCb=null;
+function openPopup(svgHtml,word,trans,ex){document.getElementById('popQ').textContent='What does this mean?';document.getElementById('popSvg').innerHTML=svgHtml;document.getElementById('popWord').style.display='none';document.getElementById('popWord').textContent=word;document.getElementById('popTrans').style.display='none';document.getElementById('popTrans').innerHTML=trans;document.getElementById('popEx').style.display='none';document.getElementById('popEx').textContent=ex;document.getElementById('popReveal').style.display='inline-block';document.getElementById('overlay').style.display='block';document.getElementById('popup').style.display='block';}
+function revealPopup(){document.getElementById('popWord').style.display='block';document.getElementById('popTrans').style.display='block';document.getElementById('popEx').style.display='block';document.getElementById('popReveal').style.display='none';}
+function closePopup(){document.getElementById('overlay').style.display='none';document.getElementById('popup').style.display='none';if(popCb){popCb();popCb=null;}}
+
+/* SVGs */
+const SVG={
+  protect:`<svg viewBox="0 0 100 86" width="110" xmlns="http://www.w3.org/2000/svg"><path d="M50,8 L82,22 L82,52 Q82,70 50,80 Q18,70 18,52 L18,22 Z" fill="#1D4ED8" opacity=".12" stroke="#1D4ED8" stroke-width="2.5"/><path d="M50,18 L72,28 L72,50 Q72,64 50,72 Q28,64 28,50 L28,28 Z" fill="#1D4ED8" opacity=".2"/><polyline points="38,48 48,58 65,36" stroke="#1D4ED8" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  outsidehours:`<svg viewBox="0 0 110 80" width="120" xmlns="http://www.w3.org/2000/svg"><circle cx="55" cy="40" r="28" fill="#fff" stroke="#1D4ED8" stroke-width="2.5"/><line x1="55" y1="22" x2="55" y2="30" stroke="#1D4ED8" stroke-width="2"/><line x1="55" y1="58" x2="55" y2="50" stroke="#1D4ED8" stroke-width="2"/><line x1="37" y1="40" x2="45" y2="40" stroke="#1D4ED8" stroke-width="2"/><line x1="73" y1="40" x2="65" y2="40" stroke="#1D4ED8" stroke-width="2"/><line x1="55" y1="40" x2="55" y2="28" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/><line x1="55" y1="40" x2="68" y2="46" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/><line x1="16" y1="14" x2="28" y2="26" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/><line x1="28" y1="14" x2="16" y2="26" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/><text x="8" y="60" font-size="8" fill="#EF4444" font-family="Arial">home</text></svg>`,
+  burnout:`<svg viewBox="0 0 100 86" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="34" r="18" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/><circle cx="42" cy="30" r="3" fill="#EF4444"/><circle cx="58" cy="30" r="3" fill="#EF4444"/><path d="M40,42 Q50,37 60,42" stroke="#EF4444" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="34" y="52" width="32" height="26" rx="5" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/><line x1="20" y1="58" x2="34" y2="60" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/><line x1="66" y1="60" x2="80" y2="58" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/><text x="50" y="74" text-anchor="middle" font-size="8" fill="#EF4444" font-family="Arial">exhausted</text><path d="M44,18 Q46,10 50,8 Q54,10 56,18" fill="none" stroke="#F97316" stroke-width="2" stroke-linecap="round"/></svg>`,
+  protest:`<svg viewBox="0 0 110 86" width="120" xmlns="http://www.w3.org/2000/svg"><circle cx="28" cy="22" r="12" fill="#BFDBFE"/><circle cx="28" cy="22" r="7" fill="#1D4ED8"/><rect x="20" y="34" width="16" height="24" rx="4" fill="#1D4ED8"/><line x1="36" y1="40" x2="52" y2="32" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/><rect x="52" y="18" width="50" height="28" rx="4" fill="#EF4444" opacity=".85"/><text x="77" y="30" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">NO MORE</text><text x="77" y="42" text-anchor="middle" font-size="9" fill="#fff" font-family="Arial" font-weight="bold">EMAILS!</text></svg>`,
+  expose:`<svg viewBox="0 0 100 80" width="110" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="18" width="80" height="52" rx="6" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="2"/><rect x="10" y="18" width="80" height="52" rx="6" fill="#1D4ED8" opacity=".12" stroke="#1D4ED8" stroke-width="2"/><line x1="50" y1="14" x2="50" y2="22" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/><polygon points="44,22 56,22 50,30" fill="#1D4ED8"/><text x="50" y="50" text-anchor="middle" font-size="9" fill="#1D4ED8" font-family="Arial" font-weight="bold">52 hrs / week</text><text x="50" y="62" text-anchor="middle" font-size="8" fill="#888" font-family="Arial">revealed</text></svg>`,
+  takeintoaccount:`<svg viewBox="0 0 110 80" width="120" xmlns="http://www.w3.org/2000/svg"><line x1="55" y1="10" x2="55" y2="22" stroke="#1D4ED8" stroke-width="2.5"/><line x1="22" y1="22" x2="88" y2="22" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/><line x1="28" y1="22" x2="28" y2="38" stroke="#1D4ED8" stroke-width="2"/><line x1="82" y1="22" x2="82" y2="38" stroke="#1D4ED8" stroke-width="2"/><rect x="10" y="38" width="36" height="22" rx="5" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="1.5"/><text x="28" y="52" text-anchor="middle" font-size="8" fill="#1D4ED8" font-family="Arial" font-weight="bold">flexible work</text><rect x="64" y="38" width="36" height="22" rx="5" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="1.5"/><text x="82" y="52" text-anchor="middle" font-size="8" fill="#1D4ED8" font-family="Arial" font-weight="bold">emails ban</text><text x="55" y="75" text-anchor="middle" font-size="9" fill="#888" font-family="Arial">consider all factors</text></svg>`,
+  pickupchildren:`<svg viewBox="0 0 100 86" width="110" xmlns="http://www.w3.org/2000/svg"><circle cx="38" cy="20" r="14" fill="#BFDBFE"/><circle cx="38" cy="20" r="8" fill="#1D4ED8"/><rect x="28" y="34" width="20" height="28" rx="5" fill="#1D4ED8"/><line x1="18" y1="44" x2="28" y2="46" stroke="#1D4ED8" stroke-width="6" stroke-linecap="round"/><line x1="48" y1="46" x2="58" y2="50" stroke="#1D4ED8" stroke-width="6" stroke-linecap="round"/><circle cx="68" cy="50" r="10" fill="#FFD400"/><circle cx="68" cy="50" r="6" fill="#F97316"/><rect x="62" y="60" width="12" height="20" rx="4" fill="#F97316"/><line x1="56" y1="52" x2="62" y2="56" stroke="#F97316" stroke-width="5" stroke-linecap="round"/></svg>`
+};
+
+const vocab=[
+  {w:'protect',              ru:'защищать',                    uz:'himoya qilmoq',         k:'protect',         ex:'"Companies installed software to protect workers from emails at home."'},
+  {w:'outside office hours', ru:'вне рабочего времени',        uz:'ish vaqtidan tashqari', k:'outsidehours',    ex:'"Workers are disturbed by emails outside office hours."'},
+  {w:'burnout',              ru:'эмоциональное выгорание',     uz:'charchab qolish',       k:'burnout',         ex:'"Growing levels of burnout led companies to ban work emails at home."'},
+  {w:'protest (v)',          ru:'протестовать',                uz:'norozilik bildirmoq',    k:'protest',         ex:'"Workers in France protested against working much longer hours."'},
+  {w:'expose',               ru:'подвергать воздействию',      uz:'ta\'sir ostiga olmoq',  k:'expose',          ex:'"Electronic devices exposed workers to many more unpaid hours."'},
+  {w:'take sth into account', ru:'принимать во внимание',      uz:'hisobga olmoq',         k:'takeintoaccount', ex:'"The new rules do not take account of flexible working practices."'},
+  {w:'pick up children',     ru:'забирать детей',              uz:'bolalarni olib ketmoq', k:'pickupchildren',  ex:'"Many parents prefer to leave work early to pick up their children."'},
+];
+
+/* BOARD */
+function makeBoard(){
+  const opened=new Set();
+  const wrap=document.createElement('div');wrap.className='board-full';
+  const cnt=document.createElement('div');cnt.style.cssText='text-align:right;font-size:12px;color:#93C5FD;margin-bottom:6px;width:100%;max-width:1200px;';
+  const grid=document.createElement('div');grid.className='board-grid';
+  grid.style.gridTemplateColumns='repeat(4,1fr)';grid.style.gridAutoRows='1fr';grid.style.flex='1';
+  const foot=document.createElement('div');foot.className='board-foot';
+  const rb=document.createElement('button');rb.className='rb';rb.textContent='↺ Reset';
+  function render(){
+    const allOpen=opened.size===vocab.length;grid.innerHTML='';
+    vocab.forEach((item,i)=>{
+      const isOpen=opened.has(i);
+      const card=document.createElement('div');card.className='fc'+(isOpen?' op':'');card.style.minHeight='0';
+      if(isOpen){card.innerHTML=SVG[item.k].replace(/width="\d+"/,'width="65"')+'<div class="cw">'+item.w+'</div>'+(allOpen?'<div class="ct">🇷🇺 '+item.ru+'</div><div class="ct">🇺🇿 '+item.uz+'</div>':'');}
+      else{card.innerHTML='<div class="qm">?</div>';}
+      card.onclick=()=>{popCb=()=>{opened.add(i);render();};openPopup(SVG[item.k].replace(/width="\d+"/,'width="140"'),item.w,'🇷🇺 '+item.ru+'<br>🇺🇿 '+item.uz,item.ex);};
+      grid.appendChild(card);
+    });
+    cnt.textContent=opened.size+' / '+vocab.length+' opened';
+  }
+  rb.onclick=()=>{opened.clear();render();};
+  foot.appendChild(rb);wrap.appendChild(cnt);wrap.appendChild(grid);wrap.appendChild(foot);render();return wrap;
+}
+
+/* MC/TF ANSWER */
+function mcAns(btn,ok){if(btn.classList.contains('correct')||btn.classList.contains('wrong'))return;const g=btn.closest('.mc-opts');g.querySelectorAll('.mo').forEach(b=>b.onclick=null);btn.classList.add(ok?'correct':'wrong');if(!ok)g.querySelector('[data-c]').classList.add('correct');}
+function tfAns(btn,ok){if(btn.classList.contains('correct')||btn.classList.contains('wrong'))return;const g=btn.closest('.tf-opts');g.querySelectorAll('.tf-btn').forEach(b=>b.onclick=null);btn.classList.add(ok?'correct':'wrong');if(!ok)g.querySelectorAll('.tf-btn').forEach(b=>{if(b!==btn)b.classList.add('correct');});}
+window.mcAns=mcAns;window.tfAns=tfAns;
+
+/* LISTENING RULES step */
+const rules=[
+  'I used to work somewhere where the company insisted on us parking our cars all facing the same way.',
+  'We were expected to eat lunch sitting at our desks.',
+  'We had to start work very early. There were always team meetings at 7.30 a.m.',
+  'We were forbidden to use cups without lids.',
+];
+let ruleIdx=0;
+function buildListenDiscuss(){
+  ruleIdx=0;
+  const wrap=document.createElement('div');wrap.className='rule-card';
+  const counter=document.createElement('div');counter.style.cssText='color:#93C5FD;font-size:12px;margin-bottom:14px;';
+  const ruleEl=document.createElement('div');ruleEl.className='rule-text';
+  const qEl=document.createElement('div');qEl.className='rule-q';qEl.textContent='Why do you think the company had this rule?';
+  const nav=document.createElement('div');nav.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-top:20px;';
+  const bP=document.createElement('button');bP.style.cssText='background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:6px;padding:7px 16px;cursor:pointer;font-family:inherit;font-weight:bold;';bP.textContent='← prev';
+  const bN=document.createElement('button');bN.style.cssText='background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:7px 18px;cursor:pointer;font-family:inherit;font-weight:bold;';bN.textContent='next →';
+  function renderRule(){ruleEl.textContent=rules[ruleIdx];counter.textContent='Rule '+(ruleIdx+1)+' of '+rules.length;bP.disabled=ruleIdx===0;bP.style.opacity=ruleIdx===0?'0.3':'1';bN.textContent=ruleIdx===rules.length-1?'Done':'next →';}
+  bP.onclick=()=>{if(ruleIdx>0){ruleIdx--;renderRule();}};
+  bN.onclick=()=>{if(ruleIdx<rules.length-1){ruleIdx++;renderRule();}};
+  nav.appendChild(bP);nav.appendChild(bN);
+  wrap.appendChild(counter);wrap.appendChild(ruleEl);wrap.appendChild(qEl);wrap.appendChild(nav);
+  renderRule();return wrap;
+}
+
+/* LISTENING MC QUESTIONS (based on audioscript 7.2) */
+const listenMC=[
+  {q:'What does B think was the reason for the car parking rule?',opts:['To make the car park look tidier','It might have been a safety issue','It was a company tradition','To protect employees\' cars'],c:1},
+  {q:'Why might companies not like employees leaving the office for lunch?',opts:['To save money on canteens','To expose workers to more work time','They may have needed people to stay in to answer the phones','To take account of flexible working practices'],c:2},
+  {q:'What does A suggest about the early start rule?',opts:['The company wanted to protect employees from traffic','It might have been in a hot country where you need to get up early to avoid the heat','The company wanted to burnout early starters','The rule was introduced after a protest'],c:1},
+  {q:'What does B think was the reason for the "no cups without lids" rule?',opts:['To keep the office tidy','To take account of health and safety regulations','Someone must have spilt a drink over a computer','Workers protested about coffee breaks'],c:2},
+];
+
+/* PDF */
+function pdfAll(){
+  const tf=[
+    {q:'Companies such as Volkswagen have <b>protected</b> workers from emails <b>outside office hours</b> by installing software.',ans:'TRUE'},
+    {q:'Workers in France <b>protested</b> because they were being <b>exposed</b> to much longer unpaid hours.',ans:'TRUE'},
+    {q:'The French law insists on employers switching off email contact after 8 p.m.',ans:'FALSE (6 p.m.)'},
+    {q:'All employers support the new rules banning emails outside office hours.',ans:'FALSE'},
+  ];
+  const mc=[
+    {q:'Why have some German companies installed software to prevent emails reaching employees?',opts:['A) To increase productivity','B) To protect workers from emails outside office hours','C) To reduce email numbers during working hours'],c:'B'},
+    {q:'What do French laws now insist on?',opts:['A) Paying workers overtime','B) Banning all electronic devices at work','C) Employers switching off email contact after 6 p.m.'],c:'C'},
+    {q:'Why do some employers criticize the new rules?',opts:['A) They are too expensive','B) They do not take account of flexible working practices','C) They expose workers to burnout'],c:'B'},
+    {q:'What is one benefit of being contactable by email mentioned in the text?',opts:['A) Workers can earn more money','B) People can pick up their children early and leave the office sooner','C) Companies save money on office space'],c:'B'},
+  ];
+  const lmc=listenMC;
+  const html=`
+    <h2 style="color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:8px;margin-bottom:16px;">Reading &amp; Listening Tasks &middot; Lesson 7.2</h2>
+    <h3 style="color:#1D4ED8;margin-bottom:10px;">Reading text</h3>
+    <h4 style="font-size:16px;margin-bottom:10px;">Major European companies ban work emails outside working hours</h4>
+    <div style="font-size:13px;line-height:1.8;color:#333;margin-bottom:18px;">
+      <p style="margin-bottom:8px;">Some of Germany's biggest companies have brought in rules to protect their workers from being disturbed by work email outside office hours. Firms such as the car manufacturers Volkswagen have reacted to growing levels of employee stress and burnout by installing software to prevent emails from reaching employees at home.</p>
+      <p style="margin-bottom:8px;">In France, workers have protested against the way that the use of electronic devices has been exposing workers to much longer (unpaid) hours than the official thirty-five-hour working week. In response, the government has recently introduced laws which insist on employers switching off email contact after 6 p.m.</p>
+      <p style="margin-bottom:8px;">But some employers and employees have criticized the new rules for not taking account of modern-day flexible working practices. Many parents, for example, prefer to leave work early to pick up their children and then check emails later in the evening. The fact that you can be contacted on email might actually mean that a lot of people are able to leave the office earlier than they would have done ten or fifteen years ago.</p>
+      <p style="font-style:italic;color:#888;font-size:12px;">— Margaret Smyth, Berlin</p>
+    </div>
+    <h3 style="color:#1D4ED8;margin-bottom:10px;">Exercise 1 — True / False / Not Given</h3>
+    ${tf.map((item,i)=>`<div style="display:flex;gap:8px;margin-bottom:12px;font-size:14px;align-items:flex-start;"><span style="background:#1D4ED8;color:#fff;border-radius:50%;width:20px;height:20px;min-width:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;">${i+1}</span>${item.q} <span style="display:inline-block;border-bottom:1px solid #333;min-width:80px;margin-left:8px;">&nbsp;</span></div>`).join('')}
+    <h3 style="color:#1D4ED8;margin:18px 0 10px;">Exercise 2 — Multiple choice</h3>
+    ${mc.map((item,i)=>`<div style="margin-bottom:14px;font-size:14px;"><b>${i+1}.</b> ${item.q}<br>${item.opts.map(o=>`<span style="display:block;padding:3px 0 3px 16px;color:#555;font-size:13px;">${o}</span>`).join('')}<span style="font-size:11px;color:#888;padding-left:16px;">Answer: ___</span></div>`).join('')}
+    <h3 style="color:#1D4ED8;margin:18px 0 10px;">Listening 7.2 — Multiple choice</h3>
+    <p style="font-size:12px;color:#666;margin-bottom:12px;">Listen to A and B discussing company rules. Choose the correct answer.</p>
+    ${lmc.map((item,i)=>`<div style="margin-bottom:14px;font-size:14px;"><b>${i+1}.</b> ${item.q}<br>${item.opts.map((o,j)=>`<span style="display:block;padding:3px 0 3px 16px;color:#555;font-size:13px;">${String.fromCharCode(65+j)}) ${o}</span>`).join('')}<span style="font-size:11px;color:#888;padding-left:16px;">Answer: ___</span></div>`).join('')}`;
+  const el=buildPrintEl(html);savePDF(el,'7.2-reading-listening-tasks.pdf');
+}
+
+/* STEPS */
+const steps=[
+  {label:'Lead-in',              type:'leadin',   rec:5},
+  {label:'Pre-teach vocabulary', type:'board',    rec:10},
+  {label:'Reading',              type:'reading',  rec:15},
+  {label:'Listening — discuss',  type:'listdisc', rec:8},
+  {label:'Listening task 7.2',   type:'listtask', rec:12},
+];
+let cur=0;
+
+function renderStep(){
+  const s=steps[cur];
+  const area=document.getElementById('contentArea');
+  area.innerHTML='';area.style.justifyContent='center';area.style.alignItems='center';area.style.padding='10px 28px';
+  document.getElementById('sLabel').textContent=s.label;
+  document.getElementById('recLbl').textContent='rec: '+s.rec+' min';
+  const pdfBtn=document.getElementById('pdfBtn');pdfBtn.style.display='none';pdfBtn.onclick=null;
+  clearInterval(tI);tR=false;document.getElementById('tTog').textContent='▶';setT(s.rec);
+  let el;
+
+  if(s.type==='leadin'){
+    el=document.createElement('div');el.className='lead-card';
+    el.innerHTML=`<div style="font-size:13px;color:#93C5FD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;">Work in small groups — discuss the following questions</div>
+      <div class="dq"><div class="dqn">1</div><div class="dqt">Approximately how many times a day do you check your phone? What do you look at? Do you think people use their phones too much these days? Why / Why not?</div></div>
+      <div class="dq"><div class="dqn">2</div><div class="dqt">Are you (or would you be) happy to deal with work emails outside work (e.g. before or after work or in the holidays)? Why / Why not?</div></div>`;
+  }
+
+  else if(s.type==='board'){
+    area.style.justifyContent='flex-start';area.style.alignItems='stretch';area.style.padding='8px 28px';
+    area.appendChild(makeBoard());return;
+  }
+
+  else if(s.type==='reading'){
+    area.style.justifyContent='flex-start';
+    pdfBtn.style.display='inline-block';pdfBtn.textContent='📄 PDF';pdfBtn.onclick=pdfAll;
+    const tf=[
+      {q:'Companies such as Volkswagen have installed software to <b>protect</b> employees from emails <b>outside office hours</b>.',ans:'true'},
+      {q:'Workers in France <b>protested</b> because they were being <b>exposed</b> to much longer unpaid hours.',ans:'true'},
+      {q:'The French government introduced the email law before workers protested.',ans:'false'},
+      {q:'All employers and employees support the new rules banning after-hours emails.',ans:'false'},
+    ];
+    const mc=[
+      {q:'Why have some German companies installed software to prevent emails reaching employees?',opts:['To increase employee productivity','To protect workers from emails outside office hours','To reduce the number of emails during working hours','To expose poor communication habits'],c:1},
+      {q:'What do French laws now insist on?',opts:['Employers paying workers overtime','Banning all electronic devices at work','Employers switching off email contact after 6 p.m.','Workers signing contracts about outside office hours'],c:2},
+      {q:'Why do some employers criticize the new rules?',opts:['They are too expensive to implement','They do not take account of flexible working practices','They expose workers to too much burnout','They stop parents from picking up their children early'],c:1},
+      {q:'What benefit of being contactable by email is mentioned in the text?',opts:['Workers can earn more money outside office hours','People may be able to leave the office earlier than before','Companies can protect workers from stress and burnout','Employees can protest against long working hours'],c:1},
+    ];
+    el=document.createElement('div');el.className='tw2';
+    el.innerHTML=`<div class="tbar">
+      <div class="tab active" onclick="swTab(this,0)">Text</div>
+      <div class="tab" onclick="swTab(this,1)">T/F/NG</div>
+      <div class="tab" onclick="swTab(this,2)">Multiple choice</div>
+    </div>
+    <div class="tpane active">
+      <div class="reading-title">Major European companies ban work emails outside working hours</div>
+      <div class="reading-text">
+        <p>Some of Germany's biggest companies have brought in rules to <span class="hl">protect</span> their workers from being disturbed by work email <span class="hl">outside office hours</span>. Firms such as the car manufacturers Volkswagen have reacted to growing levels of employee stress and <span class="hl">burnout</span> by installing software to prevent emails from reaching employees at home.</p>
+        <p>In France, workers have <span class="hl">protested</span> against the way that the use of electronic devices has been <span class="hl">exposing</span> workers to much longer (unpaid) hours than the official thirty-five-hour working week. In response, the government has recently introduced laws which insist on employers switching off email contact after 6 p.m.</p>
+        <p>But some employers and employees have criticized the new rules for not <span class="hl">taking account of</span> modern-day flexible working practices. Many parents, for example, prefer to leave work early to <span class="hl">pick up their children</span> and then check emails later in the evening. The fact that you can be contacted on email might actually mean that a lot of people are able to leave the office earlier than they would have done ten or fifteen years ago.</p>
+        <div class="author">— Margaret Smyth, Berlin</div>
+      </div>
+    </div>
+    <div class="tpane">
+      <div class="einstr">Do the following statements agree with the information in the article? Write TRUE, FALSE, or NOT GIVEN.</div>
+      ${tf.map((item,i)=>`<div class="ei"><div class="en">${i+1}</div><div class="et">${item.q}<div class="tf-opts"><button class="tf-btn" onclick="tfAns(this,${item.ans==='true'})">TRUE</button><button class="tf-btn" onclick="tfAns(this,${item.ans==='false'})">FALSE</button><button class="tf-btn" onclick="tfAns(this,${item.ans==='ng'})">NOT GIVEN</button></div></div></div>`).join('')}
+    </div>
+    <div class="tpane">
+      <div class="einstr">Choose the correct answer A, B, C, or D</div>
+      ${mc.map((item,i)=>`<div class="ei"><div class="en">${i+1}</div><div class="et">${item.q}<div class="mc-opts">${item.opts.map((o,j)=>`<button class="mo"${j===item.c?' data-c':''}onclick="mcAns(this,${j===item.c})">${String.fromCharCode(65+j)}) ${o}</button>`).join('')}</div></div></div>`).join('')}
+    </div>`;
+  }
+
+  else if(s.type==='listdisc'){
+    area.appendChild(buildListenDiscuss());return;
+  }
+
+  else if(s.type==='listtask'){
+    el=document.createElement('div');el.className='tw2';
+    el.innerHTML=`<div class="tbar"><div class="tab active" onclick="swTab(this,0)">Listening 7.2 — Multiple choice</div></div>
+    <div class="tpane active">
+      <div class="einstr">Listen to A and B discussing company rules. Choose the correct answer.</div>
+      ${listenMC.map((item,i)=>`<div class="ei"><div class="en">${i+1}</div><div class="et">${item.q}<div class="mc-opts">${item.opts.map((o,j)=>`<button class="mo"${j===item.c?' data-c':''}onclick="mcAns(this,${j===item.c})">${String.fromCharCode(65+j)}) ${o}</button>`).join('')}</div></div></div>`).join('')}
+    </div>`;
+  }
+
+  if(el)area.appendChild(el);
+  document.getElementById('stepCtr').textContent=(cur+1)+' / '+steps.length;
+  document.getElementById('prevBtn').disabled=cur===0;
+  document.getElementById('nextBtn').textContent=cur===steps.length-1?'Done':'next \u2192';
+}
+
+document.getElementById('startBtn').onclick=()=>{
+  document.getElementById('outlineScreen').style.display='none';
+  document.getElementById('lessonScreen').style.display='flex';
+  cur=0;renderStep();
+};
+document.getElementById('nextBtn').onclick=()=>{if(cur<steps.length-1){cur++;renderStep();}};
+document.getElementById('prevBtn').onclick=()=>{if(cur>0){cur--;renderStep();}};
+</script>
+</body>
+</html>

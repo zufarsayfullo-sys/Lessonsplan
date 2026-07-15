@@ -307,11 +307,34 @@ function renderStep(){
 
   if(s.type==='leadin'){
     el=document.createElement('div');el.className='lead-card';
-    el.innerHTML=`<div style="font-size:13px;color:#93C5FD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;">Lead-in: The Carrot or the Stick? (Discuss in small groups)</div>
-      <div class="dq"><div class="dqn">1</div><div class="dqt">What motivates you more in your daily life: the prospect of a reward (the carrot) or the fear of a negative consequence (the stick)?</div></div>
-      <div class="dq"><div class="dqn">2</div><div class="dqt">Can you think of situations where severe punishments did not prevent people from breaking rules? Why do you think that happens?</div></div>
-      <div class="dq"><div class="dqn">3</div><div class="dqt">In corporate or school environments, what are the dangers of offering too many incentives to perform tasks?</div></div>
-      <div class="dq"><div class="dqn">4</div><div class="dqt">How would you define "wisdom" in making decisions when no clear rule exists? How do you think people develop this skill?</div></div>`;
+    el.innerHTML=`
+      <div style="font-size:13px;color:#93C5FD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;text-align:center;">Lead-in: The Carrot or the Stick?</div>
+      
+      <!-- Hanging Carrot SVG Illustration -->
+      <svg viewBox="0 0 100 100" width="120" xmlns="http://www.w3.org/2000/svg" style="display:block; margin: 0 auto 20px;">
+        <!-- Wooden Rod -->
+        <line x1="15" y1="30" x2="75" y2="30" stroke="#8B5A2B" stroke-width="4.5" stroke-linecap="round"/>
+        <!-- String -->
+        <line x1="75" y1="30" x2="75" y2="55" stroke="#94A3B8" stroke-width="1.5"/>
+        <!-- Carrot Body -->
+        <path d="M67,55 Q75,53 83,55 L75,85 Z" fill="#F97316" stroke="#EA580C" stroke-width="1.5"/>
+        <!-- Carrot Detail Lines -->
+        <line x1="71" y1="62" x2="78" y2="60" stroke="#EA580C" stroke-width="1.5"/>
+        <line x1="73" y1="72" x2="78" y2="71" stroke="#EA580C" stroke-width="1.5"/>
+        <!-- Carrot Green Leaves -->
+        <path d="M75,55 Q70,47 65,50 Q75,53 75,55" fill="#22C55E"/>
+        <path d="M75,55 Q75,45 78,47 Q80,53 75,55" fill="#22C55E"/>
+        <path d="M75,55 Q80,47 85,50 Q77,53 75,55" fill="#22C55E"/>
+        <!-- Threat of Stick/Punishment Indicator (Small Warning Shield) -->
+        <circle cx="25" cy="55" r="10" fill="#EF4444" opacity="0.15"/>
+        <line x1="20" y1="55" x2="30" y2="55" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="25" y1="50" x2="25" y2="60" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+
+      <div class="dq"><div class="dqn">1</div><div class="dqt">What motivates you more to study or do chores: a reward (like free time) or a punishment (like losing your phone)?</div></div>
+      <div class="dq"><div class="dqn">2</div><div class="dqt">Have you ever broken a rule even though you knew you might get punished? What happened?</div></div>
+      <div class="dq"><div class="dqn">3</div><div class="dqt">If a school only gives prizes to the top students, how does that make the rest of the class feel?</div></div>
+      <div class="dq"><div class="dqn">4</div><div class="dqt">What makes someone a "wise" person? Is it just about being smart, or is there more to it?</div></div>`;
     area.appendChild(el);
   }
   else if(s.type==='board'){

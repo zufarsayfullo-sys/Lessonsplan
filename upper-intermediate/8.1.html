@@ -248,33 +248,22 @@ function mcAns(btn, ok, correctLetter) {
 }
 window.mcAns = mcAns;
 
-function checkCollocSelect(selectEl, correctVal) {
-  if (selectEl.value === "") return;
-  selectEl.classList.remove('correct', 'wrong');
-  if (selectEl.value === correctVal) {
-    selectEl.classList.add('correct');
-  } else {
-    selectEl.classList.add('wrong');
-  }
-}
-window.checkCollocSelect = checkCollocSelect;
-
 /* PRINT HANDLERS */
 function savePDF(el,name){html2pdf().set({margin:12,filename:name,image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();}
 function buildPrintEl(html){const el=document.createElement('div');el.style.cssText='font-family:Arial,sans-serif;padding:26px;color:#111;max-width:720px;';el.innerHTML=html;document.body.appendChild(el);setTimeout(()=>{if(el.parentNode)el.parentNode.removeChild(el);},8000);return el;}
 
-/* EXCLUSIVELY EXPORTS THE LISTENING TASKS EXERCISES 1 & 2 */
+/* EXCLUSIVELY EXPORTS THE LISTENING TASKS WITH CLEAN BLANK LINES FOR STUDENTS */
 function pdfAll(){
   const html=`
     <h2 style="color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:6px;margin-bottom:14px;font-size:20px;">Lesson 8.1 &middot; Listening Comprehension Tasks</h2>
     <h3 style="color:#1D4ED8;margin-bottom:6px;font-size:14px;">Exercise 1 — Note Completion Tasks</h3>
-    <div style="font-size:13px;line-height:1.6;margin-bottom:16px;background:#f8fafc;padding:10px;border:1px solid #e2e8f0;border-radius:6px;">
-      1. Internet of Things (IoT) lets any physical device communicate with either other objects or people.<br>
-      2. In the past, smart internet-connected appliances were comparatively rare.<br>
-      3. Tiny computers, also called microchips, can now be produced very cheaply.<br>
-      4. Experts calculate that there are roughly ten to fifteen billion objects online right now.<br>
-      5. Smart heating installations avoid wasting energy by monitoring mobile phone GPS location variables.<br>
-      6. Modern connected washing machines check your personal diary to arrange services automatically.
+    <div style="font-size:13px;line-height:1.8;margin-bottom:20px;background:#f8fafc;padding:14px;border:1px solid #e2e8f0;border-radius:6px;">
+      1. Internet of Things (IoT) lets any physical device communicate with either other objects or ______________________.<br>
+      2. In the past, smart internet-connected appliances were comparatively ______________________.<br>
+      3. Tiny computers, also called microchips, can now be produced very ______________________.<br>
+      4. Experts calculate that there are roughly ten to ______________________ billion objects online right now.<br>
+      5. Smart heating installations avoid wasting ______________________ by monitoring mobile phone GPS location variables.<br>
+      6. Modern connected washing machines check your personal ______________________ to arrange services automatically.
     </div>
     <h3 style="color:#1D4ED8;margin-bottom:6px;font-size:14px;">Exercise 2 — Multiple Choice Tasks</h3>
     <div style="font-size:12px;line-height:1.5;margin-bottom:16px;">

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 8.1 - Digital World</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif;background:#DDE6F8;min-height:100vh;display:flex;flex-direction:column;}
+  a{text-decoration:none;color:inherit;}
+  .outline-page{flex:1;padding:24px 36px;display:flex;flex-direction:column;}
+  .ol-title{color:#1D4ED8;font-size:28px;font-weight:bold;margin-bottom:4px;}
+  .ol-sub{color:#666;font-size:14px;margin-bottom:24px;}
+  .ol-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+  .ol-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:14px 18px;font-size:15px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+  .ol-n{background:#1D4ED8;color:#fff;border-radius:50%;width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;}
+  .ol-tag{margin-left:auto;color:#93C5FD;font-size:12px;}
+  .sbtn{background:#1D4ED8;color:#fff;border:none;border-radius:10px;padding:14px 32px;font-weight:bold;font-size:16px;cursor:pointer;font-family:inherit;align-self:flex-end;}
+  .back-link{color:#1D4ED8;font-size:18px;font-weight:bold;margin-bottom:16px;display:inline-block;}
+  #lessonScreen{flex:1;display:none;flex-direction:column;min-height:0;}
+  .top-bar{padding:12px 32px 6px;display:flex;align-items:center;gap:14px;}
+  .step-label{color:#1D4ED8;font-size:20px;font-weight:bold;}
+  .content-area{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10px 28px;overflow-y:auto;}
+  .bottom-bar{background:rgba(255,255,255,.94);border-top:2px solid #BFDBFE;padding:10px 28px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .nav-side{display:flex;align-items:center;gap:8px;}
+  .nb{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:#93C5FD;padding:6px 10px;}
+  .nb:disabled{opacity:.25;cursor:not-allowed;}
+  .nb.pri{background:#1D4ED8;color:#fff;border-radius:8px;padding:8px 20px;}
+  .sc{color:#BFDBFE;font-size:13px;min-width:60px;text-align:center;}
+  .tools-side{display:flex;align-items:center;gap:8px;}
+  .trec{color:#93C5FD;font-size:11px;}
+  .tw0{display:flex;align-items:center;gap:4px;background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:5px 10px;}
+  .ta{background:none;border:none;color:#1D4ED8;font-size:16px;font-weight:bold;cursor:pointer;width:22px;font-family:inherit;}
+  .td{font-family:'Courier New',monospace;font-size:15px;color:#1D4ED8;min-width:52px;text-align:center;font-weight:bold;}
+  .td.warn{color:#EF4444;}
+  .tt{background:none;border:1.5px solid #1D4ED8;color:#1D4ED8;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:2px;}
+  .hbtn{background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  .pdf-btn{display:none;}
+  
+  /* BOARD & INTERACTIVE ELEMENTS */
+  .board-full{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;align-items:center;}
+  .board-grid{display:grid;gap:10px;width:100%;max-width:1200px;flex:1;min-height:0;}
+  .fc{background:#fff;border:2px solid #BFDBFE;border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06);min-height:0;}
+  .fc:hover{border-color:#1D4ED8;}.fc.op{border-color:#1D4ED8;background:#F8FAFF;}
+  .fc .qm{font-size:30px;color:#BFDBFE;}.fc .cw{font-size:12px;font-weight:bold;color:#1D4ED8;margin-top:5px;line-height:1.3;}.fc .ct{font-size:10px;color:#888;margin-top:2px;}
+  .board-foot{display:flex;justify-content:flex-end;margin-top:6px;width:100%;max-width:1200px;}
+  .rb{background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:6px;padding:5px 16px;font-size:12px;cursor:pointer;font-family:inherit;}
+  
+  /* OVERLAY MODALS */
+  #overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:200;}
+  #popup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:#fff;border:3px solid #1D4ED8;border-radius:14px;padding:22px 28px;text-align:center;min-width:280px;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
+  .pq{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+  .pw{font-size:20px;font-weight:bold;color:#1D4ED8;margin-top:10px;display:none;}
+  .pt{font-size:12px;color:#888;margin-top:4px;display:none;line-height:1.5;}
+  .pe{background:#EFF6FF;border-left:3px solid #1D4ED8;padding:8px 12px;margin-top:10px;font-size:13px;color:#333;text-align:left;border-radius:4px;display:none;font-style:italic;}
+  .pr{margin-top:12px;background:#1D4ED8;border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;color:#fff;}
+  .ph2{color:#ccc;font-size:11px;margin-top:10px;}
+  
+  /* EXERCISES & TABS */
+  .tw2{width:100%;max-width:1000px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+  .tbar{display:flex;border-bottom:2px solid #BFDBFE;}
+  .tab{flex:1;padding:12px 6px;text-align:center;font-size:13px;font-weight:bold;cursor:pointer;color:#93C5FD;background:#fff;border-bottom:3px solid transparent;}
+  .tab.active{color:#fff;background:#1D4ED8;border-bottom:3px solid #1D4ED8;}
+  .tpane{display:none;padding:24px;max-height:58vh;overflow-y:auto;}
+  .tpane.active{display:block;}
+  .einstr{color:#93C5FD;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;font-weight:bold;}
+  .ei{display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;}
+  .en{background:#1D4ED8;color:#fff;font-weight:bold;font-size:11px;border-radius:50%;width:22px;height:22px;min-width:22px;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .et{color:#333;font-size:15px;line-height:1.6;flex:1;}
+  
+  /* COLLOCATION SELECT FIELDS */
+  .coll-select{background:#EFF6FF;border:1.5px solid #BFDBFE;color:#1D4ED8;font-weight:bold;border-radius:6px;padding:6px 10px;font-size:14px;outline:none;cursor:pointer;font-family:inherit;}
+  .coll-select.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;}
+  .coll-select.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+  
+  /* TYPED LABELS */
+  .sc-ans-box{margin-top:8px;}
+  .sc-input{background:#EFF6FF;border:1.5px solid #BFDBFE;color:#333;border-radius:6px;padding:8px 12px;width:100%;font-size:14px;font-family:inherit;outline:none;}
+  .sc-input:focus{border-color:#1D4ED8;}
+  .sc-input.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;}
+  .sc-input.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+  .mc-opts{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+  .mo-btn{background:#EFF6FF;border:1.5px solid #BFDBFE;color:#333;border-radius:6px;padding:8px 14px;font-size:14px;cursor:pointer;font-family:inherit;text-align:left;}
+  .mo-btn:hover{border-color:#1D4ED8;background:#F8FAFF;}
+  .mo-btn.correct{background:#F0FDF4;border-color:#4CAF50;color:#166534;font-weight:bold;}
+  .mo-btn.wrong{background:#FEF2F2;border-color:#EF4444;color:#991B1B;}
+  
+  /* CARDS & DISCUSSION */
+  .lead-card{background:#fff;border-radius:14px;padding:26px 30px;box-shadow:0 2px 12px rgba(0,0,0,.08);width:100%;max-width:900px;}
+  .dq{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;}
+  .dqn{background:#1D4ED8;color:#fff;border-radius:50%;width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;margin-top:2px;}
+  .dqt{color:#333;font-size:15.5px;line-height:1.6;}
+  .colloc-group-title{color:#1D4ED8;font-weight:bold;font-size:15px;margin-bottom:6px;}
+  .colloc-item-text{color:#555;font-size:14px;margin-left:12px;line-height:1.5;margin-bottom:4px;}
+</style>
+</head>
+<body>
+
+<div id="outlineScreen">
+  <div class="outline-page">
+    <a class="back-link" href="index.html">&#8592;</a>
+    <div class="ol-title">Lesson 8.1</div>
+    <div class="ol-sub">Unit 8 &middot; Digital World &amp; Internet of Things</div>
+    <div class="ol-list">
+      <div class="ol-item"><span class="ol-n">1</span>Lead-in — Clear internet network discussion<span class="ol-tag">5 min</span></div>
+      <div class="ol-item"><span class="ol-n">2</span>Pre-teach Vocabulary Board<span class="ol-tag">5 words &middot; Interactive</span></div>
+      <div class="ol-item"><span class="ol-n">3</span>Listening Tasks — Exercises 1 &amp; 2<span class="ol-tag">Notes + MCQ details</span></div>
+      <div class="ol-item"><span class="ol-n">4</span>Teaching Vocabulary — Tech Collocations<span class="ol-tag">7 key words &middot; Speaking</span></div>
+    </div>
+    <button class="sbtn" id="startBtn">Start lesson &#8594;</button>
+  </div>
+</div>
+
+<div id="lessonScreen">
+  <div class="top-bar">
+    <a class="back-link" href="index.html" style="font-size:18px;font-weight:bold;color:#1D4ED8;">&#8592;</a>
+    <span class="step-label" id="sLabel">Lesson 8.1</span>
+  </div>
+  <div class="content-area" id="contentArea"></div>
+  <div class="bottom-bar">
+    <div class="nav-side">
+      <button class="nb" id="prevBtn">&#8592; prev</button>
+      <span class="sc" id="stepCtr"></span>
+      <button class="nb pri" id="nextBtn">next &#8594;</button>
+    </div>
+    <div class="tools-side">
+      <span class="trec" id="recLbl"></span>
+      <div class="tw0">
+        <button class="ta" id="tMin">&#8722;</button>
+        <span class="td" id="tDisp">05:00</span>
+        <button class="ta" id="tPls">+</button>
+        <button class="tt" id="tTog">&#9654;</button>
+      </div>
+      <button class="hbtn pdf-btn" id="pdfBtn">📄 PDF</button>
+      <button class="hbtn" id="fsBtn" style="font-size:14px;padding:6px 10px;">&#x26F6;</button>
+    </div>
+  </div>
+</div>
+
+<div id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+  <div class="pq" id="popQ"></div>
+  <div id="popSvg"></div>
+  <div class="pw" id="popWord"></div>
+  <div class="pt" id="popTrans"></div>
+  <div class="pe" id="popEx"></div>
+  <button class="pr" id="popReveal" onclick="revealPopup()">Show answer ▾</button>
+  <div class="ph2">tap outside to close</div>
+</div>
+
+<script>
+/* FULLSCREEN CONTROLS */
+document.getElementById('fsBtn').onclick=function(){
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});this.textContent='✕';}
+  else{document.exitFullscreen();this.textContent='⛶';}
+};
+
+/* TIMER MECHANICS */
+let tS=300,tR=false,tI=null;
+function setT(m){tS=m*60;tR=false;clearInterval(tI);document.getElementById('tTog').textContent='▶';rendT();}
+function rendT(){const m=Math.floor(Math.abs(tS)/60),s=Math.abs(tS)%60,n=tS<0?'-':'',d=document.getElementById('tDisp');d.textContent=n+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');d.className='td'+(tS<=30?' warn':'');}
+document.getElementById('tTog').onclick=function(){if(tR){clearInterval(tI);tR=false;this.textContent='▶';}else{tR=true;this.textContent='⏸';tI=setInterval(()=>{tS--;rendT();},1000);}};
+document.getElementById('tMin').onclick=()=>{tS=Math.max(0,tS-60);rendT();};
+document.getElementById('tPls').onclick=()=>{tS+=60;rendT();};
+
+/* MODAL CONFIGURATIONS */
+let popCb=null;
+function openPopup(svgHtml,word,trans,ex){document.getElementById('popQ').textContent='What does this keyword mean?';document.getElementById('popSvg').innerHTML=svgHtml;document.getElementById('popWord').style.display='none';document.getElementById('popWord').textContent=word;document.getElementById('popTrans').style.display='none';document.getElementById('popTrans').innerHTML=trans;document.getElementById('popEx').style.display='none';document.getElementById('popEx').textContent=ex;document.getElementById('popReveal').style.display='inline-block';document.getElementById('overlay').style.display='block';document.getElementById('popup').style.display='block';}
+function revealPopup(){document.getElementById('popWord').style.display='block';document.getElementById('popTrans').style.display='block';document.getElementById('popEx').style.display='block';document.getElementById('popReveal').style.display='none';}
+function closePopup(){document.getElementById('overlay').style.display='none';document.getElementById('popup').style.display='none';if(popCb){popCb();popCb=null;}}
+
+/* SVGs OBJECTS */
+const SVG={
+  renovation: `<svg viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg"><rect x="25" y="40" width="50" height="40" fill="none" stroke="#1D4ED8" stroke-width="3"/><polygon points="20,40 50,15 80,40" fill="none" stroke="#1D4ED8" stroke-width="3"/><path d="M40,55 L45,50 L55,60 L65,45" fill="none" stroke="#22C55E" stroke-width="3.5" stroke-linecap="round"/></svg>`,
+  commonplace: `<svg viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="50" r="12" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/><circle cx="50" cy="50" r="12" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/><circle cx="70" cy="50" r="12" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/><path d="M 20,75 L 80,75" stroke="#94A3B8" stroke-width="2"/></svg>`,
+  roughly: `<svg viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="30" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4 4"/><text x="50" y="55" text-anchor="middle" font-size="16" font-weight="bold" fill="#1D4ED8">≈</text></svg>`,
+  runsmoothly: `<svg viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="45" r="15" fill="none" stroke="#1D4ED8" stroke-width="3"/><circle cx="65" cy="65" r="10" fill="none" stroke="#1D4ED8" stroke-width="2.5"/><path d="M30,45 L50,45" stroke="#1D4ED8" stroke-width="2"/><path d="M58,65 L72,65" stroke="#1D4ED8" stroke-width="2"/></svg>`,
+  diabetes: `<svg viewBox="0 0 100 100" width="100" xmlns="http://www.w3.org/2000/svg"><rect x="35" y="20" width="30" height="60" rx="5" fill="#EFF6FF" stroke="#EF4444" stroke-width="2.5"/><line x1="40" y1="35" x2="60" y2="35" stroke="#EF4444" stroke-width="2"/><line x1="40" y1="50" x2="60" y2="50" stroke="#EF4444" stroke-width="2"/><circle cx="50" cy="68" r="4" fill="#EF4444"/></svg>`
+};
+
+const vocab=[
+  {w:'renovation',   ru:'обновление / революция', uz:'yangilanish / inqilob', k:'renovation',   ex:'"Experts say this latest revolution or renovation in technology changes our lives."'},
+  {w:'commonplace',  ru:'банальный / обычный',    uz:'odatiy / ommalashgan',  k:'commonplace',  ex:'"Internet-connected devices are now very commonplace in homes."'},
+  {w:'roughly',      ru:'приблизительно',         uz:'taxminan / taqriban',   k:'roughly',      ex:'"How many things, roughly, are currently connected online?"'},
+  {w:'run smoothly', ru:'работать бесперебойно',   uz:'silliq / muammosiz ishlamoq', k:'runsmoothly', ex:'"Smart home applications help everyday schedules run smoothly."'},
+  {w:'diabetes',     ru:'сахарный диабет',        uz:'qandli diabet kasalligi', k:'diabetes',    ex:'"For people who have diabetes, there is even a smart insulin pump."' }
+];
+
+/* PRE-TEACH MEMORY BOARD BUILDER */
+function makeBoard(){
+  const opened=new Set();
+  const wrap=document.createElement('div');wrap.className='board-full';
+  const cnt=document.createElement('div');cnt.style.cssText='text-align:right;font-size:12px;color:#93C5FD;margin-bottom:6px;width:100%;max-width:1200px;';
+  const grid=document.createElement('div');grid.className='board-grid';
+  grid.style.gridTemplateColumns='repeat(5,1fr)';grid.style.gridAutoRows='1fr';grid.style.flex='1';
+  const foot=document.createElement('div');foot.className='board-foot';
+  const rb=document.createElement('button');rb.className='rb';rb.textContent='↺ Reset';
+  
+  function render(){
+    const allOpen=opened.size===vocab.length;grid.innerHTML='';
+    vocab.forEach((item,i)=>{
+      const isOpen=opened.has(i);
+      const card=document.createElement('div');card.className='fc'+(isOpen?' op':'');card.style.minHeight='0';
+      if(isOpen){
+        card.innerHTML=SVG[item.k].replace(/width="\d+"/,'width="45"')+'<div class="cw">'+item.w+'</div>'+(allOpen?'<div class="ct">🇺🇿 '+item.uz+'</div>':'');
+      }else{
+        card.innerHTML='<div class="qm">?</div>';
+      }
+      card.onclick=()=>{
+        popCb=()=>{opened.add(i);render();};
+        openPopup(SVG[item.k].replace(/width="\d+"/,'width="130"'),item.w,'🇷🇺 '+item.ru+'<br>🇺🇿 '+item.uz,item.ex);
+      };
+      grid.appendChild(card);
+    });
+    cnt.textContent=opened.size+' / '+vocab.length+' processed';
+  }
+  rb.onclick=()=>{opened.clear();render();};
+  foot.appendChild(rb);wrap.appendChild(cnt);wrap.appendChild(grid);wrap.appendChild(foot);render();return wrap;
+}
+
+/* VAL CHECKERS */
+function checkTypedAnswer(inputEl, correctVal) {
+  const val = inputEl.value.trim().toLowerCase();
+  const expected = correctVal.toLowerCase();
+  if (val === '') return;
+  inputEl.classList.remove('correct', 'wrong');
+  if (val === expected || expected.includes(val) && val.length > 2) {
+    inputEl.classList.add('correct');
+  } else {
+    inputEl.classList.add('wrong');
+  }
+}
+window.checkTypedAnswer = checkTypedAnswer;
+
+function mcAns(btn, ok, correctLetter) {
+  const optsBox = btn.closest('.mc-opts');
+  if (optsBox.querySelector('.correct') || optsBox.querySelector('.wrong')) return;
+  btn.classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) {
+    const target = optsBox.querySelector(`[data-letter="${correctLetter}"]`);
+    if (target) target.classList.add('correct');
+  }
+}
+window.mcAns = mcAns;
+
+function checkCollocSelect(selectEl, correctVal) {
+  if (selectEl.value === "") return;
+  selectEl.classList.remove('correct', 'wrong');
+  if (selectEl.value === correctVal) {
+    selectEl.classList.add('correct');
+  } else {
+    selectEl.classList.add('wrong');
+  }
+}
+window.checkCollocSelect = checkCollocSelect;
+
+/* PRINT HANDLERS */
+function savePDF(el,name){html2pdf().set({margin:12,filename:name,image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();}
+function buildPrintEl(html){const el=document.createElement('div');el.style.cssText='font-family:Arial,sans-serif;padding:26px;color:#111;max-width:720px;';el.innerHTML=html;document.body.appendChild(el);setTimeout(()=>{if(el.parentNode)el.parentNode.removeChild(el);},8000);return el;}
+
+function pdfAll(){
+  const html=`
+    <h2 style="color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:6px;margin-bottom:14px;font-size:20px;">Lesson 8.1 Pack &middot; Comprehensive Materials</h2>
+    <h3 style="color:#1D4ED8;margin-bottom:6px;font-size:14px;">Exercise 1 — Note Completion Tasks</h3>
+    <div style="font-size:13px;line-height:1.6;margin-bottom:16px;background:#f8fafc;padding:10px;border:1px solid #e2e8f0;border-radius:6px;">
+      1. Internet of Things (IoT) lets any physical device communicate with either other objects or people.<br>
+      2. In the past, smart internet-connected appliances were comparatively rare.<br>
+      3. Tiny computers, also called microchips, can now be produced very cheaply.<br>
+      4. Experts calculate that there are roughly ten to fifteen billion objects online right now.<br>
+      5. Smart heating installations avoid wasting energy by monitoring mobile phone GPS location variables.<br>
+      6. Modern connected washing machines check your personal diary to arrange services automatically.
+    </div>
+    <h3 style="color:#1D4ED8;margin-bottom:6px;font-size:14px;">Exercise 2 — Multiple Choice Tasks</h3>
+    <div style="font-size:12px;line-height:1.5;margin-bottom:16px;">
+      <b>1. What makes internet-connected devices different today compared to the past?</b> (Answer: They are highly commonplace now)<br>
+      <b>2. How do small microchips connect physical devices to the live web?</b> (Answer: Via Wi-Fi channels)<br>
+      <b>3. How many individual people are estimated to use the global internet?</b> (Answer: Around two billion people)<br>
+      <b>4. Who is funding the massive financial investment flowing into IoT?</b> (Answer: Governments and private corporations)<br>
+      <b>5. What can smart devices fitted to cows do automatically on a farm?</b> (Answer: Send a text when a cow gets sick or pregnant)<br>
+      <b>6. How does a connected insulin pump help monitor diabetes remotely?</b> (Answer: By sending medical metrics directly to your doctor)
+    </div>
+    <h3 style="color:#1D4ED8;margin-bottom:6px;font-size:14px;">Exercise 3 — Vocabulary Collocations Expansion</h3>
+    <div style="font-size:13px;line-height:1.5;color:#333;margin-bottom:14px;">
+      &bull; <b>device:</b> hack a device / control a device remotely / a smart device<br>
+      &bull; <b>data:</b> personal data / send and receive data / access data<br>
+      &bull; <b>broadband:</b> high-speed broadband / install broadband / wireless broadband<br>
+      &bull; <b>security:</b> high security / a threat to security / a security issue<br>
+      &bull; <b>fault:</b> a technical fault / develop a fault<br>
+      &bull; <b>technology:</b> advances in technology / the latest technology<br>
+      &bull; <b>privacy:</b> protect your privacy / respect someone's privacy / a threat to privacy
+    </div>
+    <h3 style="color:#1D4ED8;margin:14px 0 6px;font-size:14px;border-top:1px dashed #BFDBFE;padding-top:10px;">Exercise 4 — Round-Up Discussion Prompts</h3>
+    <div style="font-size:13px;line-height:1.6;color:#333;">
+      1. How do you feel about the Internet of Things? Do you think the benefits are greater than the risks? Why/Why not?<br>
+      2. Would you feel comfortable living in a smart house where every object tracks your daily habits? Why or why not?<br>
+      3. In your opinion, which sector benefits the most from IoT technology: healthcare, agriculture, or home comfort?
+    </div>`;
+  const el=buildPrintEl(html);savePDF(el,'Lesson_8.1_Full_Worksheet_Pack.pdf');
+}
+
+/* LESSON STEPS ARRAY */
+const steps=[
+  {label:'Lead-in Discussion',   type:'leadin',    rec:5},
+  {label:'Pre-teach Vocabulary', type:'board',     rec:6},
+  {label:'Listening Tasks',      type:'listening', rec:20},
+  {label:'Teaching Vocabulary',  type:'colloc',    rec:15}
+];
+let cur=0;
+
+function renderStep(){
+  const s=steps[cur];
+  const area=document.getElementById('contentArea');
+  area.innerHTML='';area.style.justifyContent='center';area.style.alignItems='center';area.style.padding='10px 28px';
+  document.getElementById('sLabel').textContent=s.label;
+  document.getElementById('recLbl').textContent='rec: '+s.rec+' min';
+  const pdfBtn=document.getElementById('pdfBtn');pdfBtn.style.display='none';pdfBtn.onclick=null;
+  
+  updateB();
+  let el;
+
+  if(s.type==='leadin'){
+    el=document.createElement('div');el.className='lead-card';
+    el.innerHTML=`
+      <div style="font-size:13px;color:#93C5FD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:18px;text-align:center;font-weight:bold;">Work in small groups and discuss the questions</div>
+      <svg viewBox="0 0 200 120" width="220" height="130" xmlns="http://www.w3.org/2000/svg" style="display:block; margin: 0 auto 24px;">
+        <defs>
+          <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3B82F6"/><stop offset="100%" stop-color="#1D4ED8"/></linearGradient>
+        </defs>
+        <path d="M 30,60 L 70,30 L 130,30 L 170,60 L 130,90 L 70,90 Z" fill="none" stroke="#93C5FD" stroke-width="2" stroke-dasharray="4 4" />
+        <line x1="30" y1="60" x2="100" y2="60" stroke="#BFDBFE" stroke-width="1.5" /><line x1="170" y1="60" x2="100" y2="60" stroke="#BFDBFE" stroke-width="1.5" />
+        <line x1="70" y1="30" x2="130" y2="90" stroke="#BFDBFE" stroke-width="1.5" /><line x1="70" y1="90" x2="130" y2="30" stroke="#BFDBFE" stroke-width="1.5" />
+        <circle cx="100" cy="60" r="14" fill="url(#blueGrad)" stroke="#fff" stroke-width="2" /><circle cx="100" cy="60" r="6" fill="#fff" />
+        <circle cx="30" cy="60" r="7" fill="#1D4ED8" stroke="#fff" stroke-width="1.5" /><circle cx="170" cy="60" r="7" fill="#1D4ED8" stroke="#fff" stroke-width="1.5" />
+        <circle cx="70" cy="30" r="7" fill="#3B82F6" stroke="#fff" stroke-width="1.5" /><circle cx="130" cy="30" r="7" fill="#3B82F6" stroke="#fff" stroke-width="1.5" />
+        <circle cx="70" cy="90" r="7" fill="#3B82F6" stroke="#fff" stroke-width="1.5" /><circle cx="130" cy="90" r="7" fill="#3B82F6" stroke="#fff" stroke-width="1.5" />
+      </svg>
+      <div class="dq"><div class="dqn">1</div><div class="dqt">How would your life be different without the internet?</div></div>
+      <div class="dq"><div class="dqn">2</div><div class="dqt">What, in your view, is the best thing about the internet? What is the worst thing?</div></div>`;
+    area.appendChild(el);
+  }
+  else if(s.type==='board'){
+    area.style.padding='10px 5px';
+    area.appendChild(makeBoard());
+  }
+  else if(s.type==='listening'){
+    area.style.justifyContent='flex-start';
+    el=document.createElement('div');el.className='tw2';
+    el.innerHTML=`
+      <div class="tbar">
+        <div class="tab active" onclick="swTab(this,0)">Exercise 1 (Notes)</div>
+        <div class="tab" onclick="swTab(this,1)">Exercise 2 (MCQ)</div>
+      </div>
+      <div class="tpane active">
+        <div class="einstr">Complete the notes. Use <b>ONE WORD OR A NUMBER</b>:</div>
+        <div class="ei"><span class="en">1</span><div class="et">IoT allows physical objects to communicate with other objects or <input type="text" class="sc-input" style="width:130px; display:inline-block;" placeholder="Answer" onblur="checkTypedAnswer(this,'people')">.</div></div>
+        <div class="ei"><span class="en">2</span><div class="et">In the past, smart appliances were relatively <input type="text" class="sc-input" style="width:130px; display:inline-block;" placeholder="Answer" onblur="checkTypedAnswer(this,'rare')">.</div></div>
+        <div class="ei"><span class="en">3</span><div class="et">Tiny computers known as <input type="text" class="sc-input" style="width:150px; display:inline-block;" placeholder="Answer" onblur="checkTypedAnswer(this,'microchips')"> can be made cheaply.</div></div>
+        <div class="ei"><span class="en">4</span><div class="et">It is estimated that there are around ten to <input type="text" class="sc-input" style="width:130px; display:inline-block;" placeholder="Answer" onblur="checkTypedAnswer(this,'fifteen')"> billion items online.</div></div>
+        <div class="ei"><span class="en">5</span><div class="et">Central heating devices avoid wasting <input type="text" class="sc-input" style="width:130px; display:inline-block;" placeholder="Answer" onblur="checkTypedAnswer(this,'energy')"> using mobile GPS tracker parameters.</div></div>
+        <div class="ei"><span class="en">6</span><div class="et">A connected washing machine checks your personal <input type="text" class="sc-input" style="width:140px; display:inline-block;" placeholder="Answer" onblur="checkTypedAnswer(this,'diary')"> to arrange services.</div></div>
+      </div>
+      <div class="tpane">
+        <div class="einstr">Select the correct multiple-choice parameter:</div>
+        <div class="ei"><span class="en">1</span><div class="et">What makes internet-connected devices different today?<div class="mc-opts">
+          <button class="mo-btn" onclick="mcAns(this,false,'B')">A) They cost more to run daily</button>
+          <button class="mo-btn" data-letter="B" onclick="mcAns(this,true,'B')">B) They are highly commonplace now</button>
+        </div></div></div>
+        <div class="ei"><span class="en">2</span><div class="et">How do microchips connect standard devices to the internet?<div class="mc-opts">
+          <button class="mo-btn" data-letter="A" onclick="mcAns(this,true,'A')">A) Via Wi-Fi signals</button>
+          <button class="mo-btn" onclick="mcAns(this,false,'A')">B) Through power cables</button>
+        </div></div></div>
+        <div class="ei"><span class="en">3</span><div class="et">How many people are estimated to be using the internet?<div class="mc-opts">
+          <button class="mo-btn" onclick="mcAns(this,false,'C')">A) Around 15 billion</button>
+          <button class="mo-btn" data-letter="C" onclick="mcAns(this,true,'C')">C) Around two billion people</button>
+        </div></div></div>
+        <div class="ei"><span class="en">4</span><div class="et">Who is funding the enormous investments entering IoT?<div class="mc-opts">
+          <button class="mo-btn" data-letter="A" onclick="mcAns(this,true,'A')">A) Governments and private companies</button>
+          <button class="mo-btn" onclick="mcAns(this,false,'A')">B) Technology bloggers exclusively</button>
+        </div></div></div>
+        <div class="ei"><span class="en">5</span><div class="et">What can devices fitted to cows execute automatically?<div class="mc-opts">
+          <button class="mo-btn" onclick="mcAns(this,false,'B')">A) Order daily feeding supplies</button>
+          <button class="mo-btn" data-letter="B" onclick="mcAns(this,true,'B')">B) Text when a cow gets sick or pregnant</button>
+        </div></div></div>
+        <div class="ei"><span class="en">6</span><div class="et">How does a smart insulin pump aid healthcare practitioners?<div class="mc-opts">
+          <button class="mo-btn" onclick="mcAns(this,false,'A')">A) By sounding acoustic alarms</button>
+          <button class="mo-btn" data-letter="B" onclick="mcAns(this,true,'B')">B) By sending information to your doctor</button>
+        </div></div></div>
+      </div>`;
+    area.appendChild(el);
+  }
+  else if(s.type==='colloc'){
+    pdfBtn.style.display='inline-block';pdfBtn.onclick=pdfAll;
+    area.style.justifyContent='flex-start';
+    el=document.createElement('div');el.className='tw2';
+    el.innerHTML=`
+      <div class="tbar">
+        <div class="tab active" onclick="swTab(this,0)">Collocation Practice</div>
+        <div class="tab" onclick="swTab(this,1)">Round-up Discussion</div>
+      </div>
+      <div class="tpane active">
+        <div class="einstr">Complete the spaces by choosing the correct matching category word:</div>
+        
+        <div class="ei"><span class="en">1</span><div class="et">
+          <div class="colloc-group-title">Target Word: <select class="coll-select" onchange="checkCollocSelect(this,'device')"><option value="">--Select--</option><option value="data">data</option><option value="device">device</option><option value="fault">fault</option></select></div>
+          <div class="colloc-item-text">&bull; hack a ______ / control a ______ remotely / a smart ______</div>
+        </div></div>
+
+        <div class="ei"><span class="en">2</span><div class="et">
+          <div class="colloc-group-title">Target Word: <select class="coll-select" onchange="checkCollocSelect(this,'data')"><option value="">--Select--</option><option value="data">data</option><option value="privacy">privacy</option><option value="security">security</option></select></div>
+          <div class="colloc-item-text">&bull; personal ______ / send and receive ______ / access ______</div>
+        </div></div>
+
+        <div class="ei"><span class="en">3</span><div class="et">
+          <div class="colloc-group-title">Target Word: <select class="coll-select" onchange="checkCollocSelect(this,'broadband')"><option value="">--Select--</option><option value="broadband">broadband</option><option value="technology">technology</option><option value="fault">fault</option></select></div>
+          <div class="colloc-item-text">&bull; high-speed ______ / install ______ / wireless ______</div>
+        </div></div>
+
+        <div class="ei"><span class="en">4</span><div class="et">
+          <div class="colloc-group-title">Target Word: <select class="coll-select" onchange="checkCollocSelect(this,'security')"><option value="">--Select--</option><option value="privacy">privacy</option><option value="security">security</option><option value="device">device</option></select></div>
+          <div class="colloc-item-text">&bull; high ______ / a threat to ______ / a ______ issue</div>
+        </div></div>
+
+        <div class="ei"><span class="en">5</span><div class="et">
+          <div class="colloc-group-title">Target Word: <select class="coll-select" onchange="checkCollocSelect(this,'fault')"><option value="">--Select--</option><option value="fault">fault</option><option value="data">data</option><option value="broadband">broadband</option></select></div>
+          <div class="colloc-item-text">&bull; a technical ______ / develop a ______</div>
+        </div></div>
+
+        <div class="ei"><span class="en">6</span><div class="et">
+          <div class="colloc-group-title">Target Word: <select class="coll-select" onchange="checkCollocSelect(this,'technology')"><option value="">--Select--</option><option value="technology">technology</option><option value="device">device</option><option value="security">security</option></select></div>
+          <div class="colloc-item-text">&bull; advances in ______ / the latest ______</div>
+        </div></div>
+
+        <div class="ei"><span class="en">7</span><div class="et">
+          <div class="colloc-group-title">Target Word: <select class="coll-select" onchange="checkCollocSelect(this,'privacy')"><option value="">--Select--</option><option value="privacy">privacy</option><option value="data">data</option><option value="security">security</option></select></div>
+          <div class="colloc-item-text">&bull; protect your ______ / respect someone's ______ / a threat to ______</div>
+        </div></div>
+      </div>
+      <div class="tpane">
+        <div class="einstr">Final class round-up session questions:</div>
+        <div class="dq"><div class="dqn">1</div><div class="dqt">How do you feel about the Internet of Things? Do you think the benefits are greater than the risks? Why/Why not?</div></div>
+        <div class="dq"><div class="dqn">2</div><div class="dqt">Would you feel comfortable living in a smart house where every object tracks your daily habits? Why or why not?</div></div>
+        <div class="dq"><div class="dqn">3</div><div class="dqt">In your opinion, which sector benefits the most from IoT technology: healthcare, agriculture, or home comfort?</div></div>
+      </div>`;
+    area.appendChild(el);
+  }
+}
+
+/* NAVIGATION HOOKS */
+document.getElementById('startBtn').onclick=function(){
+  document.getElementById('outlineScreen').style.display='none';
+  document.getElementById('lessonScreen').style.display='flex';
+  cur=0;renderStep();
+};
+
+const prevBtn=document.getElementById('prevBtn');
+const nextBtn=document.getElementById('nextBtn');
+prevBtn.onclick=()=>{if(cur>0){cur--;renderStep();}};
+nextBtn.onclick=()=>{if(cur<steps.length-1){cur++;renderStep();}};
+
+function updateB(){
+  prevBtn.disabled=(cur===0);
+  nextBtn.textContent=cur===steps.length-1?'Finish':'next →';
+  document.getElementById('stepCtr').textContent=(cur+1)+' / '+steps.length;
+}
+</script>
+</body>
+</html>

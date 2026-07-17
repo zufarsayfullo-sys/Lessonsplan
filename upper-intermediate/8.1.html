@@ -164,6 +164,10 @@ document.getElementById('tTog').onclick=function(){if(tR){clearInterval(tI);tR=f
 document.getElementById('tMin').onclick=()=>{tS=Math.max(0,tS-60);rendT();};
 document.getElementById('tPls').onclick=()=>{tS+=60;rendT();};
 
+/* TABS MANAGER */
+function swTab(el,n){const bar=el.parentElement,wrap=bar.parentElement;bar.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));wrap.querySelectorAll('.tpane').forEach((p,i)=>p.classList.toggle('active',i===n));}
+window.swTab=swTab;
+
 /* MODAL CONFIGURATIONS */
 let popCb=null;
 function openPopup(svgHtml,word,trans,ex){document.getElementById('popQ').textContent='What does this keyword mean?';document.getElementById('popSvg').innerHTML=svgHtml;document.getElementById('popWord').style.display='none';document.getElementById('popWord').textContent=word;document.getElementById('popTrans').style.display='none';document.getElementById('popTrans').innerHTML=trans;document.getElementById('popEx').style.display='none';document.getElementById('popEx').textContent=ex;document.getElementById('popReveal').style.display='inline-block';document.getElementById('overlay').style.display='block';document.getElementById('popup').style.display='block';}
@@ -316,7 +320,7 @@ function renderStep(){
   document.getElementById('recLbl').textContent='rec: '+s.rec+' min';
   const pdfBtn=document.getElementById('pdfBtn');pdfBtn.style.display='none';pdfBtn.onclick=null;
   
-  updateB();
+  setT(s.rec);
   let el;
 
   if(s.type==='leadin'){
@@ -444,13 +448,15 @@ function renderStep(){
       </div>`;
     area.appendChild(el);
   }
+  updateB();
 }
 
 /* NAVIGATION HOOKS */
 document.getElementById('startBtn').onclick=function(){
   document.getElementById('outlineScreen').style.display='none';
   document.getElementById('lessonScreen').style.display='flex';
-  cur=0;renderStep();
+  cur=0;
+  renderStep();
 };
 
 const prevBtn=document.getElementById('prevBtn');

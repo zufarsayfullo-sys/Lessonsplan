@@ -263,9 +263,10 @@ window.checkCollocSelect = checkCollocSelect;
 function savePDF(el,name){html2pdf().set({margin:12,filename:name,image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();}
 function buildPrintEl(html){const el=document.createElement('div');el.style.cssText='font-family:Arial,sans-serif;padding:26px;color:#111;max-width:720px;';el.innerHTML=html;document.body.appendChild(el);setTimeout(()=>{if(el.parentNode)el.parentNode.removeChild(el);},8000);return el;}
 
+/* EXCLUSIVELY EXPORTS THE LISTENING TASKS EXERCISES 1 & 2 */
 function pdfAll(){
   const html=`
-    <h2 style="color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:6px;margin-bottom:14px;font-size:20px;">Lesson 8.1 Pack &middot; Comprehensive Materials</h2>
+    <h2 style="color:#1D4ED8;border-bottom:2px solid #1D4ED8;padding-bottom:6px;margin-bottom:14px;font-size:20px;">Lesson 8.1 &middot; Listening Comprehension Tasks</h2>
     <h3 style="color:#1D4ED8;margin-bottom:6px;font-size:14px;">Exercise 1 — Note Completion Tasks</h3>
     <div style="font-size:13px;line-height:1.6;margin-bottom:16px;background:#f8fafc;padding:10px;border:1px solid #e2e8f0;border-radius:6px;">
       1. Internet of Things (IoT) lets any physical device communicate with either other objects or people.<br>
@@ -277,30 +278,26 @@ function pdfAll(){
     </div>
     <h3 style="color:#1D4ED8;margin-bottom:6px;font-size:14px;">Exercise 2 — Multiple Choice Tasks</h3>
     <div style="font-size:12px;line-height:1.5;margin-bottom:16px;">
-      <b>1. What makes internet-connected devices different today compared to the past?</b> (Answer: They are highly commonplace now)<br>
-      <b>2. How do small microchips connect physical devices to the live web?</b> (Answer: Via Wi-Fi channels)<br>
-      <b>3. How many individual people are estimated to use the global internet?</b> (Answer: Around two billion people)<br>
-      <b>4. Who is funding the massive financial investment flowing into IoT?</b> (Answer: Governments and private corporations)<br>
-      <b>5. What can smart devices fitted to cows do automatically on a farm?</b> (Answer: Send a text when a cow gets sick or pregnant)<br>
-      <b>6. How does a connected insulin pump help monitor diabetes remotely?</b> (Answer: By sending medical metrics directly to your doctor)
+      <b>1. What makes internet-connected devices different today compared to the past?</b><br>
+      A) They cost more to run daily &nbsp;&nbsp;&nbsp;&nbsp; B) They are highly commonplace now<br><br>
+      <b>2. How do small microchips connect physical devices to the live web?</b><br>
+      A) Via Wi-Fi signals &nbsp;&nbsp;&nbsp;&nbsp; B) Through power cables<br><br>
+      <b>3. How many individual people are estimated to use the global internet?</b><br>
+      A) Around 15 billion &nbsp;&nbsp;&nbsp;&nbsp; B) Around two billion people<br><br>
+      <b>4. Who is funding the massive financial investment flowing into IoT?</b><br>
+      A) Governments and private companies &nbsp;&nbsp;&nbsp;&nbsp; B) Technology bloggers exclusively<br><br>
+      <b>5. What can smart devices fitted to cows do automatically on a farm?</b><br>
+      A) Order daily feeding supplies &nbsp;&nbsp;&nbsp;&nbsp; B) Send a text when a cow gets sick or pregnant<br><br>
+      <b>6. How does a connected insulin pump help monitor diabetes remotely?</b><br>
+      A) By sounding acoustic alarms &nbsp;&nbsp;&nbsp;&nbsp; B) By sending information to your doctor
     </div>
-    <h3 style="color:#1D4ED8;margin-bottom:6px;font-size:14px;">Exercise 3 — Vocabulary Collocations Expansion</h3>
-    <div style="font-size:13px;line-height:1.5;color:#333;margin-bottom:14px;">
-      &bull; <b>device:</b> hack a device / control a device remotely / a smart device<br>
-      &bull; <b>data:</b> personal data / send and receive data / access data<br>
-      &bull; <b>broadband:</b> high-speed broadband / install broadband / wireless broadband<br>
-      &bull; <b>security:</b> high security / a threat to security / a security issue<br>
-      &bull; <b>fault:</b> a technical fault / develop a fault<br>
-      &bull; <b>technology:</b> advances in technology / the latest technology<br>
-      &bull; <b>privacy:</b> protect your privacy / respect someone's privacy / a threat to privacy
-    </div>
-    <h3 style="color:#1D4ED8;margin:14px 0 6px;font-size:14px;border-top:1px dashed #BFDBFE;padding-top:10px;">Exercise 4 — Round-Up Discussion Prompts</h3>
+    <h3 style="color:#1D4ED8;margin:14px 0 6px;font-size:14px;border-top:1px dashed #BFDBFE;padding-top:10px;">Exercise 3 — Round-Up Discussion Prompts</h3>
     <div style="font-size:13px;line-height:1.6;color:#333;">
       1. How do you feel about the Internet of Things? Do you think the benefits are greater than the risks? Why/Why not?<br>
       2. Would you feel comfortable living in a smart house where every object tracks your daily habits? Why or why not?<br>
       3. In your opinion, which sector benefits the most from IoT technology: healthcare, agriculture, or home comfort?
     </div>`;
-  const el=buildPrintEl(html);savePDF(el,'Lesson_8.1_Full_Worksheet_Pack.pdf');
+  const el=buildPrintEl(html);savePDF(el,'Lesson_8.1_Listening_Tasks.pdf');
 }
 
 /* LESSON STEPS ARRAY */
@@ -348,6 +345,7 @@ function renderStep(){
     area.appendChild(makeBoard());
   }
   else if(s.type==='listening'){
+    pdfBtn.style.display='inline-block';pdfBtn.onclick=pdfAll;
     area.style.justifyContent='flex-start';
     el=document.createElement('div');el.className='tw2';
     el.innerHTML=`

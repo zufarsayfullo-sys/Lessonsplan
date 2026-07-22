@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 8.3</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif;background:#DDE6F8;min-height:100vh;display:flex;flex-direction:column;}
+  a{text-decoration:none;color:inherit;}
+  .outline-page{flex:1;padding:24px 36px;display:flex;flex-direction:column;}
+  .ol-title{color:#1D4ED8;font-size:28px;font-weight:bold;margin-bottom:4px;}
+  .ol-sub{color:#666;font-size:14px;margin-bottom:24px;}
+  .ol-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+  .ol-item{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:14px 18px;font-size:15px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+  .ol-n{background:#1D4ED8;color:#fff;border-radius:50%;width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;}
+  .ol-tag{margin-left:auto;color:#93C5FD;font-size:12px;}
+  .sbtn{background:#1D4ED8;color:#fff;border:none;border-radius:10px;padding:14px 32px;font-weight:bold;font-size:16px;cursor:pointer;font-family:inherit;align-self:flex-end;}
+  .back-link{color:#1D4ED8;font-size:18px;font-weight:bold;margin-bottom:16px;display:inline-block;}
+  #lessonScreen{flex:1;display:none;flex-direction:column;min-height:0;}
+  .top-bar{padding:12px 32px 6px;display:flex;align-items:center;gap:14px;}
+  .step-label{color:#1D4ED8;font-size:20px;font-weight:bold;}
+  .content-area{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10px 28px;overflow-y:auto;}
+  .bottom-bar{background:rgba(255,255,255,.94);border-top:2px solid #BFDBFE;padding:10px 28px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .nav-side{display:flex;align-items:center;gap:8px;}
+  .nb{background:none;border:none;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;color:#93C5FD;padding:6px 10px;}
+  .nb:disabled{opacity:.25;cursor:not-allowed;}
+  .nb.pri{background:#1D4ED8;color:#fff;border-radius:8px;padding:8px 20px;}
+  .sc{color:#BFDBFE;font-size:13px;min-width:60px;text-align:center;}
+  .tools-side{display:flex;align-items:center;gap:8px;}
+  .trec{color:#93C5FD;font-size:11px;}
+  .tw0{display:flex;align-items:center;gap:4px;background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:8px;padding:5px 10px;}
+  .ta{background:none;border:none;color:#1D4ED8;font-size:16px;font-weight:bold;cursor:pointer;width:22px;font-family:inherit;}
+  .td{font-family:'Courier New',monospace;font-size:15px;color:#1D4ED8;min-width:52px;text-align:center;font-weight:bold;}
+  .td.warn{color:#EF4444;}
+  .tt{background:none;border:1.5px solid #1D4ED8;color:#1D4ED8;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:2px;}
+  .hbtn{background:#1D4ED8;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  /* food grid */
+  .food-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%;max-width:900px;}
+  .food-card{background:#fff;border-radius:14px;padding:14px 8px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .food-card.revealed .fq{display:none;}
+  .food-card.revealed .fname{display:block;}
+  .fq{font-size:22px;color:#BFDBFE;margin-top:6px;}
+  .fname{display:none;font-size:12px;font-weight:bold;color:#1D4ED8;margin-top:6px;line-height:1.3;}
+  .reveal-hint{font-size:11px;color:#BFDBFE;margin-top:4px;}
+  /* lead-in q */
+  .lead-wrap{width:100%;max-width:860px;}
+  .dq{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+  .dqn{background:#1D4ED8;color:#fff;border-radius:50%;width:26px;height:26px;min-width:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;margin-top:2px;}
+  .dqt{color:#333;font-size:15px;line-height:1.6;}
+  /* task 1 */
+  .task-wrap{width:100%;max-width:960px;}
+  .word-bank{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;background:#fff;border-radius:10px;border:2px dashed #BFDBFE;min-height:44px;margin-bottom:16px;}
+  .chip{border-radius:20px;padding:5px 13px;font-size:13px;font-weight:bold;cursor:pointer;border:2px solid #BFDBFE;background:#EFF6FF;color:#1D4ED8;transition:all .15s;user-select:none;}
+  .chip:hover{border-color:#1D4ED8;}
+  .chip.selected{background:#BFDBFE;border-color:#1D4ED8;}
+  .chip.new{background:#F0FDF4;border-color:#4CAF50;color:#166534;cursor:default;}
+  .chip.old{background:#FFF7ED;border-color:#F97316;color:#C2410C;cursor:default;}
+  .cats-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .cat-box{border-radius:12px;padding:14px;min-height:200px;}
+  .cat-box.new-box{background:#F0FDF4;border:2px solid #4CAF50;}
+  .cat-box.old-box{background:#FFF7ED;border:2px solid #F97316;}
+  .cat-title{font-weight:bold;font-size:15px;margin-bottom:2px;}
+  .cat-sub{font-size:11px;color:#888;margin-bottom:10px;}
+  .cat-items{display:flex;flex-wrap:wrap;gap:6px;min-height:60px;}
+  .task-btns{display:flex;justify-content:space-between;margin-top:14px;}
+  .rbtn{background:#1D4ED8;color:#fff;border:none;border-radius:7px;padding:8px 18px;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  .rst{background:none;border:1.5px solid #BFDBFE;color:#1D4ED8;border-radius:7px;padding:8px 18px;font-size:13px;cursor:pointer;font-family:inherit;}
+</style>
+</head>
+<body>
+
+<div id="outlineScreen">
+  <div class="outline-page">
+    <a class="back-link" href="index.html">&#8592;</a>
+    <div class="ol-title">Lesson 8.3</div>
+    <div class="ol-sub">Unit 8 &middot; Food from the New and Old World</div>
+    <div class="ol-list">
+      <div class="ol-item"><span class="ol-n">1</span>Lead-in — food SVGs<span class="ol-tag">3 min</span></div>
+      <div class="ol-item"><span class="ol-n">2</span>Lead-in — discussion questions<span class="ol-tag">5 min</span></div>
+      <div class="ol-item"><span class="ol-n">3</span>Task 1 — New World or Old World?<span class="ol-tag">interactive</span></div>
+    </div>
+    <button class="sbtn" id="startBtn">Start lesson &#8594;</button>
+  </div>
+</div>
+
+<div id="lessonScreen">
+  <div class="top-bar">
+    <a class="back-link" href="index.html" style="font-size:18px;font-weight:bold;color:#1D4ED8;">&#8592;</a>
+    <span class="step-label" id="sLabel">Lesson 8.3</span>
+  </div>
+  <div class="content-area" id="contentArea"></div>
+  <div class="bottom-bar">
+    <div class="nav-side">
+      <button class="nb" id="prevBtn">&#8592; prev</button>
+      <span class="sc" id="stepCtr"></span>
+      <button class="nb pri" id="nextBtn">next &#8594;</button>
+    </div>
+    <div class="tools-side">
+      <span class="trec" id="recLbl"></span>
+      <div class="tw0">
+        <button class="ta" id="tMin">&#8722;</button>
+        <span class="td" id="tDisp">03:00</span>
+        <button class="ta" id="tPls">+</button>
+        <button class="tt" id="tTog">&#9654;</button>
+      </div>
+      <button class="hbtn" id="fsBtn" style="font-size:14px;padding:6px 10px;">&#x26F6;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* FULLSCREEN */
+document.getElementById('fsBtn').onclick=function(){
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});this.textContent='✕';}
+  else{document.exitFullscreen();this.textContent='⛶';}
+};
+document.addEventListener('fullscreenchange',()=>{document.getElementById('fsBtn').textContent=document.fullscreenElement?'✕':'⛶';});
+
+/* TIMER */
+let tS=180,tR=false,tI=null;
+function setT(m){tS=m*60;tR=false;clearInterval(tI);document.getElementById('tTog').textContent='▶';rendT();}
+function rendT(){const m=Math.floor(Math.abs(tS)/60),s=Math.abs(tS)%60,n=tS<0?'-':'',d=document.getElementById('tDisp');d.textContent=n+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');d.className='td'+(tS<=30&&tS>=-999?' warn':'');}
+document.getElementById('tTog').onclick=function(){if(tR){clearInterval(tI);tR=false;this.textContent='▶';}else{tR=true;this.textContent='⏸';tI=setInterval(()=>{tS--;rendT();},1000);}};
+document.getElementById('tMin').onclick=()=>{tS=Math.max(0,tS-60);rendT();};
+document.getElementById('tPls').onclick=()=>{tS+=60;rendT();};
+
+/* FOOD DATA */
+const foods=[
+  {name:'avocado',     svg:`<svg viewBox="0 0 70 80" width="70" xmlns="http://www.w3.org/2000/svg"><ellipse cx="35" cy="50" rx="22" ry="28" fill="#4CAF50"/><ellipse cx="35" cy="54" rx="14" ry="18" fill="#A5D6A7"/><ellipse cx="35" cy="58" rx="8" ry="10" fill="#6D4C41"/><ellipse cx="22" cy="36" rx="10" ry="14" fill="#2E7D32" opacity=".7"/></svg>`},
+  {name:'aubergine',   svg:`<svg viewBox="0 0 70 80" width="70" xmlns="http://www.w3.org/2000/svg"><ellipse cx="35" cy="52" rx="16" ry="24" fill="#6A1B9A"/><ellipse cx="35" cy="52" rx="16" ry="24" fill="none" stroke="#4A148C" stroke-width="1.5"/><path d="M35,28 Q30,18 35,12 Q40,18 35,28" fill="#2E7D32"/><line x1="35" y1="20" x2="35" y2="28" stroke="#2E7D32" stroke-width="2.5"/></svg>`},
+  {name:'papaya',      svg:`<svg viewBox="0 0 70 80" width="70" xmlns="http://www.w3.org/2000/svg"><ellipse cx="35" cy="48" rx="20" ry="28" fill="#FF9800"/><ellipse cx="35" cy="48" rx="12" ry="20" fill="#FFCC80"/><circle cx="32" cy="46" r="2" fill="#795548"/><circle cx="37" cy="50" r="2" fill="#795548"/><circle cx="35" cy="42" r="2" fill="#795548"/><path d="M35,20 Q28,14 30,8" fill="none" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round"/></svg>`},
+  {name:'vanilla',     svg:`<svg viewBox="0 0 70 80" width="70" xmlns="http://www.w3.org/2000/svg"><line x1="26" y1="14" x2="30" y2="70" stroke="#5D4037" stroke-width="4.5" stroke-linecap="round"/><line x1="36" y1="10" x2="40" y2="66" stroke="#4E342E" stroke-width="4.5" stroke-linecap="round"/><line x1="45" y1="16" x2="48" y2="68" stroke="#6D4C41" stroke-width="3.5" stroke-linecap="round"/><line x1="20" y1="24" x2="52" y2="20" stroke="#3E2723" stroke-width="2" stroke-linecap="round"/></svg>`},
+  {name:'wheat',       svg:`<svg viewBox="0 0 70 80" width="70" xmlns="http://www.w3.org/2000/svg"><line x1="35" y1="72" x2="35" y2="18" stroke="#F9A825" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="35" cy="18" rx="5" ry="9" fill="#F9A825"/><ellipse cx="27" cy="28" rx="4.5" ry="8" fill="#FBC02D" transform="rotate(-28,27,28)"/><ellipse cx="43" cy="28" rx="4.5" ry="8" fill="#FBC02D" transform="rotate(28,43,28)"/><ellipse cx="24" cy="42" rx="4" ry="7.5" fill="#F9A825" transform="rotate(-32,24,42)"/><ellipse cx="46" cy="42" rx="4" ry="7.5" fill="#F9A825" transform="rotate(32,46,42)"/></svg>`},
+  {name:'sweetcorn',   svg:`<svg viewBox="0 0 70 80" width="70" xmlns="http://www.w3.org/2000/svg"><ellipse cx="35" cy="48" rx="15" ry="27" fill="#FFD600"/><line x1="35" y1="21" x2="35" y2="75" stroke="#F9A825" stroke-width="1.2"/><line x1="27" y1="23" x2="27" y2="73" stroke="#F9A825" stroke-width="1.2"/><line x1="43" y1="23" x2="43" y2="73" stroke="#F9A825" stroke-width="1.2"/><line x1="20" y1="34" x2="50" y2="34" stroke="#F9A825" stroke-width="1.2"/><line x1="20" y1="44" x2="50" y2="44" stroke="#F9A825" stroke-width="1.2"/><line x1="20" y1="54" x2="50" y2="54" stroke="#F9A825" stroke-width="1.2"/><line x1="20" y1="64" x2="50" y2="64" stroke="#F9A825" stroke-width="1.2"/><path d="M20,21 Q13,8 22,7" fill="none" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round"/><path d="M50,21 Q57,8 48,7" fill="none" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round"/></svg>`},
+  {name:'cheese',      svg:`<svg viewBox="0 0 70 80" width="70" xmlns="http://www.w3.org/2000/svg"><path d="M8,60 L62,60 L62,36 L35,16 Z" fill="#FDD835"/><path d="M8,60 L8,70 L62,70 L62,60 Z" fill="#F9A825"/><circle cx="42" cy="44" r="5.5" fill="#FBC02D"/><circle cx="26" cy="52" r="4.5" fill="#FBC02D"/><circle cx="52" cy="56" r="3.5" fill="#FBC02D"/></svg>`},
+  {name:'pineapple',   svg:`<svg viewBox="0 0 70 80" width="70" xmlns="http://www.w3.org/2000/svg"><ellipse cx="35" cy="54" rx="16" ry="22" fill="#FFD600"/><line x1="26" y1="34" x2="26" y2="76" stroke="#F9A825" stroke-width="1.2"/><line x1="35" y1="32" x2="35" y2="76" stroke="#F9A825" stroke-width="1.2"/><line x1="44" y1="34" x2="44" y2="76" stroke="#F9A825" stroke-width="1.2"/><line x1="19" y1="44" x2="51" y2="44" stroke="#F9A825" stroke-width="1.2"/><line x1="19" y1="54" x2="51" y2="54" stroke="#F9A825" stroke-width="1.2"/><line x1="19" y1="64" x2="51" y2="64" stroke="#F9A825" stroke-width="1.2"/><path d="M26,32 Q23,16 30,10" fill="none" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round"/><path d="M35,32 Q35,14 35,8" fill="none" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round"/><path d="M44,32 Q47,16 40,10" fill="none" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round"/></svg>`},
+];
+
+const newWorldFoods=['avocados','chillies','courgettes','papayas','peanuts','pineapples','potatoes','sweetcorn','tomatoes','turkey','vanilla'];
+const oldWorldFoods=['aubergines','beef','citrus fruit','coffee','dairy products','onions','rice','wheat'];
+const allFoods=[...newWorldFoods,...oldWorldFoods].sort();
+
+/* TASK 1 STATE */
+let selected=null,selectedEl=null;
+const placed={};
+
+function initTask(area){
+  Object.keys(placed).forEach(k=>delete placed[k]);
+  selected=null;selectedEl=null;
+
+  const wrap=document.createElement('div');wrap.className='task-wrap';
+  const instr=document.createElement('div');
+  instr.style.cssText='font-size:13px;color:#93C5FD;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;';
+  instr.textContent='Click a word to select it, then click a category box to place it';
+  const bank=document.createElement('div');bank.className='word-bank';bank.id='wordBank';
+
+  allFoods.forEach(w=>{
+    const chip=document.createElement('div');
+    chip.className='chip';chip.textContent=w;chip.dataset.word=w;
+    chip.onclick=()=>selectChip(chip);
+    bank.appendChild(chip);
+  });
+
+  const catsGrid=document.createElement('div');catsGrid.className='cats-grid';
+
+  const newBox=document.createElement('div');newBox.className='cat-box new-box';
+  newBox.innerHTML='<div class="cat-title" style="color:#166534;">🌎 New World</div><div class="cat-sub">the Americas, Australia</div>';
+  const newItems=document.createElement('div');newItems.className='cat-items';newItems.id='newItems';
+  newBox.appendChild(newItems);
+  newBox.onclick=(e)=>{if(e.target===newBox||e.target===newItems||e.target.classList.contains('cat-title')||e.target.classList.contains('cat-sub'))placeWord('new');};
+  newItems.onclick=()=>placeWord('new');
+
+  const oldBox=document.createElement('div');oldBox.className='cat-box old-box';
+  oldBox.innerHTML='<div class="cat-title" style="color:#C2410C;">🌍 Old World</div><div class="cat-sub">Europe, Asia, Africa</div>';
+  const oldItems=document.createElement('div');oldItems.className='cat-items';oldItems.id='oldItems';
+  oldBox.appendChild(oldItems);
+  oldBox.onclick=(e)=>{if(e.target===oldBox||e.target===oldItems||e.target.classList.contains('cat-title')||e.target.classList.contains('cat-sub'))placeWord('old');};
+  oldItems.onclick=()=>placeWord('old');
+
+  catsGrid.appendChild(newBox);catsGrid.appendChild(oldBox);
+
+  const btns=document.createElement('div');btns.className='task-btns';
+  const rev=document.createElement('button');rev.className='rbtn';rev.textContent='Reveal answers';
+  rev.onclick=()=>revealTask();
+  const rst=document.createElement('button');rst.className='rst';rst.textContent='↺ Reset';
+  rst.onclick=()=>{area.innerHTML='';initTask(area);};
+  btns.appendChild(rev);btns.appendChild(rst);
+
+  wrap.appendChild(instr);wrap.appendChild(bank);wrap.appendChild(catsGrid);wrap.appendChild(btns);
+  area.appendChild(wrap);
+}
+
+function selectChip(chip){
+  if(!chip.dataset.word)return;
+  if(selectedEl===chip){selectedEl.classList.remove('selected');selected=null;selectedEl=null;return;}
+  if(selectedEl)selectedEl.classList.remove('selected');
+  selected=chip.dataset.word;selectedEl=chip;chip.classList.add('selected');
+}
+
+function placeWord(cat){
+  if(!selected||!selectedEl)return;
+  const w=selected;
+  placed[w]=cat;
+  const color=cat==='new'?'#166534':'#C2410C';
+  const bg=cat==='new'?'#F0FDF4':'#FFF7ED';
+  const border=cat==='new'?'#4CAF50':'#F97316';
+  const chip=document.createElement('div');
+  chip.className='chip '+(cat==='new'?'new':'old');
+  chip.textContent=w;chip.title='Click to move back';
+  chip.onclick=()=>{
+    chip.remove();delete placed[w];
+    const bank=document.getElementById('wordBank');
+    const nb=document.createElement('div');nb.className='chip';nb.textContent=w;nb.dataset.word=w;
+    nb.onclick=()=>selectChip(nb);bank.appendChild(nb);
+  };
+  const target=document.getElementById(cat==='new'?'newItems':'oldItems');
+  if(target)target.appendChild(chip);
+  selectedEl.remove();selected=null;selectedEl=null;
+}
+
+function revealTask(){
+  const bank=document.getElementById('wordBank');
+  const ni=document.getElementById('newItems');
+  const oi=document.getElementById('oldItems');
+  if(bank)bank.innerHTML='';
+  if(ni)ni.innerHTML='';
+  if(oi)oi.innerHTML='';
+  newWorldFoods.forEach(w=>{
+    const c=document.createElement('div');c.className='chip new';c.textContent=w;
+    if(ni)ni.appendChild(c);
+  });
+  oldWorldFoods.forEach(w=>{
+    const c=document.createElement('div');c.className='chip old';c.textContent=w;
+    if(oi)oi.appendChild(c);
+  });
+}
+
+/* STEPS */
+const steps=[
+  {label:'Lead-in — what are these?', type:'food-grid', rec:3},
+  {label:'Lead-in — discussion',      type:'discuss',   rec:5},
+  {label:'Task 1 — New World or Old World?', type:'task1', rec:10},
+];
+let cur=0;
+
+function renderStep(){
+  const s=steps[cur];
+  const area=document.getElementById('contentArea');
+  area.innerHTML='';
+  area.style.justifyContent='center';area.style.alignItems='center';area.style.padding='10px 28px';
+  document.getElementById('sLabel').textContent=s.label;
+  document.getElementById('recLbl').textContent='rec: '+s.rec+' min';
+  clearInterval(tI);tR=false;document.getElementById('tTog').textContent='▶';setT(s.rec);
+
+  if(s.type==='food-grid'){
+    const instr=document.createElement('div');
+    instr.style.cssText='font-size:13px;color:#1D4ED8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px;text-align:center;';
+    instr.textContent='Books closed — what are these? Click to reveal';
+    const grid=document.createElement('div');grid.className='food-grid';
+    foods.forEach(f=>{
+      const card=document.createElement('div');card.className='food-card';
+      card.innerHTML=f.svg
+        +'<div class="fq">?</div>'
+        +'<div class="fname">'+f.name+'</div>'
+        +'<div class="reveal-hint">tap to reveal</div>';
+      card.onclick=()=>{
+        card.classList.toggle('revealed');
+        card.querySelector('.reveal-hint').style.display='none';
+      };
+      grid.appendChild(card);
+    });
+    area.appendChild(instr);area.appendChild(grid);
+  }
+
+  else if(s.type==='discuss'){
+    const wrap=document.createElement('div');wrap.className='lead-wrap';
+    // mini food strip
+    const strip=document.createElement('div');
+    strip.style.cssText='display:flex;justify-content:center;gap:14px;margin-bottom:22px;flex-wrap:wrap;';
+    foods.slice(0,6).forEach(f=>{
+      const sm=document.createElement('div');
+      sm.style.cssText='background:#fff;border-radius:10px;padding:8px 6px;box-shadow:0 1px 4px rgba(0,0,0,.07);text-align:center;';
+      sm.innerHTML=f.svg.replace(/width="\d+"/,'width="46"')+'<div style="font-size:9px;color:#93C5FD;margin-top:2px;">'+f.name+'</div>';
+      strip.appendChild(sm);
+    });
+    const qs=document.createElement('div');
+    qs.innerHTML=`
+      <div class="dq"><div class="dqn">1</div><div class="dqt">Which three of these foods do you eat or drink most regularly? How do you like to eat/drink them?</div></div>
+      <div class="dq"><div class="dqn">2</div><div class="dqt">Which three do you have least often? Why?</div></div>
+      <div class="dq"><div class="dqn">3</div><div class="dqt">Which can you see in the photos on page 68?</div></div>`;
+    wrap.appendChild(strip);wrap.appendChild(qs);
+    area.appendChild(wrap);
+  }
+
+  else if(s.type==='task1'){
+    area.style.justifyContent='flex-start';area.style.padding='10px 28px';
+    initTask(area);
+  }
+
+  document.getElementById('stepCtr').textContent=(cur+1)+' / '+steps.length;
+  document.getElementById('prevBtn').disabled=cur===0;
+  document.getElementById('nextBtn').textContent=cur===steps.length-1?'Done':'next \u2192';
+}
+
+document.getElementById('startBtn').onclick=()=>{
+  document.getElementById('outlineScreen').style.display='none';
+  document.getElementById('lessonScreen').style.display='flex';
+  cur=0;renderStep();
+};
+document.getElementById('nextBtn').onclick=()=>{if(cur<steps.length-1){cur++;renderStep();}};
+document.getElementById('prevBtn').onclick=()=>{if(cur>0){cur--;renderStep();}};
+</script>
+</body>
+</html>
